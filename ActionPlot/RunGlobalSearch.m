@@ -2,7 +2,7 @@ function [minTheta,minPhi,minS] = RunGlobalSearch(theta,M)
 %RUNGLOBALSEARCH 
 eps= .5;
 gs = GlobalSearch('Display','iter','NumStageOnePoints',M.gsInTrials,'NumTrialPoints',M.gsTrials);
-f = @(theta) FindPathAndEnergy(theta,M);
+f = @(theta) FindPathAndEnergy2(theta,M);
 opts = optimoptions(@fmincon,'Algorithm','sqp');
 problem = createOptimProblem('fmincon','x0',theta,'objective',f,'lb',theta-eps,'ub',theta+eps,'options',opts);
 minTheta = run(gs,problem);
@@ -12,5 +12,9 @@ end
 
 function [S] = FindPathAndEnergy(thetaSet,M)
     [S] = IntegrateLagrangian(IntegrateRHS(GenerateInitialConditions(thetaSet,M),M),M);
+end
+
+function [S] = FindPathAndEnergy2(thetaSet,M)
+    [S] = IntegrateLagrangian(PostProcessTrajectories(IntegrateRHS(GenerateInitialConditions(thetaSet,M),M),M),M);
 end
 

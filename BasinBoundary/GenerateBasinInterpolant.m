@@ -6,10 +6,12 @@ function [F,A] = GenerateBasinInterpolant(M)
 x = Basins.x(:,1);
 y = Basins.x(:,2);
 
-ii = find(Basins.B~=M.BN); %indeces of basin numbers that are not the initial basin
-Basins.B(ii) = 3*ones(size(ii)); %all non initial basins are now the number 3
+B = ones(size(Basins.B)); %initialize all ones
 
-z = Basins.B;
+jj = find(Basins.B~=M.BN); %indeces of basin numbers that are not the initial basin
+B(jj) = 3*ones(size(jj)); %all non initial basins are now the number 3
+
+z = B;
 A = Basins.A;
 
 L =sqrt(length(x));
