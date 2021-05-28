@@ -3,15 +3,30 @@ function [M] = Parameters(parameterNames,parameterValues)
 note = "Forced Duffing Oscillator";
 paramNote = "Duffing";
 a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; %rhs parameters (note basin interpolant mat file must be changed if rhs parameters are changed)
+dim = 2; %deterministic system dimension
 rIC = 10^-6; %radius of momenta initial conditions
 qo = [1.3590;2.4170]; %initial condition in phase space
 % qo = [-sqrt(-a1/a3);0]; %initial condition in phase space for bistable
-BN = 1; %Initial Basin Identifier
-nIC = 5; %number of initial conditions in circle around qo
+BN = 2; %Initial Basin Identifier
+nIC = 20; %number of initial conditions in circle around qo
 rhsString = 'Duffing';
  T = 2*pi/w;  dt = T/32; tf = 300*T;
 solver = @ode45;
 psiEps = .05; %phase threshold
+tFall = 100; %Max amount of time for system to fall to attractor radius
+rA1 = 1.35; %radius of initial sphere around initial attractor
+rA = .5; %accepted radius around an attractor
+rS = .2; %accepted radius around a saddle
+tstep = .1; %time that must pass prior to checking for sphere condition
+iA = 1; %initial attractor fixed point identifier
+onceAPeriod = true;
+terminateType = 'Saddle'; 
+nWorkers = 0;
+
+%MinSearch Parameters
+nLM = 4; %maximum number of local minimum to explore
+maxIter = 0;
+
 
 
 %Calculated parameters
@@ -20,16 +35,15 @@ tspan = [0:dt:tf];
 dtheta =(2*pi)/(nIC);
 theta = [dtheta:dtheta:2*pi];
 
-%higher resolution
-ub = 1.2; lb = .9;
-dtheta2 =(ub-lb)/(nIC);
-theta2 = lb+dtheta2:dtheta2:ub;
-nIC = 2*nIC;
-theta = [theta,theta2];
-theta = sort(theta,'ascend')
-
-% nIC = 1;
-% theta = 1.0598;
+% %higher resolution
+% ub = 1.2; lb = .9;
+% dtheta2 =(ub-lb)/(nIC);
+% theta2 = lb+dtheta2:dtheta2:ub;
+% nIC = 2*nIC;
+% theta = [theta,theta2];
+% theta = sort(theta,'ascend')
+% 
+% nIC = 1; theta = 1.0598;
 
 
 
@@ -43,10 +57,19 @@ M.solver = solver;
 M.D = D;
 M.tspan = tspan;
 M.theta = theta; M.dtheta = dtheta;
+M.dim = dim;
+M.terminateType = terminateType;
+M.nWorkers = nWorkers;
+
 
 M.paramNote = paramNote;
 M.Mrhs.a1 = a1; M.Mrhs.a3 = a3; M.Mrhs.nu = nu;
 M.Mrhs.F = F; M.Mrhs.w = w; M.Mrhs.psiEps = psiEps;
+M.Mrhs.qo = qo; M.Mrhs.rA = rA; M.Mrhs.rS = rS; M.Mrhs.tstep = tstep;
+M.Mrhs.rA1 = rA1; M.Mrhs.tFall = tFall; M.Mrhs.iA = iA; M.Mrhs.T = T;
+M.Mrhs.onceAPeriod = onceAPeriod; M.Mrhs.dim = dim;
+
+M.MS.nLM = nLM; M.MS.maxIter = maxIter;
 
 
 %modify parameter values via function input during runtime
@@ -62,10 +85,12 @@ if nargin == 2
 end
 
 
-%Set Moment RHS
+%Set Function Handles
 M.RHS = str2func([M.rhsString,'RHS']);
+M.HamiltonianRHS = str2func([M.rhsString,'HamiltonianRHS']);
 M.Lagrangian = str2func([M.rhsString,'Lagrangian'])
+M.TerminateEvent = str2func(['TerminateAt',M.terminateType,'Event']);
 
-
+M.Mrhs.RHS = M.RHS; M.Mrhs.solver= solver;
 end
 

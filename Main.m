@@ -1,7 +1,7 @@
 function [] = Main(parameterNames,parameterValues)
 %MAIN 
 close all
-tic
+
 AddAllPaths();
 
 %Parameters
@@ -10,50 +10,42 @@ if nargin == 2
 else
     M = Parameters();
 end
+tic 
 
 %Final Condition
-if strcmp(M.rhsString,"Duffing")
-    M.biSet = DuffingBasins(M);
-    M.Mrhs.bI = M.biSet{1}{1}; %Use first basin interpolant once a period
-    M.Mrhs.A =  M.biSet{3}{1}; % use the first attractors set once a period
-    M.Mrhs.r = 1E-1;
-    M.Mrhs.eps = 1E-1;
-else
-    [basinInterpolant,attractors] = GenerateBasinInterpolant(M);
-    M.Mrhs.bI = basinInterpolant;
-    M.Mrhs.A = attractors;
-end
+[M] = GetFixedPoints(M);
+
 
 
 %Initial Conditions
-[xoSet] = GenerateInitialConditions(M.theta,M);
+theta = M.theta;
+[xoSet] = GenerateInitialConditions(theta,M);
 
 %Distributed Paths
 phiSetRaw = IntegrateRHS(xoSet,M);
 % 
 
-[phiSet,bi,psi] = PostProcessTrajectories(phiSetRaw,M);
-
+phiSet = PostProcessTrajectories(phiSetRaw,M);
+% phiSet = phiSetRaw;
 
 %Distributed Path Energies
 [S] = IntegrateLagrangian(phiSet,M);
 
-%Initial Angle for Global Search
-[approxMinAngle] = FindMinAngle(S,phiSet,M);
 
-%Search Local when eps < 2pi, global otherwise
-% [minTheta,minPhi,minS] = RunGlobalSearch(approxMinAngle,M);
-% [minTheta,minPhi,minS] = RunMultiStart(approxMinAngle,M);
-minTheta=  approxMinAngle; minPhi = phiSet; minS = S;
+%In a loop augment initial conditions near low energy local minima
+msLog = {{theta,S}};
+[phiSet,msLog] = RunMinSearch(phiSet,msLog,M); 
+theta = msLog{end}{1}; S = msLog{end}{2};
+
+[minS,minPhiIndex] = IdentifyMPEP(S);
 
 toc
 
 %Data output
-data.minTheta =  minTheta; data.minPhi = minPhi; data.minS = minS;
-data.xoSet = xoSet; data.S = S; data.phiSet = phiSet; 
-data.basinInterpolant = M.Mrhs.bI; data.attractors = M.Mrhs.A;
-data.M = M;
-data.bi = bi; data.psi = psi;
+data.minPhiIndex = minPhiIndex; data.minS = minS; data.theta = theta;
+data.xoSet = xoSet; data.S = S; data.phiSet = phiSet;
+data.M = M; data.attractors = M.Mrhs.FixedPoints.FP;
+data.msLog = msLog;
 
 SaveToFile(data,M);
 
