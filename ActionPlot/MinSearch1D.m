@@ -51,7 +51,7 @@ msLog{end+1} = {thetaOut,Sout};
 end
 
 function [phiSetNew,SNew] = GetNewPhiSets(theta,M)
-     phiSetNew = PostProcessTrajectories(IntegrateRHS(GenerateInitialConditions(theta,M),M),M);
+     phiSetNew = PostProcessTrajectories2(IntegrateRHSinPeriods(GenerateInitialConditions(theta,M),M),M);
      SNew = IntegrateLagrangian(phiSetNew,M);
 end
 

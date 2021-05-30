@@ -10,17 +10,18 @@ M = data.M;
 [minS,iS] = min(minS);
 t = minPhi{1};
 phi = minPhi{2};
-tFall = minPhi{4};
-phiFall = minPhi{5};
+
 if strcmp(M.rhsString,'Unforced');
     plot(phi(:,1),phi(:,2),'linewidth',2)
 else strcmp(M.rhsString,'Duffing');
     color = [rand() rand() rand()];
-    it = find(mod(M.Mrhs.w*t,2*pi)<M.Mrhs.psiEps);
-    plot(phi(it,1),phi(it,2),'o-','Color',color);
-    if ~strcmp(M.terminateType,"Saddle")
-        itF = find(mod(M.Mrhs.w*tFall,2*pi)<M.Mrhs.psiEps);
-        plot([phi(it(end),1);phiFall(itF,1)],[phi(it(end),2);phiFall(itF,2)],'x--','Color',color);
+    [tq,xq] = InterpolateToPhaseAngle(t,phi,M);
+    plot(xq(:,1),xq(:,2),'o-','Color',color);
+    if M.plotFall
+        tFall = minPhi{4};
+        phiFall = minPhi{5};
+        [tqFall,xqFall] = InterpolateToPhaseAngle(tFall,phiFall,M);
+        plot([xq(end,1);xqFall(:,1)],[xq(end,2);xqFall(:,2)],'x--','Color',color);      
     end
 end
 hold on

@@ -14,18 +14,21 @@ rhsString = 'Duffing';
 solver = @ode45;
 psiEps = .05; %phase threshold
 tFall = 100; %Max amount of time for system to fall to attractor radius
+plotFall = true;
+fastPostProcessing = false;
 rA1 = 1.35; %radius of initial sphere around initial attractor
 rA = .5; %accepted radius around an attractor
-rS = .2; %accepted radius around a saddle
+rS = .01; %accepted radius around a saddle
 tstep = .1; %time that must pass prior to checking for sphere condition
 iA = 1; %initial attractor fixed point identifier
 onceAPeriod = true;
-terminateType = 'Saddle'; 
-nWorkers = 0;
+terminateType = 'DuffingBoundary'; 
+nWorkers = Inf;
+
 
 %MinSearch Parameters
 nLM = 4; %maximum number of local minimum to explore
-maxIter = 0;
+maxIter = 10;
 
 
 
@@ -60,6 +63,8 @@ M.theta = theta; M.dtheta = dtheta;
 M.dim = dim;
 M.terminateType = terminateType;
 M.nWorkers = nWorkers;
+M.plotFall = plotFall;
+M.fastPostProcessing = fastPostProcessing;
 
 
 M.paramNote = paramNote;

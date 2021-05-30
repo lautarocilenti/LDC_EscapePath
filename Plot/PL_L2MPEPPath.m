@@ -12,11 +12,9 @@ T = 2*pi/M.Mrhs.w;
 tmax = 0;
 
 phi = minPhi;
-if strcmp(M.terminateType,"Saddle")
-    jList = [1];
-else
-    jList = [1,4];
-end
+
+jList = [1];
+
 color = [rand() rand() rand()];
 lspec = ["-","--"];
 for j = 1:length(jList)
@@ -27,7 +25,7 @@ for j = 1:length(jList)
     x1q = interp1(t,x1,tq)';
     x2q = interp1(t,x2,tq)';
     if j == 2
-        tq = [tOld tq];
+       tq = [tOld tq];
        x1q=[x1Old;x1q]; x2q=[x2Old;x2q];
     end
     Path_L2 = vecnorm([x1q,x2q],2,2);%phi index, 2nd index for path, all timesteps, first two columns

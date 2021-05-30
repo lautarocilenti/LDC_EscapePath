@@ -7,10 +7,10 @@ T = 2*pi/M.Mrhs.w;
 tmax = 0;
 phiSet = data.phiSet;
 for i = 1:length(phiSet)
-    if strcmp(M.terminateType,"Saddle")
-            jList = [1];
+    if M.plotFall
+            jList = [1,4];
     else
-        jList = [1,4];
+        jList = [1];
     end
     
     color = [rand() rand() rand()];

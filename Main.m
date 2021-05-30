@@ -22,10 +22,10 @@ theta = M.theta;
 [xoSet] = GenerateInitialConditions(theta,M);
 
 %Distributed Paths
-phiSetRaw = IntegrateRHS(xoSet,M);
+phiSetRaw = IntegrateRHSinPeriods(xoSet,M);
 % 
 
-phiSet = PostProcessTrajectories(phiSetRaw,M);
+phiSet = PostProcessTrajectories2(phiSetRaw,M);
 % phiSet = phiSetRaw;
 
 %Distributed Path Energies
