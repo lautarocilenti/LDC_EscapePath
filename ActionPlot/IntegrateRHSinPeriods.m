@@ -14,10 +14,12 @@ parfor(ixo = 1:size(xoSet,2),M.nWorkers)
 % for ixo = 1:size(xoSet,2)
     
     m = parConstant.Value;
-    terminateFlag1 = true;
     xo = xoSet(:,ixo);
+    A = m.Mrhs.FixedPoints.FP(m.Mrhs.iA,:);
     T = 2*pi/m.Mrhs.w;
+    to = m.pp/m.Mrhs.w;
     tVector = 0:T:m.tspan(end);
+    tVector(1) = to;
     tAll = [tVector(1)]; yAll = [xo'];
     for iT = 1:length(tVector)
         tspan = [tVector(iT);tVector(iT+1)];
@@ -25,7 +27,7 @@ parfor(ixo = 1:size(xoSet,2),M.nWorkers)
         [t,y] =  m.solver(m.HamiltonianRHS, tspan, xo,[opts],m.Mrhs);
         tAll = [tAll; t(2:end)];
         yAll = [yAll;y(2:end,:)];
-        if norm(y(end,1:M.dim)-m.Mrhs.qo')>=m.Mrhs.rA1 
+        if norm(y(end,1:M.dim)-A)>=m.Mrhs.rA1 
             [status,t1,y1] = IntegrateToFixedPoint(t(end),y(end,1:M.dim),m.Mrhs);
 
             if status>1

@@ -9,6 +9,7 @@ theta = msLog{end}{1};
 S = msLog{end}{2};
 
 %Augmented S
+thetaAug = [theta theta(1)];
 sAug = [S;S(1)]; %adding the first term to the end to complete the circle
 
 %Neighbor Differentials
@@ -32,7 +33,8 @@ end
 
 %generate new initial conditions
 iLeft = iLM - 1; iRight = iLM +1;
-thetaNew =  mean([theta(iLM) theta(iLM);theta(iLeft) theta(iRight)]);
+
+thetaNew =  mean([thetaAug(iLM) thetaAug(iLM); thetaAug(iLeft) thetaAug(iRight)]);
 
 %Run Rise and Fall Method for new initial conditions
 [phiSetNew,SNew] = GetNewPhiSets(thetaNew,M);

@@ -6,6 +6,7 @@ a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; %rhs parameters (note basin interpola
 dim = 2; %deterministic system dimension
 rIC = 10^-6; %radius of momenta initial conditions
 qo = [1.3590;2.4170]; %initial condition in phase space
+pp = pi; %poincare phase
 % qo = [-sqrt(-a1/a3);0]; %initial condition in phase space for bistable
 BN = 2; %Initial Basin Identifier
 nIC = 20; %number of initial conditions in circle around qo
@@ -28,7 +29,7 @@ nWorkers = Inf;
 
 %MinSearch Parameters
 nLM = 4; %maximum number of local minimum to explore
-maxIter = 10;
+maxIter = 4;
 
 
 
@@ -65,6 +66,7 @@ M.terminateType = terminateType;
 M.nWorkers = nWorkers;
 M.plotFall = plotFall;
 M.fastPostProcessing = fastPostProcessing;
+M.pp = pp;
 
 
 M.paramNote = paramNote;

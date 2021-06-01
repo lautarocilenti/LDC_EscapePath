@@ -6,6 +6,7 @@ if data.M.dim == 2
     %Generate Gridded interpolant
     F = GenerateBasinInterpolant(data.M);
     data.basinInterpolant = F; 
+    
     f1 = figure();
     PL_BasinBoundary(data.basinInterpolant,"");
     PL_Attractors(data.attractors);

@@ -1,4 +1,4 @@
-function [] = Main(parameterNames,parameterValues)
+function [data] = Main(parameterNames,parameterValues)
 %MAIN 
 close all
 
@@ -47,9 +47,9 @@ data.xoSet = xoSet; data.S = S; data.phiSet = phiSet;
 data.M = M; data.attractors = M.Mrhs.FixedPoints.FP;
 data.msLog = msLog;
 
-SaveToFile(data,M);
+% SaveToFile(data,M);
 
-PlotGenerator(data)
+% PlotGenerator(data)
 
 
 
