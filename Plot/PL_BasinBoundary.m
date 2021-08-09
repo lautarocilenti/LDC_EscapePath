@@ -4,7 +4,6 @@ function [] = PL_BasinBoundary(basinInterpolant,titleString)
 x = linspace(-4,4,500);
 y = linspace(-4,4,500);
 [xGrid,yGrid] = ndgrid(x,y);
-
 zGrid  = basinInterpolant(xGrid,yGrid);
 
 ii = find(round(zGrid,0)==2);

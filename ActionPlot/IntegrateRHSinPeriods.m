@@ -1,4 +1,4 @@
-function [phiSet] = IntegrateRHS(xoSet,M)
+function [phiSet] = IntegrateRHSinPeriods(xoSet,M)
 %IntegrateRHS - Uses ode45 to integrate Hamiltonian  from initial conditions until
 %maximum time or until TerminateAtBoundaryEvent has a value of zero. 
 
@@ -11,6 +11,7 @@ tSet =  zeros(nt,M.nIC);
 parConstant = parallel.pool.Constant(M);
 [isCluster] = ProgressBar(size(xoSet,2),"Rise and Fall");
 parfor(ixo = 1:size(xoSet,2),M.nWorkers)
+    status = []; t= [];
 % for ixo = 1:size(xoSet,2)
     
     m = parConstant.Value;
@@ -27,11 +28,16 @@ parfor(ixo = 1:size(xoSet,2),M.nWorkers)
         [t,y] =  m.solver(m.HamiltonianRHS, tspan, xo,[opts],m.Mrhs);
         tAll = [tAll; t(2:end)];
         yAll = [yAll;y(2:end,:)];
-        if norm(y(end,1:M.dim)-A)>=m.Mrhs.rA1 
-            [status,t1,y1] = IntegrateToFixedPoint(t(end),y(end,1:M.dim),m.Mrhs);
+        if norm(y(end,1:M.dim)) > 14 %solution blew up
+            fprintf("Solution blew up \n")
+            break
+        elseif norm(y(end,1:M.dim)-A)>=m.Mrhs.rA1 
+            [status,~,~] = IntegrateToFixedPoint(t(end),y(end,1:M.dim),m.Mrhs);
 
             if status>1
                break 
+            elseif status == 0 
+                fprintf("Error, status = 0 \n")
             end
         end
         xo = y(end,:)';

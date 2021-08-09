@@ -19,21 +19,21 @@ tic
 
 %Initial Conditions
 theta = M.theta;
-[xoSet] = GenerateInitialConditions(theta,M);
+[xoSet] = GenerateInitialConditionsFloquet(theta,M);
 
 %Distributed Paths
-phiSetRaw = IntegrateRHSinPeriods(xoSet,M);
+phiSetRaw = IntegrateRHS(xoSet,M);
 % 
 
 phiSet = PostProcessTrajectories2(phiSetRaw,M);
 % phiSet = phiSetRaw;
 
 %Distributed Path Energies
-[S] = IntegrateLagrangian(phiSet,M);
+[S,pNorm] = IntegrateLagrangian(phiSet,M);
 
 
 %In a loop augment initial conditions near low energy local minima
-msLog = {{theta,S}};
+msLog = {{theta,S,pNorm}};
 [phiSet,msLog] = RunMinSearch(phiSet,msLog,M); 
 theta = msLog{end}{1}; S = msLog{end}{2};
 
@@ -47,9 +47,9 @@ data.xoSet = xoSet; data.S = S; data.phiSet = phiSet;
 data.M = M; data.attractors = M.Mrhs.FixedPoints.FP;
 data.msLog = msLog;
 
-% SaveToFile(data,M);
+SaveToFile(data,M);
 
-% PlotGenerator(data)
+PlotGenerator(data)
 
 
 

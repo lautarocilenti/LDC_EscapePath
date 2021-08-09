@@ -17,6 +17,9 @@ for i = [length(msLog),1]
     hold on
 end
 legend(legendstr)
+xlabel('$\theta$ (radians)','interpreter','latex')
+ylabel('$S(q)$','interpreter','latex')
+title(sprintf('Global Min: %e',data.minS))
 
 end
 

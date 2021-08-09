@@ -1,27 +1,27 @@
 function [M] = Parameters(parameterNames,parameterValues)
 %Configure PARAMETERS here 
 note = "Forced Duffing Oscillator";
-paramNote = "Duffing";
+paramNote = "FifteenIter,LowA";
 a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; %rhs parameters (note basin interpolant mat file must be changed if rhs parameters are changed)
 dim = 2; %deterministic system dimension
 rIC = 10^-6; %radius of momenta initial conditions
 qo = [1.3590;2.4170]; %initial condition in phase space
-pp = pi; %poincare phase
+pp = 0; %poincare phase
 % qo = [-sqrt(-a1/a3);0]; %initial condition in phase space for bistable
 BN = 2; %Initial Basin Identifier
 nIC = 20; %number of initial conditions in circle around qo
 rhsString = 'Duffing';
- T = 2*pi/w;  dt = T/32; tf = 300*T;
+ T = 2*pi/w;  dT = T; dt = T/32; tf = 300*T;
 solver = @ode45;
 psiEps = .05; %phase threshold
-tFall = 100; %Max amount of time for system to fall to attractor radius
+tFall = 200; %Max amount of time for system to fall to attractor radius
 plotFall = true;
 fastPostProcessing = false;
-rA1 = 1.35; %radius of initial sphere around initial attractor
-rA = .5; %accepted radius around an attractor
-rS = .01; %accepted radius around a saddle
+rA1 = .2; %radius of initial sphere around initial attractor
+rA = .1; %accepted radius around an attractor
+rS = .001; %accepted radius around a saddle
 tstep = .1; %time that must pass prior to checking for sphere condition
-iA = 1; %initial attractor fixed point identifier
+iA = 3; %initial attractor fixed point identifier
 onceAPeriod = true;
 terminateType = 'DuffingBoundary'; 
 nWorkers = Inf;
@@ -29,7 +29,7 @@ nWorkers = Inf;
 
 %MinSearch Parameters
 nLM = 4; %maximum number of local minimum to explore
-maxIter = 4;
+maxIter = 15;
 
 
 
@@ -38,6 +38,7 @@ D = 2*length(qo);
 tspan = [0:dt:tf];
 dtheta =(2*pi)/(nIC);
 theta = [dtheta:dtheta:2*pi];
+% theta = 5.02655;
 
 % %higher resolution
 % ub = 1.2; lb = .9;
@@ -67,6 +68,7 @@ M.nWorkers = nWorkers;
 M.plotFall = plotFall;
 M.fastPostProcessing = fastPostProcessing;
 M.pp = pp;
+M.dT = dT;
 
 
 M.paramNote = paramNote;

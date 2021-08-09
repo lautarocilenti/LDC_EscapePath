@@ -25,7 +25,8 @@ else strcmp(M.rhsString,'Duffing');
     end
 end
 hold on
-title(sprintf("MPEP with $\\nu$: %.2f, $\\theta$: %.3f, S: %.3f R: %.3e",M.Mrhs.nu,theta,minS,M.rIC),'interpreter','latex')
+sprintf("MPEP with $\\nu$: %.2f, $\\theta$: %.3f, S: %.3f R: %.3e",M.Mrhs.nu,theta,minS,M.rIC)
+%title(sprintf("MPEP with $\\nu$: %.2f, $\\theta$: %.3f, S: %.3f R: %.3e",M.Mrhs.nu,theta,minS,M.rIC),'interpreter','latex')
 xlabel("$q_1$",'interpreter','latex')
 ylabel("$q_2$",'interpreter','latex')
 
