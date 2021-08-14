@@ -41,6 +41,7 @@ E = Psi_T;
 
 %get eigenvalues
 [ev,e] = eig(E);
+
 lambda = diag(e); %eigenvalues 
 [lambda,isortlambda] = sort(vecnorm(lambda,2,2),'ascend'); %sort eigenvalues by distance from origin in real imag plane
 iUnstableLambda = find(lambda>1); 
@@ -61,7 +62,7 @@ p_eps = T*q_eps; %initial momenta
 
 xoSet = [qo.*ones(size(qo,1),length(thetaSet))+q_eps;p_eps];
 
-
+save('temp.mat','e','ev','q_eps')
 
 
 

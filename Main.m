@@ -28,12 +28,15 @@ phiSetRaw = IntegrateRHS(xoSet,M);
 phiSet = PostProcessTrajectories2(phiSetRaw,M);
 % phiSet = phiSetRaw;
 
+
+
 %Distributed Path Energies
 [S,pNorm] = IntegrateLagrangian(phiSet,M);
 
 
+Descent.Count = 0;
 %In a loop augment initial conditions near low energy local minima
-msLog = {{theta,S,pNorm}};
+msLog = {{theta,S,Descent}};
 [phiSet,msLog] = RunMinSearch(phiSet,msLog,M); 
 theta = msLog{end}{1}; S = msLog{end}{2};
 

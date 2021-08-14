@@ -14,9 +14,9 @@ if data.M.dim == 2
 %     axis([-4 4 -4 4])
 % %      ExportPNG(f1,"AllPaths")
 % 
-%     f2 = figure();
-%     PL_PathEnergy(data)
-%      ExportPNG(f2,"PathEnergy")
+    f2 = figure();
+    PL_PathEnergy(data)
+     ExportPNG(f2,"PathEnergy")
     % 
     % % 
     f3 = figure();
@@ -40,6 +40,8 @@ end
 f6 = figure();
 PL_MinimumSearch(data);
  ExportPNG(f6,"MinSearch")
+ 
+
 
 
 end

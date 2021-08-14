@@ -7,6 +7,7 @@ function [phiSetOut,msLog] = MinSearch1D(phiSet,msLog,nLM,M)
 
 theta = msLog{end}{1};
 S = msLog{end}{2};
+DescentPrev = msLog{end}{3};
 
 %Augmented S
 thetaAug = [theta theta(1)];
@@ -29,12 +30,43 @@ if length(sLM) > nLM
 end
 
 
+subgamma = .01;
+gamma = .1;
+
+thetai = thetaAug(iLM);
+
+Sright = CostFunction(thetai+subgamma,M);
+FD  = (Sright-sLM)/subgamma
+
+iStop = find(abs(FD)<5E-2 | abs(FD)>1E1)
+thetaStop = thetai(iStop);
+
+thetai(iStop) = []; FD_Copy = FD; FD(iStop) = [];
+
+thetaNew =  thetai-gamma*FD';
+
+iRepeat = ismember(thetaNew,thetaAug);
+
+%break up line into 8ths near discontinuity
+gamma_line8th = gamma./8;
+if any(iRepeat)
+   fprintf("Drawing line near possible discontinuity\n")
+   thetaStart = thetai(iRepeat);
+   fdStart(1,:) = FD(iRepeat);
+   thetaNew(iRepeat) = [];
+   for i = 1:length(thetaStart)
+      for j = 1:7
+         thetaNew(end+1) =  thetaStart(i)-j*gamma_line8th*fdStart(i);
+      end
+   end
+end
 
 
-%generate new initial conditions
-iLeft = iLM - 1; iRight = iLM +1;
 
-thetaNew =  mean([thetaAug(iLM) thetaAug(iLM); thetaAug(iLeft) thetaAug(iRight)]);
+% %generate new initial conditions
+% iLeft = iLM - 1; iRight = iLM +1;
+% 
+% thetaNew =  mean([thetaAug(iLM) thetaAug(iLM); thetaAug(iLeft) thetaAug(iRight)]);
 
 %Run Rise and Fall Method for new initial conditions
 [phiSetNew,SNew] = GetNewPhiSets(thetaNew,M);
@@ -48,13 +80,26 @@ Sout = [S ; SNew];
 phiSetOut = phiSetOut(iSortTheta);
 Sout = Sout(iSortTheta);
 
-msLog{end+1} = {thetaOut,Sout};
+Descent.iLocalMinima = find(ismember(thetaOut,thetaAug(iLM)));
+Descent.thetaMinima = thetaOut(Descent.iLocalMinima);
+Descent.FD = FD_Copy';
+Descent.thetaStop = [DescentPrev.thetaStop thetaStop];;
+
+
+msLog{end+1} = {thetaOut,Sout,Descent};
+
 
 end
+
+
 
 function [phiSetNew,SNew] = GetNewPhiSets(theta,M)
      phiSetNew = PostProcessTrajectories2(IntegrateRHS(GenerateInitialConditionsFloquet(theta,M),M),M);
      SNew = IntegrateLagrangian(phiSetNew,M); 
 end
 
+function SNew = CostFunction(theta,M)
+     phiSetNew = PostProcessTrajectories2(IntegrateRHS(GenerateInitialConditionsFloquet(theta,M),M),M);
+     SNew = IntegrateLagrangian(phiSetNew,M); 
+end
 
