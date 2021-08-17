@@ -9,7 +9,7 @@ qo = [1.3590;2.4170]; %initial condition in phase space
 pp = 0; %poincare phase
 % qo = [-sqrt(-a1/a3);0]; %initial condition in phase space for bistable
 BN = 2; %Initial Basin Boundary Identifier
-nIC = 5; %number of initial conditions in circle around qo
+nIC = 20; %number of initial conditions in circle around qo
 rhsString = 'Duffing';
  T = 2*pi/w;  dT = T; dt = T; tf = 500*T;
 solver = @ode45;
@@ -29,7 +29,14 @@ nWorkers = Inf;
 
 %MinSearch Parameters
 nLM = 4; %maximum number of local minimum to explore
-maxIter = 20;
+maxIter = 40;
+
+%Descent parameters
+descent.Gamma = 1; 
+descent.fdStep = 1E-1; %finite difference step
+descent.minGamma = 1E-10;
+descent.thresh = .2;
+progressbar = true;
 
 
 
@@ -71,6 +78,7 @@ M.plotFall = plotFall;
 M.fastPostProcessing = fastPostProcessing;
 M.pp = pp;
 M.dT = dT;
+M.progressbar = progressbar;
 
 
 M.paramNote = paramNote;
@@ -81,6 +89,8 @@ M.Mrhs.rA1 = rA1; M.Mrhs.tFall = tFall; M.Mrhs.iA = iA; M.Mrhs.T = T;
 M.Mrhs.onceAPeriod = onceAPeriod; M.Mrhs.dim = dim;
 
 M.MS.nLM = nLM; M.MS.maxIter = maxIter;
+
+M.descent = descent;
 
 
 %modify parameter values via function input during runtime

@@ -14,7 +14,7 @@ for i = 1:M.MS.maxIter
 %     [tMin] = GetMinTime(phiSet,S);
 %     [S2] = IntegrateLagrangianMinTime(phiSet,tMin,M);
 %     msLog{end}{2} = S2;
-    [phiSet,msLog,TerminateFlag] = MinSearch1DGradient2(phiSet,msLog,nLM,M);
+    [phiSet,msLog,TerminateFlag] = MinSearch1DGradientDescent(phiSet,msLog,nLM,M);
     if TerminateFlag
         break
     end

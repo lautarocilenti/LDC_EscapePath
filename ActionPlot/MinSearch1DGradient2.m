@@ -5,6 +5,9 @@ function [phiSetOut,msLog,TerminateFlag] = MinSearch1D(phiSet,msLog,nLM,M)
 % Generate initial conditions between the neighbors to the local minima and the local minima.
 % Run rise and fall method for new initial conditions
 
+
+%clean up this code specially the termination of paths
+
 theta = msLog{end}{1};
 S = msLog{end}{2};
 DescentPrev = msLog{end}{3};
@@ -33,66 +36,87 @@ if DescentPrev.Count == 0
         sStart = S(iLM);
     end
     
-    thetai = thetaAug(iLM);
+    thetaInitial = thetaAug(iLM);
+    fdCostPrev = NaN(size(thetaInitial));
+    iTheta = 1:length(thetaInitial);
 
-    aCounter = ones(size(thetai));
+    aCounter = ones(size(thetaInitial));
     
 else
-    thetai = DescentPrev.thetaNew;
+    %load current step
+    thetaInitial = DescentPrev.thetaNew;
     sStart = DescentPrev.SNew;
+    iTheta = DescentPrev.iTheta;
+    %load previous step
     thetaOld = DescentPrev.thetaStart;
     sOld = DescentPrev.sStart; 
     sOld(DescentPrev.iStop) = [];
     aCounter = DescentPrev.aCounter;
+    %determine if cancelling the previous step
     iCancelLastMove = find(sStart>=1.2*sOld); %indices that increased the cost by more than 20% 
-    thetai(iCancelLastMove) = thetaOld(iCancelLastMove);
+    thetaInitial(iCancelLastMove) = thetaOld(iCancelLastMove);
     sStart(iCancelLastMove) = sOld(iCancelLastMove);
+    
+    fdCostPrev = NaN(size(thetaInitial));
+    fdCostPrev(iCancelLastMove) = DescentPrev.fdCost(iCancelLastMove);
    
     
 end
 
+C_gamma = 1; %gradient descent initial step size
+for i = 1:length(aCounter)
+    fd_step(i,1) = .01;
+end
 
-fd_step = .01; %finite difference step size
-C_gamma = .5; %gradient descent initial step size
 
-Sright = CostFunction(thetai+fd_step,M); %cost near initial point
-fdCost  = (Sright-sStart)/fd_step; %finite difference in cost
+iFindFDCost = isnan(fdCostPrev);
+fdCost = fdCostPrev;
+if any(iFindFDCost)
+    
+    Sright = CostFunction(thetaInitial(iFindFDCost)+fd_step(iFindFDCost)',M); %cost near initial point
+    fdCost(iFindFDCost)  = (Sright-sStart(iFindFDCost))./fd_step(iFindFDCost); %finite difference in cost
+end
 
-iStop = find(abs(fdCost)<5E-2 | abs(fdCost)>1E1); %terminate continuation of descent
+iStop = find(abs(fdCost)<1E-2 | abs(fdCost)>1E1); %terminate continuation of descent
 
 if length(iStop) >0 
    fprintf("Terminating descent for %d paths \n" ,length(iStop)) 
 end
 
 FD_Copy = fdCost %copy fd cost
-thetai(iStop) = [];  fdCost(iStop) = []; %clear terminated descent paths
-aCounter(iStop) = [];
-gamma = C_gamma./(2*aCounter);
-thetaNew =  thetai-gamma.*fdCost'; %calculate new descent cost
 
-iRepeat = ismember(thetaNew,thetaAug);
-%adaptive step to avoid repeats
-if any(iRepeat)
-   fprintf("Using an adaptive step, counter = %d\n", max(aCounter))
-   while(any(iRepeat))
-       ii = find(iRepeat);
-       thetaStart = thetai(iRepeat);
-       fdStart(1,:) = fdCost(iRepeat);
-       thetaNew(iRepeat) = []; %clear repeats
-       for j = 1:length(ii)
-           if aCounter(ii(j)) < 10 %limit to the adaptive step, if it shrinks too much end this descent
-               for i = 1:length(thetaStart)
-                 thetaNew(end+1) =  thetaStart(i)-C_gamma./(2*aCounter(ii(j)))*fdStart(i);
+thetaInitial(iStop) = [];  fdCost(iStop) = []; iTheta(iStop) = []; %clear terminated descent paths
+aCounter(iStop) = [];  
+gamma = C_gamma./(2*aCounter);
+thetaNew =  thetaInitial-gamma.*fdCost; %calculate new descent cost
+
+if DescentPrev.Count > 0
+    sOld_Copy = sOld; sOld_Copy(iStop) = [];
+% iRepeat = ismember(thetaNew,thetaAug);
+    iCheck = SmartChecks(theta,S,thetaNew,sOld_Copy);
+    %adaptive step to account for smart checks
+    if any(iCheck)
+
+       while(any(iCheck))
+           ii = find(iCheck);
+           thetaStart = thetaInitial(iCheck);
+           fdStart(1,:) = fdCost(iCheck);
+           thetaNew(iCheck) = []; %clear repeats
+           for j = 1:length(ii)
+               if aCounter(ii(j)) < 100000 %limit to the adaptive step, if it shrinks too much end this descent
+                 thetaNew(1,end+1) =  thetaStart(j)-C_gamma./(2.*aCounter(ii(j)))*fdStart(j);
+               else
+                   fprintf("Terminating due to small adaptive step\n")
+                   iStop = [iStop ii(j)];
                end
-           else
-               fprintf("Terminating due to small adaptive step\n")
-               iStop = [iStop ii(j)];
            end
+           iCheck = SmartChecks(theta,S,thetaNew,sOld_Copy);
+           aCounter(ii) = aCounter(ii)+1;
        end
-       iRepeat = ismember(thetaNew,thetaAug);
-       aCounter(ii(j)) = aCounter(ii(j))+1;
-   end
+       fprintf("Using an adaptive step, counter = %d\n", max(aCounter))
+    end
 end
+%Check closest point that 
 
 
 
@@ -121,12 +145,13 @@ end
 Descent.ithetaNew = find(ismember(thetaOut,thetaNew));
 Descent.thetaNew = thetaNew;
 Descent.SNew = SNew;
-Descent.thetaStart = thetai;
+Descent.thetaStart = thetaInitial;
 Descent.sStart = sStart;
 Descent.Count = DescentPrev.Count+1;
 Descent.iStop = iStop;
 Descent.aCounter = aCounter;
-
+Descent.fdCost = fdCost;
+Descent.iTheta = iTheta;
 
 msLog{end+1} = {thetaOut,Sout,Descent};
 
@@ -143,5 +168,19 @@ end
 function SNew = CostFunction(theta,M)
      phiSetNew = PostProcessTrajectories2(IntegrateRHS(GenerateInitialConditionsFloquet(theta,M),M),M);
      SNew = IntegrateLagrangian(phiSetNew,M); 
+end
+
+function [iCheck] = SmartChecks(theta,S,thetaNew,sOld)
+    if isempty(thetaNew)
+        iCheck = [];
+    else
+        for i = 1:length(thetaNew)
+            SPredict = interp1(theta,S,thetaNew(i),'nearest');
+        end
+        iCheck = SPredict>=1.2*sOld;
+        iCheck = iCheck';
+    end
+
+
 end
 

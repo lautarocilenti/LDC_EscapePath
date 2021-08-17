@@ -9,8 +9,11 @@ nt = length(M.tspan(1):M.dt:M.tspan(2));
 phiSet = {};
 tSet =  zeros(nt,M.nIC); 
 parConstant = parallel.pool.Constant(M);
-[isCluster] = ProgressBar(size(xoSet,2),"Rise and Fall");
+if M.progressbar
+    [isCluster] = ProgressBar(size(xoSet,2),"Rise and Fall");
+end
 parfor(ixo = 1:size(xoSet,2),M.nWorkers)
+% for ixo = 1:size(xoSet,2)
     status = []; t= [];
 % for ixo = 1:size(xoSet,2)
     
@@ -62,7 +65,7 @@ parfor(ixo = 1:size(xoSet,2),M.nWorkers)
     if (max(t) >= max(m.tspan))
         error("Integration may have terminated prior to reaching boundary\n")
     end
-    if ~isCluster
+    if M.progressbar
         fprintf("\b|\n")
     end
 

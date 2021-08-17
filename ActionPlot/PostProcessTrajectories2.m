@@ -8,7 +8,9 @@ end
     phiSetOut = {};
 
     parConstant = parallel.pool.Constant(M);
-    [isCluster] = ProgressBar(length(phiSet),"Post Process Trajectories");
+    if M.progressbar
+        [isCluster] = ProgressBar(length(phiSet),"Post Process Trajectories");
+    end
     statusSet = cellfun(@(phi) phi{3},phiSet);
     parfor(iPhi = 1:length(phiSet),M.nWorkers)
 % for iPhi = 1:length(phiSet)
@@ -67,7 +69,7 @@ end
         phiSetOut{iPhi}{3} = status;
         phiSetOut{iPhi}{4} = tFall;
         phiSetOut{iPhi}{5} = yFall;
-       if ~isCluster
+       if  M.progressbar
             fprintf("\b|\n")
        end
 
