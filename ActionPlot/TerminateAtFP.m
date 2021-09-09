@@ -10,9 +10,8 @@ for iFP = 1:Mrhs.FixedPoints.nFP
     end
 end
 
-
-isterminal = [1 1 1];   % Stop the integration
-direction  = [0 0 0];
+isterminal = ones(size(value));   % Stop the integration
+direction  = zeros(size(value));
 
 end
 

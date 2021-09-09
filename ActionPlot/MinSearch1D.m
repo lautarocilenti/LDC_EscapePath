@@ -10,11 +10,11 @@ S = msLog{end}{2};
 
 %Augmented S
 thetaAug = [theta theta(1)];
-sAug = [S;S(1)]; %adding the first term to the end to complete the circle
+sAug = [S S(1)]; %adding the first term to the end to complete the circle
 
 %Neighbor Differentials
-ds1 = [0 ;diff(sAug)]; 
-ds2 = [diff(sAug);0];
+ds1 = [0   diff(sAug)]; 
+ds2 = [diff(sAug) 0];
 
 
 iLM = find(ds1<0 & ds2>0); %index of local minima
@@ -42,7 +42,7 @@ thetaNew =  mean([thetaAug(iLM) thetaAug(iLM); thetaAug(iLeft) thetaAug(iRight)]
 %store output data
 thetaOut = [theta thetaNew];
 phiSetOut = [phiSet phiSetNew];
-Sout = [S ; SNew];
+Sout = [S  SNew];
 
 [thetaOut,iSortTheta] = sort(thetaOut,'ascend');
 phiSetOut = phiSetOut(iSortTheta);

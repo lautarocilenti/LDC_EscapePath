@@ -15,7 +15,7 @@ end
 parfor(ixo = 1:size(xoSet,2),M.nWorkers)
 % for ixo = 1:size(xoSet,2)
     status = []; t= [];
-% for ixo = 1:size(xoSet,2)
+
     
     m = parConstant.Value;
     xo = xoSet(:,ixo);
@@ -35,7 +35,7 @@ parfor(ixo = 1:size(xoSet,2),M.nWorkers)
         yAll = [yAll;y(2:end,:)];
         
         A = m.Mrhs.FixedPoints.GetFixedPoint(mod(t(end),T),m.Mrhs.iA);
-        if norm(y(end,1:M.dim)) > 7 %solution blew up
+        if norm(y(end,1:M.dim)) > 1E3 %solution blew up
             if dT < T/8
                 fprintf("Terminating because dT is too small\n")
                 break 
@@ -50,7 +50,7 @@ parfor(ixo = 1:size(xoSet,2),M.nWorkers)
             continue
         elseif norm(y(end,1:M.dim)-A)>=m.Mrhs.rA1 
             [status,~,~] = IntegrateToFixedPoint(t(end),y(end,1:M.dim),m.Mrhs);
-
+            
             if status~=m.Mrhs.iA & status~=0
                break 
             elseif status == 0 

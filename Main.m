@@ -3,6 +3,7 @@ function [data] = Main(parameterNames,parameterValues)
 close all
 
 AddAllPaths();
+CreateParpool();
 
 %Parameters
 if nargin == 2
@@ -12,49 +13,70 @@ else
 end
 tic 
 
-%Final Condition
-[M] = GetFixedPoints(M);
+if ~M.continueRun
+    %Final Condition
+    [M] = GetFixedPoints(M);
 
+    theta = GetInitialTheta(M);
 
+    %Initial Conditions
 
-%Initial Conditions
-theta = M.theta;
-[xoSet] = GenerateInitialConditionsFloquet(theta,M);
+    [xoSet] = GenerateInitialConditionsFloquet(theta,M);
 
-%Distributed Paths
-phiSetRaw = IntegrateRHS(xoSet,M);
+    %Distributed Paths
+    phiSetRaw = IntegrateRHS(xoSet,M);
+    % 
+
+    phiSet = PostProcessTrajectories2(phiSetRaw,M);
+    
+    %Distributed Path Energies
+    [S] = IntegrateLagrangian(phiSet,M);
+
+    %In a loop augment initial conditions near low energy local minima
+    Descent.Count = 0;
+    Descent.newStart = true;
+    msLog = {{theta,S,Descent}};
+    save('initialSearch.mat')
+else
+    
+    data = load("Data/Continue/continue.mat");
+        
+
+    theta = data.msLog
+     msLog = data.msLog;
+     phiSet = data.phiSet;
+     M = data.M;
+     msLog{end}{3}.newStart = true;
+    M.MS.nLM = 1;
+    M.MS.maxIter = 0;
+    
+end
 % 
+% load('initialSearch.mat')
+%     M.MS.nLM = 3;
+%     M.MS.maxIter = 1;
 
-phiSet = PostProcessTrajectories2(phiSetRaw,M);
-% phiSet = phiSetRaw;
-
-
-
-%Distributed Path Energies
-[S,pNorm] = IntegrateLagrangian(phiSet,M);
-
-
-Descent.Count = 0;
-%In a loop augment initial conditions near low energy local minima
-msLog = {{theta,S,Descent}};
-[phiSet,msLog] = RunMinSearch(phiSet,msLog,M); 
+% Descent.Count = 0;
+% Descent.newStart = true;
+% msLog = {{theta,S,Descent}};
+% [phiSet,msLog] = RunMinSearch(phiSet,msLog,M); 
 theta = msLog{end}{1}; S = msLog{end}{2};
-
+% 
 [minS,minPhiIndex] = IdentifyMPEP(S);
 
 toc
 
 %Data output
 data.minPhiIndex = minPhiIndex; data.minS = minS; data.theta = theta;
-data.xoSet = xoSet; data.S = S; data.phiSet = phiSet;
+data.S = S; data.phiSet = phiSet;
 data.M = M; data.attractors = M.Mrhs.FixedPoints.FP;
 data.msLog = msLog;
 
-SaveToFile(data,M);
+% SaveToFile(data,M);
 
 PlotGenerator(data)
 
-
+CleanUpParpool();
 
 
 

@@ -17,9 +17,11 @@ function [xoSet] = GenerateInitialConditions(thetaSet,M)
 
 
 if strcmp(M.rhsString,'Duffing') %Duffing forced case
-    A = [0 1; -3*M.Mrhs.a3*x(1)^2-M.Mrhs.a1, -M.Mrhs.nu]; %linearized original system
+    A = [0 1; -3*M.Mrhs.a3*qo(1)^2-M.Mrhs.a1, -M.Mrhs.nu]; %linearized original system at attractor coordinate
     E = [0 0;0 1]; %contribution of p to original system
-    J = [A E;zeros(size(E)) -A.']; %Jacobian of hamiltonian system
+    J = [A E;zeros(size(E)) -A.']; %Jacobian of hamiltonian system 
+elseif strcmp(M.rhsString,'TwoDuffing')
+    J = TwoDuffingJacobian(qo(1),qo(3),M.Mrhs); 
 else
     error("Unknown Jacobian\n")
 end
@@ -49,20 +51,33 @@ iStableLambda = find(lambda<=1);
 
 ev = ev(:,isortlambda); %re sort eigenvectors 
 
-u_ev = ev(:,iUnstableLambda(1)); %eigenvectors of unstable eigenvalues, just grab 1 of conjugate pair
+if M.dim == 2
+    u_ev = ev(:,iUnstableLambda(1)); %eigenvectors of unstable eigenvalues, just grab 1 of conjugate pair
 
-Z_xv = [real(u_ev(1:M.dim,:)),imag(u_ev(1:M.dim,:))];
-Z_pxpv = [real(u_ev(M.dim+1:2*M.dim,:)),imag(u_ev(M.dim+1:2*M.dim,:))];
+    Z_xv = [real(u_ev(1:M.dim,:)),imag(u_ev(1:M.dim,:))];
+    Z_pxpv = [real(u_ev(M.dim+1:2*M.dim,:)),imag(u_ev(M.dim+1:2*M.dim,:))];
+elseif M.dim ==4
+    u_ev = ev(:,iUnstableLambda([1,3])); %eigenvectors of unstable eigenvalues, just grab 1 per conjugate pair
+
+    Z_xv = [real(u_ev(1:M.dim,:)),imag(u_ev(1:M.dim,:))];
+    Z_pxpv = [real(u_ev(M.dim+1:2*M.dim,:)),imag(u_ev(M.dim+1:2*M.dim,:))];
+end
 T = Z_xv\Z_pxpv; %transformation matrix
 
-
+if M.dim == 2
 q_eps = [M.rIC*cos(thetaSet);M.rIC*sin(thetaSet)]; %initial offset from attractor
+elseif M.dim ==4
+    theta1 = thetaSet(1,:);
+    theta2 = thetaSet(2,:);
+    theta3 = thetaSet(3,:);
+q_eps = [M.rIC*cos(theta1);M.rIC*sin(theta1).*cos(theta2);M.rIC*sin(theta1).*sin(theta2).*cos(theta3);M.rIC*sin(theta1).*sin(theta2).*sin(theta3)]; %initial offset from attractor    
+end
 
 p_eps = T*q_eps; %initial momenta
 
-xoSet = [qo.*ones(size(qo,1),length(thetaSet))+q_eps;p_eps];
+xoSet = [qo.*ones(size(qo,1),size(thetaSet,2))+q_eps;p_eps];
 
-save('temp.mat','e','ev','q_eps')
+% save('temp.mat','e','ev','q_eps')
 
 
 

@@ -14,6 +14,8 @@ end
     statusSet = cellfun(@(phi) phi{3},phiSet);
     parfor(iPhi = 1:length(phiSet),M.nWorkers)
 % for iPhi = 1:length(phiSet)
+    
+
        m = parConstant.Value;
        t =  phiSet{iPhi}{1}; phi = phiSet{iPhi}{2};
        T = M.Mrhs.T;
@@ -22,11 +24,11 @@ end
        s1Flag = false; s3Flag = false;
        itau = max(iT);
        for loopIndex = 1:500; %max 50 iterations of loop
-           
+
            if diff(iT) <= 1
                 itau = max(iT);
                 tau = t(itau);
-                q = phi(itau,1:2)';
+                q = phi(itau,1:M.dim)';
                 [status,tFall,yFall] = IntegrateToFixedPoint(tau,q,m.Mrhs);
 %                 [x1,x2] = InterpFall(m,tFall,yFall);
 %                 plot(x1,x2,'o-')
@@ -34,14 +36,15 @@ end
                 break
            else
                
-               
+
                 tau = t(itau);
-                q = phi(itau,1:2)';
+                q = phi(itau,1:M.dim)';
                 [status,tFall,yFall] = IntegrateToFixedPoint(tau,q,m.Mrhs);
 %                 iT
 %                 [x1,x2] = InterpFall(m,tFall,yFall);
 %                 plot(x1,x2,'o-')
 %                 axis([-4,4,-4,4])
+ 
                 if status == m.Mrhs.iA 
 %                     if s1Flag
 %                         fprintf("Increasing lower bound\n")
@@ -63,6 +66,7 @@ end
                
            end 
            itau = ceil(mean(iT));
+
        end
         phiSetOut{iPhi}{1} = t(1:itau,1);
         phiSetOut{iPhi}{2} = phi(1:itau,:);

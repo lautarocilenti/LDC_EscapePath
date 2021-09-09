@@ -2,6 +2,10 @@ function [] = PlotGenerator(data)
 % %PLOTGENERATOR 
 % 
 % %Plots
+if data.M.clusterRun
+    return
+end
+
 if data.M.dim == 2
     %Generate Gridded interpolant
 %     F = GenerateBasinInterpolant(data.M);
@@ -33,9 +37,9 @@ end
 % PL_L2Path(data)
 % %  ExportPNG(f4,"L2Paths")
 % 
-% f5 = figure();
-% PL_L2MPEPPath2(data)
-% %  ExportPNG(f5,"L2MPEP")
+f5 = figure();
+PL_L2MPEPPath2(data)
+%  ExportPNG(f5,"L2MPEP")
 % 
 f6 = figure();
 PL_MinimumSearch(data);
@@ -43,6 +47,12 @@ PL_MinimumSearch(data);
  
  f7 = figure()
  PL_Descent2(data);
+ 
+ f8 = figure();
+PL_L2AllPath(data)
+
+ f9 = figure();
+PL_ThetaSpace(data)
  
  
 

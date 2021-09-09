@@ -20,8 +20,25 @@ function [status,tout,y] = IntegrateToFixedPoint(t,xo,Mrhs)
         end
         status = ie;
     end
-
-
+    
+%     figure()
+% 
+% fp = Mrhs.FixedPoints; 
+% ii = find(tout>tout(end)-(2*pi/Mrhs.w));
+% t2 = tout(ii);
+% y2 = y(ii,:);
+% t2= t2-t2(1);
+% 
+% hold on
+% 
+% 
+% for i = 1:7
+%    sol = fp.Solution{i};
+%    plot(sol(:,1),vecnorm(sol(:,2:end),2,2))
+%    hold on
+%    vecnorm(sol(:,2:end),2,1)
+% end
+% plot(t2,vecnorm(y2(:,1:end),2,2),':','linewidth',3)
 
 end
 
