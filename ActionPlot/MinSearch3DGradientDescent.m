@@ -44,8 +44,8 @@ end
 
 
 [fdCost] = FiniteDifferencePositiveGradient(thetaCurrent,sCurrent,runDescentOnTheta,fdCostPrev,iRepeat,iDisc,descentStep,M);
-% load('temp2.mat')
-vecnorm(fdCost,2,1)
+% % load('temp2.mat')
+% vecnorm(fdCost,2,1)
 
 iStop = find(abs(vecnorm(fdCost,2,1))<1E-2 | abs(vecnorm(fdCost,2,1))>1E100); %terminate continuation of descent
 runDescentOnTheta(iStop) = 0;
@@ -62,16 +62,16 @@ thetaNew(:,iDiscTheta) =  thetaCurrent(:,iDiscTheta)-descentStep(:,iDiscTheta).*
 
 
 
-if DescentPrev.Count > 0 & ~DescentPrev.newStart 
-    [thetaNew,descentStep,runDescentOnTheta,iDisc] = AdaptiveStepCheck(theta,S,thetaCurrent,thetaNew,fdCost,descentStep,runDescentOnTheta,sPrev,iDisc,M);
-end
+% if DescentPrev.Count > 0 & ~DescentPrev.newStart 
+%     [thetaNew,descentStep,runDescentOnTheta,iDisc] = AdaptiveStepCheck(theta,S,thetaCurrent,thetaNew,fdCost,descentStep,runDescentOnTheta,sPrev,iDisc,M);
+% end
 
-figure(100)
-thetaNorm = vecnorm(theta,2,1);
-plot(thetaNorm,S,'.')
-hold on
-
-plot(vecnorm(thetaCurrent,2,1),sCurrent,'o')
+% figure(100)
+% thetaNorm = vecnorm(theta,2,1);
+% plot(thetaNorm,S,'.')
+% hold on
+% 
+% plot(vecnorm(thetaCurrent,2,1),sCurrent,'o')
 
 
 if any(runDescentOnTheta)
@@ -99,9 +99,9 @@ else
     TerminateFlag = true;
 end
 
-plot(vecnorm(thetaNew,2,1),sNewOut,'x','color','k')
-drawnow()
-hold off
+% plot(vecnorm(thetaNew,2,1),sNewOut,'x','color','k')
+% drawnow()
+% hold off
 
 
 %Allow cancellation of bad moves
@@ -112,6 +112,11 @@ sNewOut(iCancelLastMove) = sPrev(iCancelLastMove);
 iRepeatNext = false(size(sCurrent));
 iRepeatNext(iCancelLastMove) = true;
 descentStep(:,iCancelLastMove) = descentStep(:,iCancelLastMove)/2;
+for i = 1:size(descentStep,2)
+    if any(descentStep(:,i)<M.descent.minGamma)
+        runDescentOnTheta(i) = 0;
+    end
+end
 
 %Allow step change given not too bad moves
 iStepChange = (sNewOut>sPrev); %indices that increased the cost 

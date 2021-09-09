@@ -31,7 +31,7 @@ clusterRun = CheckIfCluster();
 
 %MinSearch Parameters
 nLM = 2; %maximum number of local minimum to explore
-maxIter = 1;
+maxIter = 2;
 
 %Descent parameters
 descent.Gamma = 1; 
