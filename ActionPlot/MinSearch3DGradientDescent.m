@@ -111,6 +111,7 @@ sNewOut(iCancelLastMove) = sPrev(iCancelLastMove);
 % fdCost(:,iCancelLastMove) = fdCostPrev(:,iCancelLastMove);
 iRepeatNext = false(size(sCurrent));
 iRepeatNext(iCancelLastMove) = true;
+descentStep(:,iCancelLastMove) = descentStep(:,iCancelLastMove)/2;
 
 %Allow step change given not too bad moves
 iStepChange = (sNewOut>sPrev); %indices that increased the cost 

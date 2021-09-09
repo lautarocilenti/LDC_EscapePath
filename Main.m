@@ -59,7 +59,7 @@ end
 % Descent.Count = 0;
 % Descent.newStart = true;
 % msLog = {{theta,S,Descent}};
-% [phiSet,msLog] = RunMinSearch(phiSet,msLog,M); 
+[phiSet,msLog] = RunMinSearch(phiSet,msLog,M); 
 theta = msLog{end}{1}; S = msLog{end}{2};
 % 
 [minS,minPhiIndex] = IdentifyMPEP(S);
