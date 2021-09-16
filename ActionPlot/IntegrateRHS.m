@@ -13,11 +13,13 @@ if M.progressbar
     [isCluster] = ProgressBar(size(xoSet,2),"Rise and Fall");
 end
 parfor(ixo = 1:size(xoSet,2),M.nWorkers)
+    m = parConstant.Value;
 % for ixo = 1:size(xoSet,2)
+% m = M;
     status = []; t= [];
 
     
-    m = parConstant.Value;
+    
     xo = xoSet(:,ixo);
 %     A = m.Mrhs.FixedPoints.FP(m.Mrhs.iA,:);
     T = 2*pi/m.Mrhs.w;

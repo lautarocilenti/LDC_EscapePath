@@ -4,7 +4,9 @@ function [] = PL_Descent(data)
 msLog = data.msLog{end};
 Descent = msLog{3};
 
-
+if Descent.Count == 0
+    return
+end
 sCurrent = Descent.sCurrent;
 descentStepNormCell = cellfun(@(x) vecnorm(x,2,1),Descent.descentStep,"UniformOutput", false );
 descentStepNorm = zeros(length(descentStepNormCell),size(sCurrent,2));

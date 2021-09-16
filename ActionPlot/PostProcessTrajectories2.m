@@ -13,10 +13,11 @@ end
     end
     statusSet = cellfun(@(phi) phi{3},phiSet);
     parfor(iPhi = 1:length(phiSet),M.nWorkers)
-% for iPhi = 1:length(phiSet)
-    
-
        m = parConstant.Value;
+% for iPhi = 1:length(phiSet)
+%     m = M;
+
+       
        t =  phiSet{iPhi}{1}; phi = phiSet{iPhi}{2};
        T = M.Mrhs.T;
        dT = M.dT;

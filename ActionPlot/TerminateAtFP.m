@@ -1,13 +1,12 @@
 function [value, isterminal, direction] = TerminateAtFP(t, y, Mrhs)
 y = y';
 
-for iFP = 1:Mrhs.FixedPoints.nFP
-    [fp,stability] = Mrhs.FixedPoints.GetFixedPoint(mod(t,Mrhs.T),iFP);
-    if stability == 1 %attractor
-        value(iFP) = vecnorm(fp-y,2,2)-Mrhs.rA; %crosses zero from + when distance <= rA
-    else %saddle
-        value(iFP) = vecnorm(fp-y,2,2)-Mrhs.rS; %crosses zero from + when distance <= rS
-    end
+[fp,stability] = Mrhs.FixedPoints.GetAllFixedPoint(mod(t,Mrhs.T));
+distance = vecnorm(fp-repmat(y,size(fp,1),1),2,2);
+if stability == 1 %attractor
+    value = distance-Mrhs.rA;
+else
+    value = distance-Mrhs.rS;
 end
 
 isterminal = ones(size(value));   % Stop the integration

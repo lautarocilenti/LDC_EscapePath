@@ -16,7 +16,8 @@ DescentPrev = msLog{end}{3};
 
 if DescentPrev.newStart  %first loop
 
-    [~,sCurrent,iLM] = IdentifyLocalMinima(vecnorm(theta,2,1),S,nLM);
+%     [~,sCurrent,iLM] = IdentifyLocalMinima(theta,S,nLM);
+    [~,sCurrent,iLM] = IdentifySmallValues(theta,S,nLM);
     thetaCurrent = theta(:,iLM);
     runDescentOnTheta = true(size(sCurrent));
     descentStep = M.descent.Gamma*ones(size(thetaCurrent));
@@ -24,6 +25,7 @@ if DescentPrev.newStart  %first loop
     fdCostPrev = NaN(size(thetaCurrent));
     iRepeat = false(size(sCurrent));
     iDisc = false(size(sCurrent));
+    thetaDescentIndex = zeros(size(S));
 
     
 else
@@ -36,14 +38,18 @@ else
     descentStep = DescentPrev.descentStep{c};
     iRepeat = DescentPrev.iRepeatNext;
     iDisc = DescentPrev.iDisc;
+    thetaDescentIndex = DescentPrev.thetaDescentIndex;
     
 
     
 end
 
 
-
-[fdCost] = FiniteDifferencePositiveGradient(thetaCurrent,sCurrent,runDescentOnTheta,fdCostPrev,iRepeat,iDisc,descentStep,M);
+if M.xcoordinates
+    [fdCost] = FiniteDifferencePositiveGradientOnXCoordinates(thetaCurrent,sCurrent,runDescentOnTheta,fdCostPrev,iRepeat,iDisc,descentStep,M);
+else
+    [fdCost] = FiniteDifferencePositiveGradient(thetaCurrent,sCurrent,runDescentOnTheta,fdCostPrev,iRepeat,iDisc,descentStep,M);
+end
 % % load('temp2.mat')
 % vecnorm(fdCost,2,1)
 
@@ -61,17 +67,20 @@ thetaNew(:,iDiscTheta) =  thetaCurrent(:,iDiscTheta)-descentStep(:,iDiscTheta).*
 
 
 
+if DescentPrev.Count > 0 & ~DescentPrev.newStart 
+    [thetaNew,descentStep,runDescentOnTheta,iDisc] = AdaptiveStepCheck(theta,S,thetaCurrent,thetaNew,fdCost,descentStep,runDescentOnTheta,sPrev,iDisc,M);
+end
 
-% if DescentPrev.Count > 0 & ~DescentPrev.newStart 
-%     [thetaNew,descentStep,runDescentOnTheta,iDisc] = AdaptiveStepCheck(theta,S,thetaCurrent,thetaNew,fdCost,descentStep,runDescentOnTheta,sPrev,iDisc,M);
-% end
 
-% figure(100)
-% thetaNorm = vecnorm(theta,2,1);
-% plot(thetaNorm,S,'.')
-% hold on
-% 
-% plot(vecnorm(thetaCurrent,2,1),sCurrent,'o')
+thetaNew = thetaNew./vecnorm(thetaNew,2,1);
+
+figure(100)
+thetaNorm34 = vecnorm(theta(3:4,:),2,1);
+scatter3(theta(1,:),theta(2,:),sign(theta(4,:)).*thetaNorm34,40,S,'filled')
+cb = colorbar;
+hold on
+
+plot(vecnorm(thetaCurrent,2,1),sCurrent,'o')
 
 
 if any(runDescentOnTheta)
@@ -80,6 +89,7 @@ if any(runDescentOnTheta)
     
     %store output data
     thetaOut = [theta thetaNew(:,runDescentOnTheta)];
+    thetaDescentIndex = [thetaDescentIndex find(runDescentOnTheta)];
     phiSetOut = [phiSet phiSetNew];
     sOut = [S  sNew];
     sNewOut = sPrev; sNewOut(runDescentOnTheta) = sNew;
@@ -87,6 +97,7 @@ if any(runDescentOnTheta)
     thetaOutNorm = vecnorm(thetaOut,2,1);
     [thetaOutNorm,iSortTheta] = sort(thetaOutNorm,'ascend');
     [thetaOut] = thetaOut(:,iSortTheta);
+    thetaDescentIndex = thetaDescentIndex(iSortTheta);
     phiSetOut = phiSetOut(iSortTheta);
     sOut = sOut(iSortTheta);
     TerminateFlag = false;
@@ -99,9 +110,9 @@ else
     TerminateFlag = true;
 end
 
-% plot(vecnorm(thetaNew,2,1),sNewOut,'x','color','k')
-% drawnow()
-% hold off
+scatter3(thetaNew(1,:),thetaNew(2,:),sign(thetaNew(4,:)).*vecnorm(thetaNew(3:4,:),2,1),'xr')
+drawnow()
+hold off
 
 
 %Allow cancellation of bad moves
@@ -111,7 +122,7 @@ sNewOut(iCancelLastMove) = sPrev(iCancelLastMove);
 % fdCost(:,iCancelLastMove) = fdCostPrev(:,iCancelLastMove);
 iRepeatNext = false(size(sCurrent));
 iRepeatNext(iCancelLastMove) = true;
-descentStep(:,iCancelLastMove) = descentStep(:,iCancelLastMove)/2;
+% descentStep(:,iCancelLastMove) = descentStep(:,iCancelLastMove)/2;
 for i = 1:size(descentStep,2)
     if any(descentStep(:,i)<M.descent.minGamma)
         runDescentOnTheta(i) = 0;
@@ -145,6 +156,7 @@ Descent.fdCost{c} = fdCost;
 Descent.descentStep{c} = descentStep;
 Descent.iRepeatNext = iRepeatNext;
 Descent.iDisc = iDisc;
+Descent.thetaDescentIndex = thetaDescentIndex;
     
 
 msLog{end+1} = {thetaOut,sOut,Descent};
@@ -152,33 +164,86 @@ msLog{end+1} = {thetaOut,sOut,Descent};
 
 end
 
-function [thetaLM,sLM,iLM] = IdentifyLocalMinima(theta,S,nLM)
+function [thetaOut,sOut,iOut] = IdentifySmallValues(theta,S,nLM)
 
-%Augmented optimization space
-    thetaAug = [theta theta(1)];
-    sAug = [S S(1)]; %adding the first term to the end to complete the circle
+% %Augmented optimization space
+%     thetaAug = [theta theta(1)];
+%     sAug = [S S(1)]; %adding the first term to the end to complete the circle
+% 
+%  %Find local minima
+%     %Neighbor Differentials
+%     ds1 = [0 diff(sAug)]; 
+%     ds2 = [diff(sAug) 0];
+% 
+% 
+%     iLM = find(ds1<0 & ds2>0); %index of local minima
+%     sLM = S(iLM); %energy of local minima
+% 
+%     %Limit to max number of local minima to use
+%     if length(sLM) > nLM
+%         [~,iSort] = sort(sLM,'ascend');
+%         iLM = iLM(iSort);
+%         iLM = iLM(1:nLM);
+%         sLM = S(iLM);
+%     end
+%     thetaLM = thetaAug(iLM);
 
- %Find local minima
-    %Neighbor Differentials
-    ds1 = [0 diff(sAug)]; 
-    ds2 = [diff(sAug) 0];
-
-
-    iLM = find(ds1<0 & ds2>0); %index of local minima
-    sLM = S(iLM); %energy of local minima
-
-    %Limit to max number of local minima to use
-    if length(sLM) > nLM
-        [~,iSort] = sort(sLM,'ascend');
-        iLM = iLM(iSort);
-        iLM = iLM(1:nLM);
-        sLM = S(iLM);
+    
+    [~,is] = sort(S,'ascend');
+    if length(is) > nLM
+        is = is(1:nLM);
     end
-    thetaLM = thetaAug(iLM);
+    thetaOut = theta(:,is);
+    sOut = S(is);
+    iOut = is;
 end
 
+function [thetaOut,sOut,iOut] = IdentifyLocalMinima(theta,S,nLM)
 
+
+    thetaAug = [theta];
+    sAug = [S]; 
+   
+    [s,is] = sort(S','ascend');
+    x = theta(:,is)';
+    
+    ix = 1; n = 0;
+    eps = .01; 
+    eps_perm = [eye(4);-eye(4)]*eps;
+    while(n<=nLM & ix<size(theta,2))
+        xi = x(ix,:);
+        si = s(ix);
+        for i = 1:size(eps_perm,1)
+            xq(i,:) = xi+eps_perm(i,:);
+        end
+        sq = griddatan(x,s,xq)
+        
+        
+    end
+    
+   dummy = 1; 
 % 
+%  %Find local minima
+%     %Neighbor Differentials
+%     ds1 = [0 diff(sAug)]; 
+%     ds2 = [diff(sAug) 0];
+% 
+% 
+%     iLM = find(ds1<0 & ds2>0); %index of local minima
+%     sLM = S(iLM); %energy of local minima
+% 
+%     %Limit to max number of local minima to use
+%     if length(sLM) > nLM
+%         [~,iSort] = sort(sLM,'ascend');
+%         iLM = iLM(iSort);
+%         iLM = iLM(1:nLM);
+%         sLM = S(iLM);
+%     end
+%     thetaLM = thetaAug(iLM);
+
+    
+end
+%
 function [fdCost] = FiniteDifferencePositiveGradient(thetaCurrent,sCurrent,runDescentOnTheta,fdCostPrev,iRepeat,iDisc,descentStep,M)
     d = M.dim-1;
     fdStep = M.descent.fdStep*ones(size(sCurrent));
@@ -209,10 +274,64 @@ function [fdCost] = FiniteDifferencePositiveGradient(thetaCurrent,sCurrent,runDe
     end
 end
 
+
+function [fdCost] = FiniteDifferencePositiveGradientOnXCoordinates(thetaCurrent,sCurrent,runDescentOnTheta,fdCostPrev,iRepeat,iDisc,descentStep,M)
+    % x1^2+x2^2+x3^2+x4^2 = 1;
+    % df1 = 2x1; df2 = 2x2; df3 = 2x3; df4 = 2x4;
+    % p = point, y = coordinate
+    % A = df/norm(df); %radial vector
+    % B = null(A)'; orthogonal vectors to radial
+    % NewX = X + fdStep*gradS
+    % NewTheta = ConverToTheta(X)
+    
+    
+
+    d = M.dim;
+    dT = d - 1; %d tangent space
+    
+    
+    fdStep = M.descent.fdStep*ones(size(sCurrent));
+    fdStep(iDisc) = descentStep(iDisc);
+    iFindFDCost = find(~iRepeat & runDescentOnTheta); %check which indices need new gradient
+    fdCost = fdCostPrev; %load prior gradient values
+    if any(iFindFDCost)
+        fdTheta = zeros(d,d-1);
+        fdThetaAll = zeros(d,dT*length(iFindFDCost));
+        fdSInit = zeros(1,dT*length(iFindFDCost));
+        fdStepDivisor =  zeros(1,dT*length(iFindFDCost));
+        for ii = 1:length(iFindFDCost)
+            iFD = iFindFDCost(ii);
+            P = thetaCurrent(:,iFD);
+            eRadial = (2*P)./norm(P);
+            eOrthogonal = null(eRadial')';
+            for id = 1:dT %iterate tangent space dimension
+                fdStepVector(:,id) =  fdStep(iFD)*eOrthogonal(id,:)';
+                fdTheta(:,id) = thetaCurrent(:,iFD)+fdStepVector(:,id);
+            end
+            iA = 1+(ii-1)*dT;
+            iB = iA+(dT-1);
+            fdThetaAll(:,iA:iB) = fdTheta;
+            fdSInit(1,iA:iB) = repmat([sCurrent(iFD)],1,dT);
+            fdOrthogonalVectors(:,iA:iB) = eOrthogonal';
+            fdStepDivisor(1,iA:iB) = fdStep(iFD);
+        end 
+        fdThetaAllNorm = vecnorm(fdThetaAll,2,1);
+        fdThetaAllNorm = repmat(fdThetaAllNorm,d,1);
+        fdThetaAll = fdThetaAll./fdThetaAllNorm;
+        [fdS,~] = CostFunction(fdThetaAll,M); %cost near initial point 
+        fdGradientExpanded = repmat((fdS - fdSInit)./fdStepDivisor,d,1).*fdOrthogonalVectors;
+        for ii = 1:length(iFindFDCost);
+            iA = 1+(ii-1)*dT; iA2 = (ii)*dT;
+            fdGradient(:,ii) = sum(fdGradientExpanded(:,iA:iA2),2);
+        end
+        fdCost(:,iFindFDCost) = fdGradient;
+    end
+end
+
 function [thetaNew,descentStep,runDescentOnTheta,iDisc] = AdaptiveStepCheck(theta,S,thetaCurrent,thetaNew,fdCost,descentStep,runDescentOnTheta,sPrev,iDisc,M)
 
  
-iCheck = SmartChecks3Ddiscontinuity(theta,S,thetaNew,runDescentOnTheta,sPrev);
+iCheck = SmartChecks3Ddiscontinuity(theta,S,thetaNew,runDescentOnTheta,sPrev,thetaCurrent);
     iDisc = iDisc | iCheck;
     %adaptive step to account for smart checks
     if any(iCheck)
@@ -230,7 +349,7 @@ iCheck = SmartChecks3Ddiscontinuity(theta,S,thetaNew,runDescentOnTheta,sPrev);
                    runDescentOnTheta(jAdapt) = 0;
                end
            end
-           iCheck = SmartChecks3Ddiscontinuity(theta,S,thetaNew,runDescentOnTheta,sPrev);
+           iCheck = SmartChecks3Ddiscontinuity(theta,S,thetaNew,runDescentOnTheta,sPrev,thetaCurrent);
        end
 %        fprintf("Using an adaptive step, smallest step = %e\n", min(descentStep))
     end
@@ -259,14 +378,22 @@ function [iCheck] = SmartChecks1Ddiscontinuity(theta,S,thetaNew,runDescentOnThet
 
 end
 
-function [iCheck] = SmartChecks3Ddiscontinuity(theta,S,thetaNew,runDescentOnTheta,sOld)
+function [iBadStep] = SmartChecks3Ddiscontinuity(theta,S,thetaNew,runDescentOnTheta,sOld,thetaCurrent)
 
-%         SPredict = griddatan(theta',S',thetaNew','nearest');
+        SPredict = griddatan(theta',S',thetaNew','nearest');
+        iCheck = SPredict'>=1.2*sOld;
+        if any(iCheck)
+            iThetaNearest = knnsearch(theta',thetaNew(:,iCheck)');
+            dCurrentToNewThetaNearestNeighbor = vecnorm(theta(:,iThetaNearest)-thetaCurrent(:,iCheck),2,1);
+            dCurrentToNewTheta = vecnorm(thetaNew(:,iCheck)-thetaCurrent(:,iCheck),2,1);
+            iCheck2 = dCurrentToNewThetaNearestNeighbor > dCurrentToNewTheta;
+            iCheck(iCheck) = iCheck2;
+        end
         
-        iCheck2 = ismember(thetaNew',theta','rows')';
+        iCheck3 = ismember(thetaNew',theta','rows')';
 
-%         iCheck = SPredict'>=1.2*sOld;
-        iCheck = (iCheck2) & runDescentOnTheta ;
+%         
+        iBadStep = (iCheck | iCheck3) & runDescentOnTheta ;
 
 
 end

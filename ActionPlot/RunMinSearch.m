@@ -7,8 +7,11 @@ end
 nLM = M.MS.nLM;
 %loop local minima search
 for i = 1:M.MS.maxIter 
+   
     fprintf("\nMinSearch Iter %d \n",i)
-    SaveToRunTimeFile(msLog,phiSet,M)
+    if mod(i,10) == 1
+        SaveToRunTimeFile(msLog,phiSet,M)
+    end
     if M.dim == 2
         [phiSet,msLog] = MinSearch1D(phiSet,msLog,nLM,M);
         TerminateFlag = false;

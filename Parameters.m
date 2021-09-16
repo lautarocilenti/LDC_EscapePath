@@ -14,31 +14,33 @@ rhsString = 'TwoDuffing';
  T = 2*pi/w;  dT = T/2; dt = T; tf = 500*T;
 solver = @ode45;
 psiEps = .05; %phase threshold
-tFall = 500; %Max amount of time for system to fall to attractor radius
+tFall = 10*T; %Max amount of time for system to fall to attractor radius
 plotFall = true;
 fastPostProcessing = false;
 rA1 = .2; %radius of initial sphere around initial attractor
-rA = .01; %accepted radius around an attractor
+rA = .1; %accepted radius around an attractor
 rS =.001; %accepted radius around a saddle
 tstep = .1; %time that must pass prior to checking for sphere condition
 iA = 4; %initial attractor fixed point identifier
 onceAPeriod = true;
 terminateType = 'DuffingBoundary'; 
 nWorkers = Inf;
-continueRun  = false;
+continueRun  = true;
 clusterRun = CheckIfCluster();
+xcoordinates = true;
+uniformInX = true;
 
 
 %MinSearch Parameters
-nLM = 2; %maximum number of local minimum to explore
-maxIter = 2;
+nLM = 100; %maximum number of local minimum to explore
+maxIter = 100;
 
 %Descent parameters
 descent.Gamma = 1; 
 descent.fdStep = 1E-1; %finite difference step
 descent.minGamma = 1E-10;
 descent.thresh = .2;
-progressbar = false;
+progressbar = true;
 
 
 
@@ -83,6 +85,9 @@ M.dT = dT;
 M.progressbar = progressbar;
 M.continueRun = continueRun;
 M.clusterRun = clusterRun;
+M.xcoordinates = xcoordinates;
+M.uniformInX = uniformInX;
+M.transMatrix = [];
 
 
 M.paramNote = paramNote;

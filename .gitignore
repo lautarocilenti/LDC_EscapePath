@@ -3,4 +3,5 @@
 *.png
 *.eps
 *.mat
-Data/*
+!Data/FixedPoints/FixedPointsTwoDuffing.mat
+!Data/FixedPoints/FixedPointsDuffing.mat

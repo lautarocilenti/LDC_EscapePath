@@ -47,12 +47,12 @@ PL_MinimumSearch(data);
  
  f7 = figure()
  PL_Descent2(data);
- 
+%  
  f8 = figure();
 PL_L2AllPath(data)
 
  f9 = figure();
-PL_ThetaSpace(data)
+PL_XSpace(data)
  
  
 
