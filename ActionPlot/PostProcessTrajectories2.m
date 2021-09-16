@@ -74,11 +74,14 @@ end
         phiSetOut{iPhi}{3} = status;
         phiSetOut{iPhi}{4} = tFall;
         phiSetOut{iPhi}{5} = yFall;
-       if  M.progressbar
+        if M.progressbar & ~CheckIfCluster
             fprintf("\b|\n")
-       end
+        elseif M.progressbar
+            fprintf(".")
+        end
 
     end
+     fprintf("\n")
     clear parConstant
 
 

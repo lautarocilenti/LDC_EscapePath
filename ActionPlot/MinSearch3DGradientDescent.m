@@ -74,13 +74,16 @@ end
 
 thetaNew = thetaNew./vecnorm(thetaNew,2,1);
 
-figure(100)
-thetaNorm34 = vecnorm(theta(3:4,:),2,1);
-scatter3(theta(1,:),theta(2,:),sign(theta(4,:)).*thetaNorm34,40,S,'filled')
-cb = colorbar;
-hold on
+if ~CheckIfCluster()
+    figure(100)
+    thetaNorm34 = vecnorm(theta(3:4,:),2,1);
+    scatter3(theta(1,:),theta(2,:),sign(theta(4,:)).*thetaNorm34,40,S,'filled')
+    cb = colorbar;
+    hold on
+    plot(vecnorm(thetaCurrent,2,1),sCurrent,'o')
+end
 
-plot(vecnorm(thetaCurrent,2,1),sCurrent,'o')
+
 
 
 if any(runDescentOnTheta)
@@ -110,9 +113,11 @@ else
     TerminateFlag = true;
 end
 
-scatter3(thetaNew(1,:),thetaNew(2,:),sign(thetaNew(4,:)).*vecnorm(thetaNew(3:4,:),2,1),'xr')
-drawnow()
-hold off
+if ~CheckIfCluster()
+    scatter3(thetaNew(1,:),thetaNew(2,:),sign(thetaNew(4,:)).*vecnorm(thetaNew(3:4,:),2,1),'xr')
+    drawnow()
+    hold off
+end
 
 
 %Allow cancellation of bad moves
@@ -122,7 +127,7 @@ sNewOut(iCancelLastMove) = sPrev(iCancelLastMove);
 % fdCost(:,iCancelLastMove) = fdCostPrev(:,iCancelLastMove);
 iRepeatNext = false(size(sCurrent));
 iRepeatNext(iCancelLastMove) = true;
-% descentStep(:,iCancelLastMove) = descentStep(:,iCancelLastMove)/2;
+descentStep(:,iCancelLastMove) = descentStep(:,iCancelLastMove)/1.01;
 for i = 1:size(descentStep,2)
     if any(descentStep(:,i)<M.descent.minGamma)
         runDescentOnTheta(i) = 0;

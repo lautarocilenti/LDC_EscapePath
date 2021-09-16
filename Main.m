@@ -36,29 +36,29 @@ if ~M.continueRun
     Descent.Count = 0;
     Descent.newStart = true;
     msLog = {{theta,S,Descent}};
-    save('initialSearch.mat')
+    save("Data/ActionPlot/continue.mat")
 else
     
-%     data = load("Data/Continue/continue.mat");
-%         
-% 
-%     theta = data.msLog;
-%      msLog = data.msLog;
-%      phiSet = data.phiSet;
-%      M = data.M;
-%      msLog{end}{3}.newStart = true;
-% %     M.MS.nLM = 5;
-%     M.MS.maxIter = 0;
+     data = load("Data/ActionPlot/continue.mat");
+         
+ 
+     theta = data.msLog;
+      msLog = data.msLog;
+      phiSet = data.phiSet;
+      M = data.M;
+      msLog{end}{3}.newStart = true;
+      M.MS.nLM = 5;
+    M.MS.maxIter = 0;
     
 end
 % 
-load('initialSearch4000.mat')
-    M.MS.nLM = 50;
-    M.MS.maxIter = 100;
+% load('initialSearch4000.mat')
+  %   M.MS.nLM = 50;
+    % M.MS.maxIter = 100;
 
-Descent.Count = 0;
-Descent.newStart = true;
-msLog = {{theta,S,Descent}};
+% Descent.Count = 0;
+% Descent.newStart = true;
+% msLog = {{theta,S,Descent}};
 [phiSet,msLog] = RunMinSearch(phiSet,msLog,M); 
 theta = msLog{end}{1}; S = msLog{end}{2};
 % 
@@ -74,8 +74,9 @@ data.msLog = msLog;
 
 % save('temp.mat');
 SaveToFile(data,M);
-
-PlotGenerator(data)
+if ~CheckIfCluster()
+    PlotGenerator(data)
+end
 
 CleanUpParpool();
 

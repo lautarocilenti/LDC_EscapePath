@@ -2,7 +2,7 @@ function [M] = GetFixedPoints(M)
 %GETATTRACTORSET 
 
     %load data
-    folder = "Data\FixedPoints";
+    folder = "Data/FixedPoints";
 if M.rhsString == "Duffing"
 
     if M.Mrhs.a1 == 1 & M.Mrhs.a3 == .3 & M.Mrhs.nu == .1 & M.Mrhs.F == .4 

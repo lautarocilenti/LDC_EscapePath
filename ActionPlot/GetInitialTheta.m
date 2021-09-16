@@ -1,12 +1,12 @@
 function [theta] = GetInitialTheta(M);
-
+fprintf("Getting initial theta ...")
 if M.dim == 2
     dtheta =(2*pi)/(M.nIC);
     theta = [dtheta:dtheta:2*pi]; 
 elseif M.dim == 4
     if M.xcoordinates
         rng(0);
-        nRandom = 15000;
+        nRandom = M.nRVs;
         eta = randn(M.dim,nRandom);
         etaNorm = vecnorm(eta,2,1); 
         etaNorm = repmat(etaNorm,M.dim,1);
@@ -33,15 +33,14 @@ elseif M.dim == 4
         theta = [a;b;c];
     end
 end
-
+fprintf("Done\n")
 end 
 
 function [x] = ReduceToNumberofInitialPoints(x,nIC)
-    L = .05;
+    L = .1;
     while(size(x,2)>nIC)
-        size(x,2)
        [x] = RemoveByArcLength(x,L);
-       L = L*1.05; 
+       L = L*1.1; 
     end
 
 end

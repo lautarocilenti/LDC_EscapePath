@@ -67,12 +67,15 @@ parfor(ixo = 1:size(xoSet,2),M.nWorkers)
     if (max(t) >= max(m.tspan))
         error("Integration may have terminated prior to reaching boundary\n")
     end
-    if M.progressbar
+    if M.progressbar & ~CheckIfCluster
         fprintf("\b|\n")
+    elseif M.progressbar
+        fprintf(".")
     end
 
     
 end
+fprintf("\n")
 clear parConstant
 
 end
