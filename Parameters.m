@@ -9,7 +9,7 @@ rIC = 10^-10; %radius of momenta initial conditions
 pp = 0; %poincare phase
 % qo = [-sqrt(-a1/a3);0]; %initial condition in phase space for bistable
 BN = 2; %Initial Basin Boundary Identifier
-nIC = 1000; %number of initial conditions in circle around qo
+nIC = 2000; %number of initial conditions in circle around qo
 rhsString = 'TwoDuffing';
  T = 2*pi/w;  dT = T/2; dt = T; tf = 500*T;
 solver = @ode45;
@@ -29,12 +29,12 @@ continueRun  = false
 clusterRun = CheckIfCluster();
 xcoordinates = true;
 uniformInX = true;
-nRVs = 5000; %number random variables per dimension for random IC initialization
+nRVs = 10000; %number random variables per dimension for random IC initialization
 
 
 %MinSearch Parameters
-nLM = 24; %maximum number of local minimum to explore
-maxIter = 50;
+nLM = 48; %maximum number of local minimum to explore
+maxIter = 100;
 
 %Descent parameters
 descent.Gamma = 1; 

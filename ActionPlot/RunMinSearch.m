@@ -10,7 +10,7 @@ for i = 1:M.MS.maxIter
    
     fprintf("\nMinSearch Iter %d \n",i)
     if mod(i,10) == 0
-        SaveToRunTimeFile(msLog,phiSet,M)
+        SaveToRunTimeFile(msLog,phiSet,M,i)
     end
     if M.dim == 2
         [phiSet,msLog] = MinSearch1D(phiSet,msLog,nLM,M);
@@ -28,9 +28,9 @@ end
 end
 
 
-function [] = SaveToRunTimeFile(msLog,phiSet,M)
+function [] = SaveToRunTimeFile(msLog,phiSet,M,i)
 dateLog = datenum(datetime('now'));
 formatOut = 'yyyy_mm_dd_HH_MM_SS_FFF';
-fileName = sprintf("Data/ActionPlot/continue.mat");
+fileName = sprintf("Data/ActionPlot/continue%d.mat",i);
 save(fileName,'msLog','phiSet','M','dateLog','-v7.3');
 end
