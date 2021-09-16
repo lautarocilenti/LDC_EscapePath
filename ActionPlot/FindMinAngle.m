@@ -3,6 +3,6 @@ function [minAngle] = FindMinAngle(S,phiSet,M)
 %   Detailed explanation goes here
 ii = find(S>0);
 [~,iPhi] = min(S(ii));
-minAngle = M.theta(iPhi)
+minAngle = M.theta(iPhi);
 end
 
