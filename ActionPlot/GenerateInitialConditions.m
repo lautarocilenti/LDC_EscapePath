@@ -2,11 +2,12 @@ function [xoSet] = GenerateInitialConditions(thetaSet,M)
 %GENERATEINITIALCONDITIONS Creates set of initial momenta for integration
 %of the Hamiltonian space.
 
+[qo] = GetInitialFixedPoint(M.pp,M.Mrhs);
 
 if strcmp(M.rhsString,'Unforced') %bistable case
     A = [0 1; 3*M.Mrhs.a1 -M.Mrhs.nu]; %a1 already negative so different than write up
 elseif strcmp(M.rhsString,'Duffing') %hardeninng forced case
-    A = [0 1; -3*M.Mrhs.a3*M.qo(1)^2-M.Mrhs.a1, -M.Mrhs.nu]; %a1 already negative so different than write up
+    A = [0 1; -3*M.Mrhs.a3*qo(1)^2-M.Mrhs.a1, -M.Mrhs.nu]; %a1 already negative so different than write up
 end
 
 E = [0 0;0 1];
@@ -20,10 +21,15 @@ eta_q = imag(u_ev(1:2)); eta_p = imag(u_ev(3:4));
 T = [xi_q eta_q]\[xi_p eta_p]; %p_eps = T*q_eps
 q_eps = [M.rIC*cos(thetaSet);M.rIC*sin(thetaSet)];
 p_eps = T*q_eps;
-xoSet = [ M.qo.*ones(size(M.qo,1),length(thetaSet))+q_eps; p_eps];
+xoSet = [ qo.*ones(size(qo,1),length(thetaSet))+q_eps; p_eps];
 
 
 
 
 end
 
+function [qo] = GetInitialFixedPoint(pp,Mrhs)
+    t = pp/Mrhs.w;
+    [fp,~] = Mrhs.FixedPoints.GetFixedPoint(mod(t,Mrhs.T),Mrhs.iA);
+    qo = fp';
+end

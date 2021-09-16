@@ -1,23 +1,32 @@
 function [iS] = PL_MPEP(data)
 %PL_MPEP 
-theta = data.minTheta
-minPhi = data.minPhi; 
+theta = data.theta(data.minPhiIndex);
+minPhi = data.phiSet{data.minPhiIndex}; 
 minS = data.minS;
 M = data.M;
-psi = data.psi;
+
 
 
 [minS,iS] = min(minS);
-t = minPhi{iS}{1};
-phi = minPhi{iS}{2};
-if strcmp(M.rhsString,'Unforced')
+t = minPhi{1};
+phi = minPhi{2};
+
+if strcmp(M.rhsString,'Unforced');
     plot(phi(:,1),phi(:,2),'linewidth',2)
-else strcmp(M.rhsString,'Duffing')
-    it = find(abs(psi{iS}-mod(M.Mrhs.w*t,2*pi))<M.Mrhs.psiEps);
-    plot(phi(it,1),phi(it,2),'linewidth',2)
+else strcmp(M.rhsString,'Duffing');
+    color = [rand() rand() rand()];
+    [tq,xq] = InterpolateToPhaseAngle(t,phi,M);
+    plot(xq(:,1),xq(:,2),'o-','Color',color);
+    if M.plotFall
+        tFall = minPhi{4};
+        phiFall = minPhi{5};
+        [tqFall,xqFall] = InterpolateToPhaseAngle(tFall,phiFall,M);
+        plot([xq(end,1);xqFall(:,1)],[xq(end,2);xqFall(:,2)],'x--','Color',color);      
+    end
 end
 hold on
-title(sprintf("MPEP with $\\nu$: %.2f, $\\theta$: %.3f, S: %.3f R: %.3e",M.Mrhs.nu,theta,minS,M.rIC),'interpreter','latex')
+sprintf("MPEP with $\\nu$: %.2f, $\\theta$: %.3f, S: %.3f R: %.3e",M.Mrhs.nu,theta,minS,M.rIC)
+%title(sprintf("MPEP with $\\nu$: %.2f, $\\theta$: %.3f, S: %.3f R: %.3e",M.Mrhs.nu,theta,minS,M.rIC),'interpreter','latex')
 xlabel("$q_1$",'interpreter','latex')
 ylabel("$q_2$",'interpreter','latex')
 

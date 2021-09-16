@@ -4,5 +4,9 @@
 *.eps
 *.mat
 !Data/FixedPoints/FixedPointsTwoDuffing.mat
+<<<<<<< HEAD
 !Data/FixedPoints/FixedPointsDuffing.mat
 *.mat
+=======
+!Data/FixedPoints/FixedPointsDuffing.mat
+>>>>>>> 499ad761209525c780c5d75b6d0d4951db275f57

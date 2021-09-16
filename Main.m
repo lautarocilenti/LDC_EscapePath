@@ -1,8 +1,9 @@
-function [] = Main(parameterNames,parameterValues)
+function [data] = Main(parameterNames,parameterValues)
 %MAIN 
 close all
-tic
+
 AddAllPaths();
+CreateParpool();
 
 %Parameters
 if nargin == 2
@@ -10,56 +11,73 @@ if nargin == 2
 else
     M = Parameters();
 end
+tic 
 
-%Final Condition
-if strcmp(M.rhsString,"Duffing")
-    M.biSet = DuffingBasins(M);
-    M.Mrhs.bI = M.biSet{1}{1}; %Use first basin interpolant once a period
-    M.Mrhs.A =  M.biSet{3}{1}; % use the first attractors set once a period
-    M.Mrhs.r = 1E-1;
-    M.Mrhs.eps = 1E-1;
+if ~M.continueRun
+    %Final Condition
+    [M] = GetFixedPoints(M);
+
+    theta = GetInitialTheta(M);
+
+    %Initial Conditions
+
+    [xoSet] = GenerateInitialConditionsFloquet(theta,M);
+
+    %Distributed Paths
+    phiSetRaw = IntegrateRHS(xoSet,M);
+    % 
+
+    phiSet = PostProcessTrajectories2(phiSetRaw,M);
+    
+    %Distributed Path Energies
+    [S] = IntegrateLagrangian(phiSet,M);
+
+    %In a loop augment initial conditions near low energy local minima
+    Descent.Count = 0;
+    Descent.newStart = true;
+    msLog = {{theta,S,Descent}};
+    save('initialSearch.mat')
 else
-    [basinInterpolant,attractors] = GenerateBasinInterpolant(M);
-    M.Mrhs.bI = basinInterpolant;
-    M.Mrhs.A = attractors;
-end
-
-
-%Initial Conditions
-[xoSet] = GenerateInitialConditions(M.theta,M);
-
-%Distributed Paths
-phiSetRaw = IntegrateRHS(xoSet,M);
+    
+%     data = load("Data/Continue/continue.mat");
+%         
 % 
+%     theta = data.msLog;
+%      msLog = data.msLog;
+%      phiSet = data.phiSet;
+%      M = data.M;
+%      msLog{end}{3}.newStart = true;
+% %     M.MS.nLM = 5;
+%     M.MS.maxIter = 0;
+    
+end
+% 
+load('initialSearch4000.mat')
+    M.MS.nLM = 50;
+    M.MS.maxIter = 100;
 
-[phiSet,bi,psi] = PostProcessTrajectories(phiSetRaw,M);
-
-
-%Distributed Path Energies
-[S] = IntegrateLagrangian(phiSet,M);
-
-%Initial Angle for Global Search
-[approxMinAngle] = FindMinAngle(S,phiSet,M);
-
-%Search Local when eps < 2pi, global otherwise
-% [minTheta,minPhi,minS] = RunGlobalSearch(approxMinAngle,M);
-% [minTheta,minPhi,minS] = RunMultiStart(approxMinAngle,M);
-minTheta=  approxMinAngle; minPhi = phiSet; minS = S;
+Descent.Count = 0;
+Descent.newStart = true;
+msLog = {{theta,S,Descent}};
+[phiSet,msLog] = RunMinSearch(phiSet,msLog,M); 
+theta = msLog{end}{1}; S = msLog{end}{2};
+% 
+[minS,minPhiIndex] = IdentifyMPEP(S);
 
 toc
 
 %Data output
-data.minTheta =  minTheta; data.minPhi = minPhi; data.minS = minS;
-data.xoSet = xoSet; data.S = S; data.phiSet = phiSet; 
-data.basinInterpolant = M.Mrhs.bI; data.attractors = M.Mrhs.A;
-data.M = M;
-data.bi = bi; data.psi = psi;
+data.minPhiIndex = minPhiIndex; data.minS = minS; data.theta = theta;
+data.S = S; data.phiSet = phiSet;
+data.M = M; data.attractors = M.Mrhs.FixedPoints.FP;
+data.msLog = msLog;
 
+% save('temp.mat');
 SaveToFile(data,M);
 
 PlotGenerator(data)
 
-
+CleanUpParpool();
 
 
 

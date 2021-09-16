@@ -1,7 +1,12 @@
-function [F,A] = GenerateBasinInterpolant(M)
+function [F] = GenerateBasinInterpolant(M)
 %GENERATEBASINBOUNDARY 
 
 [Basins] = LoadBasins(M);
+
+if isempty(Basins)
+   F = griddedInterpolant; %empty interpolant
+   return
+end
 
 x = Basins.x(:,1);
 y = Basins.x(:,2);
@@ -22,7 +27,6 @@ yGrid = reshape(y,L,L);
 zGrid = reshape(z,L,L);
 
 F = griddedInterpolant(xGrid,yGrid,zGrid);
-
 
 
 
