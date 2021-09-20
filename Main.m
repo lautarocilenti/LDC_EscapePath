@@ -36,7 +36,7 @@ if ~M.continueRun
     Descent.Count = 0;
     Descent.newStart = true;
     msLog = {{theta,S,Descent}};
-    save("Data/ActionPlot/continue.mat")
+    save("Data/ActionPlot/initialsearch.mat")
 else
     
      data = load("Data/ActionPlot/continue.mat");

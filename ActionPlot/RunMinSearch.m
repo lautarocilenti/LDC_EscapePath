@@ -9,7 +9,7 @@ nLM = M.MS.nLM;
 for i = 1:M.MS.maxIter 
    
     fprintf("\nMinSearch Iter %d \n",i)
-    if mod(i,10) == 0
+    if mod(i,25) == 0
         SaveToRunTimeFile(msLog,phiSet,M,i)
     end
     if M.dim == 2

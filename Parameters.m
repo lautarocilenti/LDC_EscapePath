@@ -1,7 +1,7 @@
 function [M] = Parameters(parameterNames,parameterValues)
 %Configure PARAMETERS here 
 note = "Two Forced Duffing Oscillators";
-paramNote = "TwoOscillators,nIC_5,Iter_50,nLM_25";
+paramNote = "TwoOscillators,nIC_3000,Iter_100,nLM_100,thetaDescent";
 a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = .1; %rhs parameters (note basin interpolant mat file must be changed if rhs parameters are changed)
 dim = 4; %deterministic system dimension
 rIC = 10^-10; %radius of momenta initial conditions
@@ -9,7 +9,7 @@ rIC = 10^-10; %radius of momenta initial conditions
 pp = 0; %poincare phase
 % qo = [-sqrt(-a1/a3);0]; %initial condition in phase space for bistable
 BN = 2; %Initial Basin Boundary Identifier
-nIC = 2000; %number of initial conditions in circle around qo
+nIC = 3000; %number of initial conditions in circle around qo
 rhsString = 'TwoDuffing';
  T = 2*pi/w;  dT = T/2; dt = T; tf = 500*T;
 solver = @ode45;
@@ -27,13 +27,13 @@ terminateType = 'DuffingBoundary';
 nWorkers = Inf;
 continueRun  = false
 clusterRun = CheckIfCluster();
-xcoordinates = true;
+xcoordinates = false;
 uniformInX = true;
 nRVs = 10000; %number random variables per dimension for random IC initialization
 
 
 %MinSearch Parameters
-nLM = 48; %maximum number of local minimum to explore
+nLM = 100; %maximum number of local minimum to explore
 maxIter = 100;
 
 %Descent parameters

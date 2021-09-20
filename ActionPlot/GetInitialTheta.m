@@ -4,7 +4,7 @@ if M.dim == 2
     dtheta =(2*pi)/(M.nIC);
     theta = [dtheta:dtheta:2*pi]; 
 elseif M.dim == 4
-    if M.xcoordinates
+    if M.uniformInX
         rng(0);
         nRandom = M.nRVs;
         eta = randn(M.dim,nRandom);
@@ -12,8 +12,11 @@ elseif M.dim == 4
         etaNorm = repmat(etaNorm,M.dim,1);
         x = eta./etaNorm;
        [x] = ReduceToNumberofInitialPoints(x,M.nIC); %reduce by arclength to neighbors
-       theta = x;
-%        [theta] = ConvertXToTheta(x);
+       if M.xcoordinates
+            theta = x;
+       else
+            [theta] = ConvertXToTheta(x);
+       end
 %        y(1,:) = cos(theta(1,:));
 %        y(2,:) = sin(theta(1,:)).*cos(theta(2,:));
 %        y(3,:) = sin(theta(1,:)).*sin(theta(2,:)).*cos(theta(3,:));
