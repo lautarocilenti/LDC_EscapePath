@@ -2,6 +2,11 @@ function [] = PL_Descent(data)
 %PL_DESCENT 
 
 msLog = data.msLog{end};
+
+if length(msLog)<3
+    return
+end
+
 Descent = msLog{3};
 
 if Descent.Count == 0
