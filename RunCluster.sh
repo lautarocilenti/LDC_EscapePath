@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --job-name=Lautaro
-#SBATCH --time=01:00:00
-#SBATCH --partition=debug
+#SBATCH --time=06:00:00
+#SBATCH --partition=shared
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=24
 
 
 
