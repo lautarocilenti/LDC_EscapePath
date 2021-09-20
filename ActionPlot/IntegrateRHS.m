@@ -12,10 +12,10 @@ parConstant = parallel.pool.Constant(M);
 if M.progressbar
     [isCluster] = ProgressBar(size(xoSet,2),"Rise and Fall");
 end
-parfor(ixo = 1:size(xoSet,2),M.nWorkers)
-    m = parConstant.Value;
-% for ixo = 1:size(xoSet,2)
-% m = M;
+% % parfor(ixo = 1:size(xoSet,2),M.nWorkers)
+% %     m = parConstant.Value;
+for ixo = 1:size(xoSet,2)
+m = M;
     status = []; t= [];
 
     

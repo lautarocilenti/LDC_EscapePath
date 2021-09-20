@@ -1,4 +1,4 @@
-function [value] = TerminateAtFPStandalone(t, y, Mrhs)
+function [value,distanceNorm] = TerminateAtFPStandalone(t, y, Mrhs)
 
 [fp,stability] = Mrhs.FixedPoints.GetAllFixedPoint(mod(t,Mrhs.T));
 distanceNorm = vecnorm(fp-repmat(y,size(fp,1),1),2,2);

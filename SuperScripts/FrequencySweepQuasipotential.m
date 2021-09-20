@@ -2,7 +2,7 @@ function [] = FrequencySweepQuasipotential()
 %FREQUENCYSWEEPQUASIPOTENTIAL Summary of this function goes here
 data = load("FixedPointsDuffing.mat");
 Wlist = cellfun(@(x) x.W,data.Auto.FixedPoints);
-
+Wlist(1) = [];
 % Wlist = [1.30:.01:1.55];
 for i = 1:length(Wlist)
     w = Wlist(i);
