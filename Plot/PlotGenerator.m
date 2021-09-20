@@ -43,7 +43,7 @@ PL_L2MPEPPath2(data)
 % 
 f6 = figure();
 PL_MinimumSearch(data);
- ExportPNG(f6,"MinSearch")
+%  ExportPNG(f6,"MinSearch")
  
  f7 = figure()
  PL_Descent2(data);

@@ -1,16 +1,16 @@
 function [M] = Parameters(parameterNames,parameterValues)
 %Configure PARAMETERS here 
-note = "Two Forced Duffing Oscillators";
-paramNote = "TwoOscillators,nIC_3000,Iter_100,nLM_100,thetaDescent";
+note = "One Forced Duffing Oscillator";
+paramNote = "One Oscillator";
 a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = .1; %rhs parameters (note basin interpolant mat file must be changed if rhs parameters are changed)
-dim = 4; %deterministic system dimension
-rIC = 10^-10; %radius of momenta initial conditions
+dim = 2; %deterministic system dimension
+rIC = 10^-20; %radius of momenta initial conditions
 % qo = [1.3590;2.4170]; %initial condition in phase space
 pp = 0; %poincare phase
 % qo = [-sqrt(-a1/a3);0]; %initial condition in phase space for bistable
-BN = 2; %Initial Basin Boundary Identifier
-nIC = 3000; %number of initial conditions in circle around qo
-rhsString = 'TwoDuffing';
+% BN = 2; %Initial Basin Boundary Identifier
+nIC = 50; %number of initial conditions 
+rhsString = 'Duffing';
  T = 2*pi/w;  dT = T/2; dt = T; tf = 500*T;
 solver = @ode45;
 psiEps = .05; %phase threshold
@@ -32,8 +32,15 @@ uniformInX = true;
 nRVs = 10000; %number random variables per dimension for random IC initialization
 
 
+%One oscillator modications
+iA = 1;
+rhsString = 'Duffing';
+dim = 2; 
+note = "One Forced Duffing Oscillator";
+paramNote = "One Oscillator";
+
 %MinSearch Parameters
-nLM = 100; %maximum number of local minimum to explore
+nLM = 4; %maximum number of local minimum to explore
 maxIter = 100;
 
 %Descent parameters
@@ -68,7 +75,7 @@ tspan = [0:dt:tf];
 
 %Store Parameters in a structure
 M.note = note;
-M.rIC = rIC;  M.BN  = BN; % M.qo = qo;
+M.rIC = rIC; 
 M.nIC = nIC;
 M.rhsString = rhsString;
 M.tf = tf; M.dt = dt;

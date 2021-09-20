@@ -38,7 +38,7 @@ parfor(ixo = 1:size(xoSet,2),M.nWorkers)
         
         A = m.Mrhs.FixedPoints.GetFixedPoint(mod(t(end),T),m.Mrhs.iA);
         if norm(y(end,1:M.dim)) > 1E3 %solution blew up
-            if dT < T/8
+            if dT < T/32
                 fprintf("Terminating because dT is too small\n")
                 break 
             end
