@@ -4,7 +4,7 @@ note = "One Forced Duffing Oscillator";
 paramNote = "One Oscillator";
 a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = .1; %rhs parameters (note basin interpolant mat file must be changed if rhs parameters are changed)
 dim = 2; %deterministic system dimension
-rIC = 10^-20; %radius of momenta initial conditions
+rIC = 10^-10; %radius of momenta initial conditions
 % qo = [1.3590;2.4170]; %initial condition in phase space
 pp = 0; %poincare phase
 % qo = [-sqrt(-a1/a3);0]; %initial condition in phase space for bistable
@@ -14,7 +14,7 @@ rhsString = 'Duffing';
  T = 2*pi/w;  dT = T/2; dt = T; tf = 500*T;
 solver = @ode45;
 psiEps = .05; %phase threshold
-tFall = 10*T; %Max amount of time for system to fall to attractor radius
+tFall = 1*T; %Max amount of time for system to fall to attractor radius
 plotFall = true;
 fastPostProcessing = false;
 rA1 = .2; %radius of initial sphere around initial attractor

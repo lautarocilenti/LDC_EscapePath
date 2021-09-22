@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --job-name=Lautaro
-#SBATCH --time=06:00:00
+#SBATCH --time=24:00:00
 #SBATCH --partition=shared
 #SBATCH --nodes=1
-#SBATCH --cpus-per-task=24
+#SBATCH --cpus-per-task=12
 
 
 
@@ -25,7 +25,7 @@ for i in {1..1}
 do
 export TMPDIR=$(pwd)/matlab_tmp # or select another path
 mkdir -p $TMPDIR
-matlab -nodisplay -nosplash -r "run('Main.m')"
+matlab -nodisplay -nosplash -r "run('SuperScripts/FrequencySweepQuasipotential.m')"
 done
 echo "Seconds:";
 echo $SECONDS;

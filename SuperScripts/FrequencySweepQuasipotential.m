@@ -1,5 +1,7 @@
 function [] = FrequencySweepQuasipotential()
 %FREQUENCYSWEEPQUASIPOTENTIAL Summary of this function goes here
+cd ..
+AddAllPaths()
 data = load("FixedPointsDuffing.mat");
 Wlist = cellfun(@(x) x.W,data.Auto.FixedPoints);
 Wlist(1) = [];
@@ -12,6 +14,9 @@ for i = 1:length(Wlist)
     W(i) = w;
     Q(i) = data.minS;
     Data{i} = data;
+    M = data.M;
+    fileName = sprintf("Data/ActionPlot/FQ_%s_%s_w%f.mat",M.rhsString,M.paramNote,w);
+    save(fileName,'data','w','-v7.3');
 end
 M = data.M;
 dateLog = datenum(datetime('now'));

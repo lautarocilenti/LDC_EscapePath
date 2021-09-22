@@ -41,6 +41,7 @@ function [status,tout,yout] = IntegrateToFixedPoint(t,xo,Mrhs)
             ie = find(value);
         else
             ie = 0;
+            error("ie = 0")
         end
         status = ie;
     end

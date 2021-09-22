@@ -12,10 +12,10 @@ parConstant = parallel.pool.Constant(M);
 if M.progressbar
     [isCluster] = ProgressBar(size(xoSet,2),"Rise and Fall");
 end
-% % parfor(ixo = 1:size(xoSet,2),M.nWorkers)
-% %     m = parConstant.Value;
-for ixo = 1:size(xoSet,2)
-m = M;
+parfor(ixo = 1:size(xoSet,2),M.nWorkers)
+    m = parConstant.Value;
+% for ixo = 1:size(xoSet,2)
+% m = M;
     status = []; t= [];
 
     
@@ -37,7 +37,14 @@ m = M;
         yAll = [yAll;y(2:end,:)];
         
         A = m.Mrhs.FixedPoints.GetFixedPoint(mod(t(end),T),m.Mrhs.iA);
-        if norm(y(end,1:M.dim)) > 1E3 %solution blew up
+        if m.dim == 2
+            blewUpThreshold = 1E2;
+        else
+            blewUpThreshold = 1E3;
+        end
+            
+           
+        if norm(y(end,1:M.dim)) > blewUpThreshold %solution blew up
             if dT < T/32
                 fprintf("Terminating because dT is too small\n")
                 break 
@@ -72,7 +79,6 @@ m = M;
     elseif M.progressbar
         fprintf(".")
     end
-
     
 end
 fprintf("\n")
