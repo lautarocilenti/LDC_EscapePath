@@ -56,6 +56,7 @@ PL_L2AllPath(data)
     PL_XSpace(data)
  else
      PL_ThetaSpace(data)
+%      PL_XSpace(data)
  end
  
  

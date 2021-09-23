@@ -28,12 +28,17 @@ gsPrev = msLog{end}{3};
         stepSize = gsPrev.stepSize{c};
 
     end
-    
+%     PL_ThetaSpace2(theta,s)
+%     PL_ThetaSpace3(thetaCurrent)
+%     view(0,0)
+%     drawnow()
+%     hold off
+%     dummy = 1;
     [thetaNewGridSearch,iGridSearch] = GridSearch(theta,thetaCurrent(:,runGSOnTheta),find(runGSOnTheta),stepSize,M);
 
 
-    thetaNewGridSearch = mod(thetaNewGridSearch,2*pi);
-    thetaNewGridSearch(2:3,:) = mod(thetaNewGridSearch(2:3,:),pi);
+    thetaNewGridSearch(3,:) = mod(thetaNewGridSearch(3,:),2*pi);
+    thetaNewGridSearch(1:2,:) = mod(thetaNewGridSearch(1:2,:),pi);
 
     
     [sNewGridSearch,phiSetNewGridSearch] = CostFunction(thetaNewGridSearch,M);
@@ -57,6 +62,9 @@ gsPrev = msLog{end}{3};
 
     
 
+    if max(sOut)>100
+       dummy= 1; 
+    end
     iCancelMove = (sNew>=sCurrent);
     thetaNew(:,iCancelMove) = thetaCurrent(:,iCancelMove);
     sNew(iCancelMove) = sCurrent(iCancelMove);

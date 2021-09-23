@@ -40,11 +40,12 @@ parfor(ixo = 1:size(xoSet,2),M.nWorkers)
         if m.dim == 2
             blewUpThreshold = 1E2;
         else
-            blewUpThreshold = 1E3;
+            blewUpThreshold = 1E2;
         end
             
            
-        if norm(y(end,1:M.dim)) > blewUpThreshold %solution blew up
+%         if norm(y(end,1:M.dim)) > blewUpThreshold %solution blew up
+        if norm(y(end,:)) > blewUpThreshold 
             if dT < T/32
                 fprintf("Terminating because dT is too small\n")
                 break 
@@ -71,6 +72,7 @@ parfor(ixo = 1:size(xoSet,2),M.nWorkers)
     end
 %     status
     phiSet{ixo} = {tAll,yAll,status};
+
     if (max(t) >= max(m.tspan))
         error("Integration may have terminated prior to reaching boundary\n")
     end

@@ -21,6 +21,9 @@ function [] = PL_XSpace(data)
 % zlabel('sign(X4)*sqrt(X3^2+X4^2)')
 
 theta = data.theta;
+if ~data.M.xcoordinates
+    theta = ConvertThetaToX(theta);
+end
 s = data.S;
 ii = theta(4,:)>=0;
 x = theta(1,ii) +1;
