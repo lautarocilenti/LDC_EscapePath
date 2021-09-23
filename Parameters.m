@@ -4,9 +4,9 @@ note = "Two Forced Duffing Oscillators";
 paramNote = "Two Oscillator";
 a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = .1; %rhs parameters (note basin interpolant mat file must be changed if rhs parameters are changed)
 dim = 4; %deterministic system dimension
-rIC = 10^-10; %radius of momenta initial conditions
+rIC = 10^-15; %radius of momenta initial conditions
 pp = 0; %poincare phase
-nIC = 200; %number of initial conditions 
+nIC = 1000; %number of initial conditions 
 rhsString = 'TwoDuffing';
  T = 2*pi/w;  dT = T; dt = T; tf = 100*T;
 solver = @ode45;
@@ -22,7 +22,7 @@ iA = 4; %initial attractor fixed point identifier
 onceAPeriod = true;
 terminateType = 'DuffingBoundary'; 
 nWorkers = Inf;
-continueRun  = true;
+continueRun  = false;
 clusterRun = CheckIfCluster();
 xcoordinates = false;
 uniformInX = true;
@@ -38,11 +38,11 @@ nRVs = 3000; %number random variables per dimension for random IC initialization
 % nIC = 50;
 
 %MinSearch Parameters
-nLM = 4; %maximum number of local minimum to explore
+nLM = 100; %maximum number of local minimum to explore
 maxIter = 100;
 
 %Descent parameters
-descent.Gamma = 1; 
+descent.Gamma = .25; 
 descent.fdStep = 1E-1; %finite difference step
 descent.minGamma = 1E-10;
 descent.discGamma = 1E-2;

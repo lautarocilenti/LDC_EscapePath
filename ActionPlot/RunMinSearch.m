@@ -17,7 +17,7 @@ for i = 1:M.MS.maxIter
         TerminateFlag = false;
         %     [phiSet,msLog,TerminateFlag] = MinSearch1DGradientDescent(phiSet,msLog,nLM,M);
     elseif M.dim == 4
-        [phiSet,msLog,TerminateFlag] = MinSearch3DGradientDescent(phiSet,msLog,nLM,M);
+        [phiSet,msLog,TerminateFlag] = MinSearchGridSearch(phiSet,msLog,nLM,M);
     end
     if TerminateFlag
         break

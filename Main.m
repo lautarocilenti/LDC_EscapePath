@@ -49,10 +49,8 @@ else
     msLog = {{theta,S,Descent}};
     phiSet = data.phiSet;
     M = data.M;
-    M.MS.nLM = 20;
-    M.MS.maxIter = 50;
-    M.descent.fdStep = 1E-2;
-    M.descent.DiscThresh = 1.5;
+    M.MS.nLM = 5;
+    M.MS.maxIter = 15;
     
 end
 
