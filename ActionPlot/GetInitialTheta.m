@@ -17,12 +17,7 @@ elseif M.dim == 4
        else
             [theta] = ConvertXToTheta(x);
        end
-%        y(1,:) = cos(theta(1,:));
-%        y(2,:) = sin(theta(1,:)).*cos(theta(2,:));
-%        y(3,:) = sin(theta(1,:)).*sin(theta(2,:)).*cos(theta(3,:));
-%        y(4,:) = sin(theta(1,:)).*sin(theta(2,:)).*sin(theta(3,:));
-%        all(round(x,:) == round(y,4));
-%        y2 = x(4,:);
+
 
     else
         dtheta1 =(2*pi)/(M.nIC);

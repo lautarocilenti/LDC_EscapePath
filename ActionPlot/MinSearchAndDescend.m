@@ -1,4 +1,4 @@
-function [phiSetOut,msLog,TerminateFlag] = MinSearch3DGradientDescent(phiSet,msLog,nLM,M)
+function [phiSetOut,msLog,TerminateFlag] = MinSearchAndDescend(phiSet,msLog,nLM,M)
 %MINSEARCH1D                 
 % Identify all local minima (all nearest neighbors have larger energy)
 % Select up to nLM local minima with smallest energy
@@ -9,6 +9,33 @@ function [phiSetOut,msLog,TerminateFlag] = MinSearch3DGradientDescent(phiSet,msL
 %extract data from min search log
 theta = msLog{end}{1};
 S = msLog{end}{2};
+
+[~,sCurrent,iLM] = IdentifySmallValues(theta,S,nLM);
+thetaCurrent = theta(:,iLM);
+runDescentOnTheta = true(size(sCurrent));
+descentStep = M.descent.Gamma*ones(size(thetaCurrent));
+sPrev = sCurrent;
+fdCostPrev = NaN(size(thetaCurrent));
+iRepeat = false(size(sCurrent));
+iDisc = false(size(sCurrent));
+thetaDescentIndex = zeros(size(S));
+
+for i = 1:length(sCurrent)
+    
+    theta = thetaCurrent(:,i);
+    s = sCurrent(i);
+    
+    [theta,s,disc,descent] = GradientDescent(theta,s);
+    
+     [fdCost] = FiniteDifferencePositiveGradient(thetaCurrent,sCurrent,runDescentOnTheta,fdCostPrev,iRepeat,iDisc,descentStep,M);
+
+    
+    
+    
+end
+
+
+
 DescentPrev = msLog{end}{3};
 
 
@@ -16,16 +43,6 @@ DescentPrev = msLog{end}{3};
 
 if DescentPrev.newStart  %first loop
 
-%     [~,sCurrent,iLM] = IdentifyLocalMinima(theta,S,nLM);
-    [~,sCurrent,iLM] = IdentifySmallValues(theta,S,nLM);
-    thetaCurrent = theta(:,iLM);
-    runDescentOnTheta = true(size(sCurrent));
-    descentStep = M.descent.Gamma*ones(size(thetaCurrent));
-    sPrev = sCurrent;
-    fdCostPrev = NaN(size(thetaCurrent));
-    iRepeat = false(size(sCurrent));
-    iDisc = false(size(sCurrent));
-    thetaDescentIndex = zeros(size(S));
 
     
 else
@@ -38,124 +55,99 @@ else
     descentStep = DescentPrev.descentStep{c};
     iRepeat = DescentPrev.iRepeatNext;
     iDisc = DescentPrev.iDisc;
-%     thetaDescentIndex = DescentPrev.thetaDescentIndex;
+    thetaDescentIndex = DescentPrev.thetaDescentIndex;
     
 
     
 end
 
-%Descent Computation
+
 if M.xcoordinates
     [fdCost] = FiniteDifferencePositiveGradientOnXCoordinates(thetaCurrent,sCurrent,runDescentOnTheta,fdCostPrev,iRepeat,iDisc,descentStep,M);
 else
     [fdCost] = FiniteDifferencePositiveGradient(thetaCurrent,sCurrent,runDescentOnTheta,fdCostPrev,iRepeat,iDisc,descentStep,M);
 end
+% % load('temp2.mat')
+% vecnorm(fdCost,2,1)
 
-iStop = find(abs(vecnorm(fdCost,2,1))<1E-2);
-iDiscontinuity = find(abs(vecnorm(fdCost,2,1))>1E2); %terminate continuation of descent
-runDescentOnTheta(iStop) = false;
-iDisc(iDiscontinuity) = true;
+iStop = find(abs(vecnorm(fdCost,2,1))<1E-2 | abs(vecnorm(fdCost,2,1))>1E100); %terminate continuation of descent
+runDescentOnTheta(iStop) = 0;
 % 
-
 
 
 thetaNew = thetaCurrent;
 igradientTheta = runDescentOnTheta & ~iDisc;
-thetaNewGradient =  thetaCurrent(:,igradientTheta)-descentStep(:,igradientTheta).*fdCost(:,igradientTheta); %calculate new descent cost
+thetaNew(:,igradientTheta) =  thetaCurrent(:,igradientTheta)-descentStep(:,igradientTheta).*fdCost(:,igradientTheta); %calculate new descent cost
 iDiscTheta = runDescentOnTheta & iDisc;
-% % thetaNewGridSearch =  thetaCurrent(:,iDiscTheta)-descentStep(:,iDiscTheta).*sign(fdCost(:,iDiscTheta)); %calculate new descent cost
+thetaNew(:,iDiscTheta) =  thetaCurrent(:,iDiscTheta)-descentStep(:,iDiscTheta).*sign(fdCost(:,iDiscTheta)); %calculate new descent cost
 
 
-[thetaNewGridSearch,iGridSearch] = GridSearchNearDiscontinuity(theta,S,thetaCurrent(:,iDiscTheta),find(iDiscTheta),sCurrent(iDiscTheta),M);
 
-% if DescentPrev.Count > 0 & ~DescentPrev.newStart 
-%     [thetaNew,descentStep,runDescentOnTheta,iDisc] = AdaptiveStepCheck(theta,S,thetaCurrent,thetaNew,fdCost,descentStep,runDescentOnTheta,sPrev,iDisc,M);
-% end
 
-if M.xcoordinates
-    thetaNew = thetaNew./vecnorm(thetaNew,2,1);
-else
-    thetaNew = mod(thetaNew,2*pi);
-    thetaNew(2:3,:) = mod(thetaNew(2:3,:),pi);
+if DescentPrev.Count > 0 & ~DescentPrev.newStart 
+    [thetaNew,descentStep,runDescentOnTheta,iDisc] = AdaptiveStepCheck(theta,S,thetaCurrent,thetaNew,fdCost,descentStep,runDescentOnTheta,sPrev,iDisc,M);
 end
 
-% if ~CheckIfCluster()
-%     figure(100)
-%     thetaNorm34 = vecnorm(theta(3:4,:),2,1);
-%     scatter3(theta(1,:),theta(2,:),sign(theta(4,:)).*thetaNorm34,40,S,'filled')
-%     cb = colorbar;
-%     hold on
-%     plot(vecnorm(thetaCurrent,2,1),sCurrent,'o')
-% end
+
+thetaNew = thetaNew./vecnorm(thetaNew,2,1);
+
+if ~CheckIfCluster()
+    figure(100)
+    thetaNorm34 = vecnorm(theta(3:4,:),2,1);
+    scatter3(theta(1,:),theta(2,:),sign(theta(4,:)).*thetaNorm34,40,S,'filled')
+    cb = colorbar;
+    hold on
+    plot(vecnorm(thetaCurrent,2,1),sCurrent,'o')
+end
 
 
 
 
-if any(igradientTheta) | any(iDiscTheta)
+if any(runDescentOnTheta)
+    %Run Rise and Fall Method for new initial conditions
+    [sNew,phiSetNew] = CostFunction(thetaNew(:,runDescentOnTheta),M);
     
-    sNewOut = sPrev;
-    sOut = S;
-    phiSetOut = phiSet;
-    thetaOut = theta;
-    if any(igradientTheta)
-        %Run Rise and Fall Method for new initial conditions
-        [sNew,phiSetNew] = CostFunction(thetaNewGradient,M);
-
-        %store output data
-        thetaNew(:,igradientTheta) = thetaNewGradient;
-        sNewOut(igradientTheta) = sNew;
-        [thetaOut,phiSetOut,sOut] = MergeNewData(thetaOut,phiSetOut,sOut,thetaNewGradient,phiSetNew,sNew);
-        
-
-         
-    end
+    %store output data
+    thetaOut = [theta thetaNew(:,runDescentOnTheta)];
+    thetaDescentIndex = [thetaDescentIndex find(runDescentOnTheta)];
+    phiSetOut = [phiSet phiSetNew];
+    sOut = [S  sNew];
+    sNewOut = sPrev; sNewOut(runDescentOnTheta) = sNew;
     
-    if any(iDiscTheta)
-        [sNew,phiSetNew] = CostFunction(thetaNewGridSearch,M);
-        
-        iGridSearchUnique = unique(iGridSearch);
-        for i = 1:length(iGridSearchUnique)
-            ii = find(iGridSearchUnique(i) == iGridSearch);
-            [~,imin] = min(sNew(ii));
-            iExtendedDiscTheta(i) = ii(imin);
-        end
-         thetaNew(:,iDiscTheta) = thetaNewGridSearch(:,iExtendedDiscTheta);
-        sNewOut(iDiscTheta) = sNew(iExtendedDiscTheta);
-        [thetaOut,phiSetOut,sOut] = MergeNewData(thetaOut,phiSetOut,sOut,thetaNewGridSearch,phiSetNew,sNew);
-    end
-    
-    
-
+    thetaOutNorm = vecnorm(thetaOut,2,1);
+    [thetaOutNorm,iSortTheta] = sort(thetaOutNorm,'ascend');
+    [thetaOut] = thetaOut(:,iSortTheta);
+    thetaDescentIndex = thetaDescentIndex(iSortTheta);
+    phiSetOut = phiSetOut(iSortTheta);
+    sOut = sOut(iSortTheta);
     TerminateFlag = false;
 else
     thetaOut = theta;
+    thetaOutNorm = vecnorm(thetaOut,2,1);
     phiSetOut = phiSet;
     sOut = S;
     sNewOut = sPrev;
     TerminateFlag = true;
 end
 
-% if ~CheckIfCluster()
-%     scatter3(thetaNew(1,:),thetaNew(2,:),sign(thetaNew(4,:)).*vecnorm(thetaNew(3:4,:),2,1),'xr')
-%     drawnow()
-%     hold off
-% end
+if ~CheckIfCluster()
+    scatter3(thetaNew(1,:),thetaNew(2,:),sign(thetaNew(4,:)).*vecnorm(thetaNew(3:4,:),2,1),'xr')
+    drawnow()
+    hold off
+end
 
 
 %Allow cancellation of bad moves
-iCancelLastMove = (sNewOut>=M.descent.DiscThresh*sPrev); %indices that increased the cost by more than 20% 
+iCancelLastMove = (sNewOut>=1.2*sPrev); %indices that increased the cost by more than 20% 
 thetaNew(:,iCancelLastMove) = thetaCurrent(:,iCancelLastMove);
 sNewOut(iCancelLastMove) = sPrev(iCancelLastMove);
 % fdCost(:,iCancelLastMove) = fdCostPrev(:,iCancelLastMove);
 iRepeatNext = false(size(sCurrent));
 iRepeatNext(iCancelLastMove) = true;
-descentStep(:,iCancelLastMove) = descentStep(:,iCancelLastMove)/2;
-iDisc(iCancelLastMove) = true;
+descentStep(:,iCancelLastMove) = descentStep(:,iCancelLastMove)/1.01;
 for i = 1:size(descentStep,2)
     if any(descentStep(:,i)<M.descent.minGamma)
-        runDescentOnTheta(i) = false;
-%     elseif any(descentStep(:,i)<M.descent.discGamma)
-%         iDisc(i) = true
+        runDescentOnTheta(i) = 0;
     end
 end
 
@@ -164,7 +156,7 @@ iStepChange = (sNewOut>sPrev); %indices that increased the cost
 iStepChange = iStepChange & ~iCancelLastMove;
 descentStep(:,iStepChange) = descentStep(:,iStepChange)/2;
 
-descentStep
+
 
 if DescentPrev.newStart
     DescentPrev.Count = 0;
@@ -186,26 +178,11 @@ Descent.fdCost{c} = fdCost;
 Descent.descentStep{c} = descentStep;
 Descent.iRepeatNext = iRepeatNext;
 Descent.iDisc = iDisc;
-% Descent.thetaDescentIndex = thetaDescentIndex;
+Descent.thetaDescentIndex = thetaDescentIndex;
     
 
 msLog{end+1} = {thetaOut,sOut,Descent};
 
-% vecnorm(thetaNew,2,1)
-sCurrent
-sNewOut
-end
-
-function [thetaOut,phiSetOut,sOut] = MergeNewData(theta,phiSet,S,thetaNew,phiSetNew,sNew)
-    thetaOut = [theta thetaNew];
-    phiSetOut = [phiSet phiSetNew];
-    sOut = [S  sNew];
-    
-%     thetaOutNorm = vecnorm(thetaOut,2,1);
-%     [thetaOutNorm,iSortTheta] = sort(thetaOutNorm,'ascend');
-%     [thetaOut] = thetaOut(:,iSortTheta);
-%     phiSetOut = phiSetOut(iSortTheta);
-%     sOut = sOut(iSortTheta);
 
 end
 
@@ -293,7 +270,7 @@ function [fdCost] = FiniteDifferencePositiveGradient(thetaCurrent,sCurrent,runDe
     d = M.dim-1;
     fdStep = M.descent.fdStep*ones(size(sCurrent));
     fdStep(iDisc) = descentStep(iDisc);
-    iFindFDCost = find(~iRepeat & runDescentOnTheta &~iDisc); %check which indices need new gradient
+    iFindFDCost = find(~iRepeat & runDescentOnTheta); %check which indices need new gradient
     fdCost = fdCostPrev; %load prior gradient values
     if any(iFindFDCost)
         fdTheta = zeros(d,d);
@@ -337,7 +314,7 @@ function [fdCost] = FiniteDifferencePositiveGradientOnXCoordinates(thetaCurrent,
     
     fdStep = M.descent.fdStep*ones(size(sCurrent));
     fdStep(iDisc) = descentStep(iDisc);
-    iFindFDCost = find(~iRepeat & runDescentOnTheta & ~iDisc); %check which indices need new gradient
+    iFindFDCost = find(~iRepeat & runDescentOnTheta); %check which indices need new gradient
     fdCost = fdCostPrev; %load prior gradient values
     if any(iFindFDCost)
         fdTheta = zeros(d,d-1);
@@ -371,39 +348,6 @@ function [fdCost] = FiniteDifferencePositiveGradientOnXCoordinates(thetaCurrent,
         end
         fdCost(:,iFindFDCost) = fdGradient;
     end
-end
-
-function [thetaNew,iGridSearch] = GridSearchNearDiscontinuity(theta,s,thetaNearDisc,iDiscThetaFind,sNearDisc,M)
-    d = size(thetaNearDisc,1);
-    nNewPoints = d*2-1;
-    thetaNew = zeros(d,nNewPoints*size(thetaNearDisc,2));
-    iGridSearch = zeros(1,nNewPoints*size(thetaNearDisc,2));
-    for i = 1:size(thetaNearDisc,2)
-        iNewStart = (i-1)*(nNewPoints)+1;
-        distance = vecnorm(theta-thetaNearDisc(:,i),2,1);
-        [distanceSorted,iSortDistance] = sort(distance,'ascend');
-        sSorted = s(iSortDistance);
-        thetaSorted = theta(:,iSortDistance);
-        iClosestDiscPoint = min(find(sSorted>M.descent.DiscThresh*sNearDisc(i)));
-        if isempty(iClosestDiscPoint)
-            continue
-        end
-        thetaAtNearDisc = thetaSorted(:,iClosestDiscPoint);
-        dirMagnitude = distanceSorted(iClosestDiscPoint);
-        dirVector = (thetaAtNearDisc-thetaNearDisc(:,i))./dirMagnitude;
-        orthogonalVectors = null(dirVector');
-        L = size(orthogonalVectors,2);
-        
-        thetaNew(:,iNewStart) = thetaNearDisc(:,i)+.5*dirMagnitude*dirVector;
-        thetaNew(:,iNewStart+1:iNewStart+L) = thetaNew(:,iNewStart)+.1*dirMagnitude*orthogonalVectors;
-        thetaNew(:,iNewStart+1+L:iNewStart+2*L) = thetaNew(:,iNewStart)-.1*dirMagnitude*orthogonalVectors;
-        iGridSearch(iNewStart:iNewStart+2*L) = iDiscThetaFind(i);
-    end
-        iGridSearch(iGridSearch==0) = [];
-        thetaNew(:,all(thetaNew==0,1)) = [];
-       
-        
-    
 end
 
 function [thetaNew,descentStep,runDescentOnTheta,iDisc] = AdaptiveStepCheck(theta,S,thetaCurrent,thetaNew,fdCost,descentStep,runDescentOnTheta,sPrev,iDisc,M)
@@ -450,7 +394,7 @@ function [iCheck] = SmartChecks1Ddiscontinuity(theta,S,thetaNew,runDescentOnThet
         end
         iCheck2 = ismember(thetaNew,theta);
 
-        iCheck = SPredict>=M.descent.DiscThresh*sOld;
+        iCheck = SPredict>=1.2*sOld;
         iCheck = (iCheck | iCheck2) & runDescentOnTheta ;
 
 
@@ -459,7 +403,7 @@ end
 function [iBadStep] = SmartChecks3Ddiscontinuity(theta,S,thetaNew,runDescentOnTheta,sOld,thetaCurrent)
 
         SPredict = griddatan(theta',S',thetaNew','nearest');
-        iCheck = SPredict'>=M.descent.DiscThresh*sOld;
+        iCheck = SPredict'>=1.2*sOld;
         if any(iCheck)
             iThetaNearest = knnsearch(theta',thetaNew(:,iCheck)');
             dCurrentToNewThetaNearestNeighbor = vecnorm(theta(:,iThetaNearest)-thetaCurrent(:,iCheck),2,1);

@@ -52,7 +52,11 @@ PL_MinimumSearch(data);
 PL_L2AllPath(data)
 
  f9 = figure();
-PL_XSpace(data)
+ if data.M.xcoordinates
+    PL_XSpace(data)
+ else
+     PL_ThetaSpace(data)
+ end
  
  
 

@@ -1,20 +1,17 @@
 function [M] = Parameters(parameterNames,parameterValues)
 %Configure PARAMETERS here 
-note = "One Forced Duffing Oscillator";
-paramNote = "One Oscillator";
+note = "Two Forced Duffing Oscillators";
+paramNote = "Two Oscillator";
 a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = .1; %rhs parameters (note basin interpolant mat file must be changed if rhs parameters are changed)
-dim = 2; %deterministic system dimension
+dim = 4; %deterministic system dimension
 rIC = 10^-10; %radius of momenta initial conditions
-% qo = [1.3590;2.4170]; %initial condition in phase space
 pp = 0; %poincare phase
-% qo = [-sqrt(-a1/a3);0]; %initial condition in phase space for bistable
-% BN = 2; %Initial Basin Boundary Identifier
-nIC = 50; %number of initial conditions 
-rhsString = 'Duffing';
- T = 2*pi/w;  dT = T/2; dt = T; tf = 500*T;
+nIC = 200; %number of initial conditions 
+rhsString = 'TwoDuffing';
+ T = 2*pi/w;  dT = T; dt = T; tf = 100*T;
 solver = @ode45;
 psiEps = .05; %phase threshold
-tFall = 1*T; %Max amount of time for system to fall to attractor radius
+tFall = 10*T; %Max amount of time for system to fall to attractor radius
 plotFall = true;
 fastPostProcessing = false;
 rA1 = .2; %radius of initial sphere around initial attractor
@@ -25,19 +22,20 @@ iA = 4; %initial attractor fixed point identifier
 onceAPeriod = true;
 terminateType = 'DuffingBoundary'; 
 nWorkers = Inf;
-continueRun  = false
+continueRun  = true;
 clusterRun = CheckIfCluster();
 xcoordinates = false;
 uniformInX = true;
-nRVs = 10000; %number random variables per dimension for random IC initialization
+nRVs = 3000; %number random variables per dimension for random IC initialization
 
 
 %One oscillator modications
-iA = 1;
-rhsString = 'Duffing';
-dim = 2; 
-note = "One Forced Duffing Oscillator";
-paramNote = "One Oscillator";
+% iA = 1;
+% rhsString = 'Duffing';
+% dim = 2; 
+% note = "One Forced Duffing Oscillator";
+% paramNote = "One Oscillator";
+% nIC = 50;
 
 %MinSearch Parameters
 nLM = 4; %maximum number of local minimum to explore
@@ -47,7 +45,8 @@ maxIter = 100;
 descent.Gamma = 1; 
 descent.fdStep = 1E-1; %finite difference step
 descent.minGamma = 1E-10;
-descent.thresh = .2;
+descent.discGamma = 1E-2;
+descent.DiscThresh = 2.0;
 progressbar = true;
 
 

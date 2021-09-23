@@ -39,26 +39,23 @@ if ~M.continueRun
     save("Data/ActionPlot/initialsearch.mat")
 else
     
-     data = load("Data/ActionPlot/continue.mat");
+     data = load('Data/ActionPlot/initialSearch.mat');
          
  
-     theta = data.msLog;
-      msLog = data.msLog;
-      phiSet = data.phiSet;
-      M = data.M;
-      msLog{end}{3}.newStart = true;
-      M.MS.nLM = 5;
-    M.MS.maxIter = 0;
+    theta = data.theta;
+    S = data.S;
+    Descent.Count = 0;
+    Descent.newStart = true;
+    msLog = {{theta,S,Descent}};
+    phiSet = data.phiSet;
+    M = data.M;
+    M.MS.nLM = 20;
+    M.MS.maxIter = 50;
+    M.descent.fdStep = 1E-2;
+    M.descent.DiscThresh = 1.5;
     
 end
-% 
-% load('initialSearch4000.mat')
-  %   M.MS.nLM = 50;
-    % M.MS.maxIter = 100;
 
-% Descent.Count = 0;
-% Descent.newStart = true;
-% msLog = {{theta,S,Descent}};
 [phiSet,msLog] = RunMinSearch(phiSet,msLog,M); 
 theta = msLog{end}{1}; S = msLog{end}{2};
 % 
