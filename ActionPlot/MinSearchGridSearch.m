@@ -65,7 +65,7 @@ gsPrev = msLog{end}{3};
     iCancelMove = (sNew>=sCurrent);
     thetaNew(:,iCancelMove) = thetaCurrent(:,iCancelMove);
     sNew(iCancelMove) = sCurrent(iCancelMove);
-    stepSize(iCancelMove) = stepSize(iCancelMove)/2;
+    stepSize(iCancelMove) = stepSize(iCancelMove)/1.1;
     
     iStop = find(stepSize<= 1E-5);
     runGSOnTheta(iStop) = false;
