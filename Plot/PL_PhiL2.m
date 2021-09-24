@@ -11,6 +11,7 @@ for j = 1:length(jList)
     x = phi{jList(j)+1};
     tq = [0:T:max(t)];
     tq = tq(tq>=min(t));
+    
     for d = 1:M.dim
         xq(:,d) = interp1(t,x(:,d),tq);
     end    
@@ -20,7 +21,7 @@ for j = 1:length(jList)
        xq = [xqOld;xq];
     end
     
-    Path_L2 = vecnorm(x,2,2);
+    Path_L2 = vecnorm(x(:,1:M.dim),2,2);
     Path_L2q = vecnorm(xq,2,2);%phi index, 2nd index for path, all timesteps, first two columns
     plot(t,Path_L2,lspec(j),'Color',color,'DisplayName','Continuous')
     hold on

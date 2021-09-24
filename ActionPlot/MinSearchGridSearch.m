@@ -62,9 +62,6 @@ gsPrev = msLog{end}{3};
 
     
 
-    if max(sOut)>100
-       dummy= 1; 
-    end
     iCancelMove = (sNew>=sCurrent);
     thetaNew(:,iCancelMove) = thetaCurrent(:,iCancelMove);
     sNew(iCancelMove) = sCurrent(iCancelMove);
@@ -128,7 +125,9 @@ function [thetaNew,iGridSearch] = GridSearch(theta,thetaCurrent,iCurrent,stepSiz
     for i = 1:n
         j = (i-1)*(nNewPoints)+1;
         k = (i)*(nNewPoints);
-        step = stepSize(i)*[eye(d) -eye(d)];
+        v1 = rand(1,d);
+        v = [v1'/norm(v1) null(v1)];
+        step = stepSize(i)*[v -v];
         thetaNew(:,j:k) = thetaCurrent(:,i)+step;
         iGridSearch(j:k) = iCurrent(i);
     end

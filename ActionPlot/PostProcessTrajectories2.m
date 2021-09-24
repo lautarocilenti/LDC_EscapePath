@@ -21,10 +21,12 @@ end
        t =  phiSet{iPhi}{1}; phi = phiSet{iPhi}{2};
        T = M.Mrhs.T;
        dT = M.dT;
+       
        iT = find(mod(t,dT)==0); iT = iT(end-1:end);
        s1Flag = false; s3Flag = false;
        itau = max(iT);
-       for loopIndex = 1:500; %max 50 iterations of loop
+       maxLoopIndex = 1000;
+       for loopIndex = 1:maxLoopIndex; %max 50 iterations of loop
 
            if diff(iT) <= 1
                 itau = max(iT);
@@ -68,6 +70,9 @@ end
            end 
            itau = ceil(mean(iT));
 
+       end
+       if loopIndex >= maxLoopIndex
+           error("maxLoopIndexReached")
        end
         phiSetOut{iPhi}{1} = t(1:itau,1);
         phiSetOut{iPhi}{2} = phi(1:itau,:);

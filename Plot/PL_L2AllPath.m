@@ -4,7 +4,7 @@ function [] = PL_L2AllPath(data)
 M = data.M;
 
 
-
+  [M] = GetFixedPoints(M);
 % theta = data.theta;
 PhiSet = data.phiSet; 
 % minS = data.minS;

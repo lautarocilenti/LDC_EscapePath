@@ -4,7 +4,7 @@ function [] = PL_L2MPEPPath(data)
 M = data.M;
 
 
-
+  [M] = GetFixedPoints(M);
 theta = data.theta(data.minPhiIndex);
 minPhi = data.phiSet{data.minPhiIndex}; 
 minS = data.minS;
