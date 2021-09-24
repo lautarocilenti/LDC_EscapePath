@@ -34,11 +34,15 @@ gsPrev = msLog{end}{3};
 %     drawnow()
 %     hold off
 %     dummy = 1;
-    [thetaNewGridSearch,iGridSearch] = GridSearch(theta,thetaCurrent(:,runGSOnTheta),find(runGSOnTheta),stepSize,M);
+    if M.xcoordinates
+        [thetaNewGridSearch,iGridSearch] = GridSearchOnX(thetaCurrent(:,runGSOnTheta),find(runGSOnTheta),stepSize,M);
+    else
+        [thetaNewGridSearch,iGridSearch] = GridSearch(thetaCurrent(:,runGSOnTheta),find(runGSOnTheta),stepSize,M);
+        thetaNewGridSearch(3,:) = mod(thetaNewGridSearch(3,:),2*pi);
+        thetaNewGridSearch(1:2,:) = mod(thetaNewGridSearch(1:2,:),pi);
+    end
 
 
-    thetaNewGridSearch(3,:) = mod(thetaNewGridSearch(3,:),2*pi);
-    thetaNewGridSearch(1:2,:) = mod(thetaNewGridSearch(1:2,:),pi);
 
     
     [sNewGridSearch,phiSetNewGridSearch] = CostFunction(thetaNewGridSearch,M);
@@ -66,6 +70,12 @@ gsPrev = msLog{end}{3};
     thetaNew(:,iCancelMove) = thetaCurrent(:,iCancelMove);
     sNew(iCancelMove) = sCurrent(iCancelMove);
     stepSize(iCancelMove) = stepSize(iCancelMove)/1.1;
+    
+    [maxS] = max(sNew(runGSOnTheta)); %each iteration kill worst solution branch
+    iEndBranch = find(maxS == sNew);
+    if length(iEndBranch) == 1
+        runGSOnTheta(iEndBranch) = false;
+    end
     
     iStop = find(stepSize<= 1E-5);
     runGSOnTheta(iStop) = false;
@@ -114,7 +124,7 @@ end
 
 %
 
-function [thetaNew,iGridSearch] = GridSearch(theta,thetaCurrent,iCurrent,stepSize,M)
+function [thetaNew,iGridSearch] = GridSearch(thetaCurrent,iCurrent,stepSize,M)
    
     d = size(thetaCurrent,1);
     n = size(thetaCurrent,2)
@@ -133,44 +143,32 @@ function [thetaNew,iGridSearch] = GridSearch(theta,thetaCurrent,iCurrent,stepSiz
     end
 end
 
+function [xNew,iGridSearch] = GridSearchOnX(xCurrent,iCurrent,stepSize,M)
+   
+    d = size(xCurrent,1);
+    n = size(xCurrent,2)
+    nNewPoints = (d-1)*2;
+    xNew = zeros(d,nNewPoints*n);
+    iGridSearch = zeros(1,nNewPoints*n);
+   
+    for i = 1:n
+        j = (i-1)*(nNewPoints)+1;
+        k = (i)*(nNewPoints);
+        p = xCurrent(:,i)';
+        vr = (2*p)./norm(p); %radial vector
+        vt = null(vr); %tangent vectors
+        c = repmat(rand(1,size(vt,2)),size(vt,1),1); 
+        v1 = sum(c.*vt,2); v1 = v1'./norm(v1); %random tangent vector
+        v = [v1' null([vr;v1])]; %orthogonal vectors including random tangent vector
+        step = stepSize(i)*[v -v];
+        xNew(:,j:k) = xCurrent(:,i)+step;
+        xNew(:,j:k) = xNew(:,j:k)./vecnorm(xNew(:,j:k),2,1);
+        iGridSearch(j:k) = iCurrent(i);
+    end
+end
 
-    
 
-% 
-% 
-% function [thetaNew,iGridSearch] = GridSearchNearDiscontinuity(theta,s,thetaNearDisc,iDiscThetaFind,sNearDisc,M)
-%     d = size(thetaNearDisc,1);
-%     nNewPoints = d*2-1;
-%     thetaNew = zeros(d,nNewPoints*size(thetaNearDisc,2));
-%     iGridSearch = zeros(1,nNewPoints*size(thetaNearDisc,2));
-%     for i = 1:size(thetaNearDisc,2)
-%         iNewStart = (i-1)*(nNewPoints)+1;
-%         distance = vecnorm(theta-thetaNearDisc(:,i),2,1);
-%         [distanceSorted,iSortDistance] = sort(distance,'ascend');
-%         sSorted = s(iSortDistance);
-%         thetaSorted = theta(:,iSortDistance);
-%         iClosestDiscPoint = min(find(sSorted>M.descent.DiscThresh*sNearDisc(i)));
-%         if isempty(iClosestDiscPoint)
-%             continue
-%         end
-%         thetaAtNearDisc = thetaSorted(:,iClosestDiscPoint);
-%         dirMagnitude = distanceSorted(iClosestDiscPoint);
-%         dirVector = (thetaAtNearDisc-thetaNearDisc(:,i))./dirMagnitude;
-%         orthogonalVectors = null(dirVector');
-%         L = size(orthogonalVectors,2);
-%         
-%         thetaNew(:,iNewStart) = thetaNearDisc(:,i)+.5*dirMagnitude*dirVector;
-%         thetaNew(:,iNewStart+1:iNewStart+L) = thetaNew(:,iNewStart)+.1*dirMagnitude*orthogonalVectors;
-%         thetaNew(:,iNewStart+1+L:iNewStart+2*L) = thetaNew(:,iNewStart)-.1*dirMagnitude*orthogonalVectors;
-%         iGridSearch(iNewStart:iNewStart+2*L) = iDiscThetaFind(i);
-%     end
-%         iGridSearch(iGridSearch==0) = [];
-%         thetaNew(:,all(thetaNew==0,1)) = [];
-%        
-%         
-%     
-% end
-
+ 
 
 function [SNew,phiSetNew] = CostFunction(theta,M)
 %     M.progressbar = false;
