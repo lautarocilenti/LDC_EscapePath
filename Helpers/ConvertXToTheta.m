@@ -11,6 +11,10 @@ if size(x,1) == 4
        theta(1,:) = mod(theta(1,:),pi);
        theta(2,:) = mod(theta(2,:),pi);
        theta(3,:) = mod(theta(3,:),2*pi);
+elseif size(x,1) == 2
+    theta = zeros(1,size(x,2));
+    theta(1,:) = atan2(x(2,:),x(1,:)); 
+    theta(1,:) = mod(theta(1,:),2*pi);
 else
     error("Dimension not programmed\n")
 end

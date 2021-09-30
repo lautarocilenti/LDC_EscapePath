@@ -36,6 +36,17 @@ end
 % f4 = figure();
 % PL_L2Path(data)
 % %  ExportPNG(f4,"L2Paths")
+%     F = GenerateBasinInterpolant(data.M);
+%     data.basinInterpolant = F; 
+%  PL_BasinBoundary(data.basinInterpolant,"");
+f4 = figure()
+for i = 1:1
+PL_Path_2DProject(data,i)
+hold on
+end
+
+f4 = figure()
+PL_MPEP_2DProject(data)
 % 
 f5 = figure();
 PL_L2MPEPPath2(data)

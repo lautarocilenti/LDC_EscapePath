@@ -44,13 +44,14 @@ else
  
     theta = data.theta;
     S = data.S;
+    
     Descent.Count = 0;
     Descent.newStart = true;
     msLog = {{theta,S,Descent}};
     phiSet = data.phiSet;
     M = data.M;
-    M.MS.nLM = 5;
-    M.MS.maxIter = 15;
+    mTemp = Parameters();
+    M.MS = mTemp.MS;
     
 end
 
@@ -68,7 +69,7 @@ data.M = M; data.attractors = M.Mrhs.FixedPoints.FP;
 data.msLog = msLog;
 
 % save('temp.mat');
-SaveToFile(data,M);
+% SaveToFile(data,M);
 if ~CheckIfCluster()
     PlotGenerator(data)
 end

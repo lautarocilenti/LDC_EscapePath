@@ -1,5 +1,8 @@
 function [] = PL_ThetaSpace(data)
 theta = data.theta;
+if size(theta,1) == 1
+    return
+end
 s = data.S;
 x = mod(theta(1,:),pi);
 y = mod(theta(2,:),pi);

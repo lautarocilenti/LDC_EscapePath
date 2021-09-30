@@ -29,7 +29,7 @@ parfor(ixo = 1:size(xoSet,2),M.nWorkers)
     tVector(1) = to;
     tAll = [tVector(1)]; yAll = [xo'];
     iT = 1;
-    while  iT <=length(tVector)
+    while  iT <length(tVector)
         tspan = [tVector(iT);tVector(iT+1)];
 
         [t,y] =  m.solver(m.HamiltonianRHS, tspan, xo,[opts],m.Mrhs);

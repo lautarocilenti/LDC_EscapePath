@@ -12,13 +12,13 @@ for i = 1:M.MS.maxIter
 % %     if mod(i,25) == 0
 % % %        SaveToRunTimeFile(msLog,phiSet,M,i)
 % %     end
-    if M.dim == 2
-        [phiSet,msLog] = MinSearch1D(phiSet,msLog,nLM,M);
-        TerminateFlag = false;
-        %     [phiSet,msLog,TerminateFlag] = MinSearch1DGradientDescent(phiSet,msLog,nLM,M);
-    elseif M.dim == 4
+%     if M.dim == 2
+%         [phiSet,msLog] = MinSearch1D(phiSet,msLog,nLM,M);
+%         TerminateFlag = false;
+%         %     [phiSet,msLog,TerminateFlag] = MinSearch1DGradientDescent(phiSet,msLog,nLM,M);
+%     elseif M.dim == 4
         [phiSet,msLog,TerminateFlag] = MinSearchGridSearch(phiSet,msLog,nLM,M);
-    end
+%     end
     if TerminateFlag
         break
     end

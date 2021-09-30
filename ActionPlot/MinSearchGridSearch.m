@@ -38,8 +38,7 @@ gsPrev = msLog{end}{3};
         [thetaNewGridSearch,iGridSearch] = GridSearchOnX(thetaCurrent(:,runGSOnTheta),find(runGSOnTheta),stepSize,M);
     else
         [thetaNewGridSearch,iGridSearch] = GridSearch(thetaCurrent(:,runGSOnTheta),find(runGSOnTheta),stepSize,M);
-        thetaNewGridSearch(3,:) = mod(thetaNewGridSearch(3,:),2*pi);
-        thetaNewGridSearch(1:2,:) = mod(thetaNewGridSearch(1:2,:),pi);
+        [thetaNewGridSearch] = ModTheta(thetaNewGridSearch)
     end
 
 
@@ -69,13 +68,13 @@ gsPrev = msLog{end}{3};
     iCancelMove = (sNew>=sCurrent);
     thetaNew(:,iCancelMove) = thetaCurrent(:,iCancelMove);
     sNew(iCancelMove) = sCurrent(iCancelMove);
-    stepSize(iCancelMove) = stepSize(iCancelMove)/1.1;
+    stepSize(iCancelMove) = stepSize(iCancelMove)/2;
     
-    [maxS] = max(sNew(runGSOnTheta)); %each iteration kill worst solution branch
-    iEndBranch = find(maxS == sNew);
-    if length(iEndBranch) == 1
-        runGSOnTheta(iEndBranch) = false;
-    end
+%     [maxS] = max(sNew(runGSOnTheta)); %each iteration kill worst solution branch
+%     iEndBranch = find(maxS == sNew);
+%     if length(iEndBranch) == 1
+%         runGSOnTheta(iEndBranch) = false;
+%     end
     
     iStop = find(stepSize<= 1E-5);
     runGSOnTheta(iStop) = false;
