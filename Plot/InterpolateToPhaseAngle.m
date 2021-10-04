@@ -6,9 +6,9 @@ function [tq,xq] = InterpolateToPhaseAngle(t,x,M)
     [~,it2] = min(interp1(t,mod(t,M.Mrhs.T),t2));
     
     tq = 0:M.Mrhs.T:max(t);
-    iTsmall = find(tq< min(t));
+    iTsmall = find(tq> min(t));
     if ~isempty(iTsmall)
-        tq = tq(iTsmall(end):end);
+        tq = tq(iTsmall(1):end);
     end
     
 %     tq =  t2(it2):M.Mrhs.T:max(t);

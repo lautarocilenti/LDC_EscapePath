@@ -1,12 +1,12 @@
 function [M] = Parameters(parameterNames,parameterValues)
 %Configure PARAMETERS here 
 note = "Two Forced Duffing Oscillators";
-paramNote = "Two Oscillator";
-a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = 0; %rhs parameters (note basin interpolant mat file must be changed if rhs parameters are changed)
+paramNote = "Two Oscillator,OptimizeOneAtATime";
+a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = .1; %rhs parameters (note basin interpolant mat file must be changed if rhs parameters are changed)
 dim = 4; %deterministic system dimension
 rIC = 10^-15; %radius of momenta initial conditions
 pp = 0; %poincare phase
-nIC = 100; %number of initial conditions 
+nIC = 25; %number of initial conditions 
 rhsString = 'TwoDuffing';
  T = 2*pi/w;  dT = T/2; dt = T/32; tf = 500*T;
 solver = @ode45;
@@ -15,7 +15,7 @@ tFall = 10*T; %Max amount of time for system to fall to attractor radius
 plotFall = true;
 fastPostProcessing = false;
 rA1 = .3; %radius of initial sphere around initial attractor
-rA = .01; %accepted radius around an attractor
+rA = .1; %accepted radius around an attractor
 rS =.001; %accepted radius around a saddle
 tstep = .1; %time that must pass prior to checking for sphere condition
 iA = 3; %initial attractor fixed point identifier
@@ -25,21 +25,21 @@ nWorkers = Inf;
 continueRun  = false;
 clusterRun = CheckIfCluster();
 xcoordinates = false;
-uniformInX = true;
+uniformInX = false;
 nRVs = 10000; %number random variables per dimension for random IC initialization
 
 
 %One oscillator modications
-% % iA = 1;
-% % rhsString = 'Duffing';
-% % dim = 2; 
-% % note = "One Forced Duffing Oscillator";
-% % paramNote = "One Oscillator";
-% % nIC = 50;
+% iA = 1;
+% rhsString = 'Duffing';
+% dim = 2; 
+% note = "One Forced Duffing Oscillator";
+% paramNote = "One Oscillator";
+% nIC = 10;
 
 %MinSearch Parameters
-nLM = 20; %maximum number of local minimum to explore
-maxIter = 30;
+nLM = 4; %maximum number of local minimum to explore
+maxIter = 60;
 
 %Descent parameters
 descent.Gamma = .25; 
@@ -49,8 +49,9 @@ descent.discGamma = 1E-2;
 descent.DiscThresh = 2.0;
 progressbar = true;
 
-descent.OptimizePerOscillator = true;
-descent.FirstOscillator = 1;
+descent.optimizePerOscillator = true;
+descent.oscillatorToOptimize = 1;
+descent.oscillatorOrder = [1,2];
 
 
 %Calculated parameters

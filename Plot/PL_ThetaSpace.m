@@ -1,6 +1,6 @@
 function [] = PL_ThetaSpace(data)
 theta = data.theta;
-if size(theta,1) == 1
+if size(theta,1) <= 2
     return
 end
 s = data.S;

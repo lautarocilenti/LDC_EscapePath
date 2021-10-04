@@ -5,11 +5,11 @@ msLog = data.msLog;
 legendstr = {};
 M = data.M;
 di = ceil(length(msLog)/5);
- counter = 5;
-for i = length(msLog):-di:1
+%  counter = 5;
+for i = length(msLog)
    
-    subplot(5,1,counter)
-    counter = counter-1;
+%     subplot(5,1,counter)
+%     counter = counter-1;
     descent = msLog{i}{3};
 
 %     subplot(length(msLog),1,i)

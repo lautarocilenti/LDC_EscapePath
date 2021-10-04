@@ -52,6 +52,7 @@ else
     M = data.M;
     mTemp = Parameters();
     M.MS = mTemp.MS;
+    M.descent = mTemp.descent;
     
 end
 

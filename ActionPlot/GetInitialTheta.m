@@ -14,7 +14,13 @@ function [theta] = GetInitialTheta(M);
        else
             [theta] = ConvertXToTheta(x);
        end
-
+    elseif M.descent.optimizePerOscillator & M.dim == 4
+            dtheta =(2*pi)/(M.nIC);
+            io = M.descent.oscillatorOrder(1);
+            theta1 = [dtheta:dtheta:2*pi];
+            
+            theta = zeros(length(M.descent.oscillatorOrder),size(theta1,2));
+            theta(io,:) = theta1;
 
     else
         if M.dim == 2

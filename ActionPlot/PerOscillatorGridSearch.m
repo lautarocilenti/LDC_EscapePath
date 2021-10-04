@@ -14,9 +14,10 @@ gsPrev = msLog{end}{3};
 
 
 
-    if gsPrev.newStart  %first loop
 
-        [~,sCurrent,iLM] = IdentifySmallValues(theta,s,nLM);
+    if gsPrev.newStart  %first loop
+        io = M.descent.oscillatorToOptimize;
+        [sCurrent,iLM] = IdentifyLocalMinima(theta(io,:),s,nLM);
         thetaCurrent = theta(:,iLM);
         runGSOnTheta = true(size(sCurrent));
         stepSize = M.descent.Gamma*ones(size(thetaCurrent));
@@ -34,7 +35,10 @@ gsPrev = msLog{end}{3};
 %     drawnow()
 %     hold off
 %     dummy = 1;
-    if M.xcoordinates
+    if M.descent.optimizePerOscillator
+        [thetaNewGridSearch,iGridSearch] = GridSearchPerOscillator(thetaCurrent(:,runGSOnTheta),find(runGSOnTheta),stepSize,M);
+        [thetaNewGridSearch] = ModTheta(thetaNewGridSearch);
+    elseif M.xcoordinates
         [thetaNewGridSearch,iGridSearch] = GridSearchOnX(thetaCurrent(:,runGSOnTheta),find(runGSOnTheta),stepSize,M);
     else
         [thetaNewGridSearch,iGridSearch] = GridSearch(thetaCurrent(:,runGSOnTheta),find(runGSOnTheta),stepSize,M);
@@ -110,18 +114,59 @@ function [thetaOut,phiSetOut,sOut] = MergeNewData(theta,phiSet,S,thetaNew,phiSet
 
 end
 
-function [thetaOut,sOut,iOut] = IdentifySmallValues(theta,S,nLM)
+function [sOut,iOut] = IdentifyLocalMinima(theta,S,nLM)
 
-    [~,is] = sort(S,'ascend');
-    if length(is) > nLM
-        is = is(1:nLM);
+
+    %Augmented S
+    thetaAug = [theta theta(1)];
+    sAug = [S S(1)]; %adding the first term to the end to complete the circle
+
+    %Neighbor Differentials
+    ds1 = [0   diff(sAug)]; 
+    ds2 = [diff(sAug) 0];
+
+
+    iLM = find(ds1<0 & ds2>0); %index of local minima
+    sLM = S(iLM); %energy of local minima
+
+    %Limit to max number of local minima to use
+    if length(sLM) > nLM
+        [~,is] = sort(sLM,'ascend');
+        iLM = iLM(is);
+        iLM = iLM(1:nLM);
     end
-    thetaOut = theta(:,is);
-    sOut = S(is);
-    iOut = is;
+
+
+        sOut = S(iLM);
+        iOut = iLM;
 end
 
 %
+function [thetaNew,iGridSearch] = GridSearchPerOscillator(thetaCurrent,iCurrent,stepSize,M)
+   
+    d = size(thetaCurrent,1);
+    D = 1;
+
+    n = size(thetaCurrent,2)
+    nNewPoints = D*2;
+    thetaNew = zeros(d,nNewPoints*n);
+    iGridSearch = zeros(1,nNewPoints*n);
+    
+    io = M.descent.oscillatorToOptimize;
+    ioV = false(1,d); ioV(io) = true;
+   
+    for i = 1:n
+        j = (i-1)*(nNewPoints)+1;
+        k = (i)*(nNewPoints);
+        v1 = rand(1,D);
+        v = [v1'/norm(v1) null(v1)];
+        step = stepSize(i)*[v -v];
+        thetaNew(ioV,j:k) = thetaCurrent(ioV,i)+step;
+        thetaNew(~ioV,j:k) = thetaCurrent(~ioV,i);
+        iGridSearch(j:k) = iCurrent(i);
+    end
+end
+
 
 function [thetaNew,iGridSearch] = GridSearch(thetaCurrent,iCurrent,stepSize,M)
    
@@ -171,7 +216,7 @@ end
 
 function [SNew,phiSetNew] = CostFunction(theta,M)
 %     M.progressbar = false;
-     phiSetNew = PostProcessTrajectories2(IntegrateRHS(GenerateInitialConditionsFloquetPerOscillator(theta,M),M),M);
+     phiSetNew = PostProcessTrajectories2(IntegrateRHS(GenerateInitialConditionsFloquet(theta,M),M),M);
      SNew = IntegrateLagrangian(phiSetNew,M); 
 end
 

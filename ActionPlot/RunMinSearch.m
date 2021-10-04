@@ -5,6 +5,8 @@ if length(phiSet)<3
 end
 
 nLM = M.MS.nLM;
+currentOscillator = M.descent.oscillatorToOptimize;
+TerminateFlag = false;
 %loop local minima search
 for i = 1:M.MS.maxIter 
    
@@ -17,11 +19,38 @@ for i = 1:M.MS.maxIter
 %         TerminateFlag = false;
 %         %     [phiSet,msLog,TerminateFlag] = MinSearch1DGradientDescent(phiSet,msLog,nLM,M);
 %     elseif M.dim == 4
+    if M.descent.optimizePerOscillator
+        [iOrder] =  max(find(i >=M.MS.maxIter./length(M.descent.oscillatorOrder) .*([1:length(M.descent.oscillatorOrder)]-1)));
+        i >=M.MS.maxIter./length(M.descent.oscillatorOrder) .*([1:length(M.descent.oscillatorOrder)]-1)
+        if isempty(iOrder)
+            break
+        end
+        
+        M.descent.oscillatorToOptimize = M.descent.oscillatorOrder(iOrder);
+        
+        if currentOscillator ~= M.descent.oscillatorToOptimize
+            TerminateFlag = false;
+            currentOscillator = M.descent.oscillatorToOptimize;
+        elseif TerminateFlag
+            continue
+        end
+        
+%         if iOrder == 2
+%             break
+%         end
+        
+        [phiSet,msLog,TerminateFlag] = PerOscillatorGridSearch(phiSet,msLog,nLM,M);
+
+        
+    else
         [phiSet,msLog,TerminateFlag] = MinSearchGridSearch(phiSet,msLog,nLM,M);
-%     end
-    if TerminateFlag
-        break
+        if TerminateFlag
+            break
+        end
     end
+        
+%     end
+
 end
 
 
