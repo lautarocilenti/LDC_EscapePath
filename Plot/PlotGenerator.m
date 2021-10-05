@@ -2,9 +2,9 @@ function [] = PlotGenerator(data)
 % %PLOTGENERATOR 
 % 
 % %Plots
-if data.M.clusterRun
-    return
-end
+% if data.M.clusterRun
+%     return
+% end
 
 if data.M.dim == 2
     %Generate Gridded interpolant

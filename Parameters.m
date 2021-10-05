@@ -1,12 +1,12 @@
 function [M] = Parameters(parameterNames,parameterValues)
 %Configure PARAMETERS here 
 note = "Two Forced Duffing Oscillators";
-paramNote = "Two Oscillator,OptimizeOneAtATime";
+paramNote = "Two Oscillator,Theta GridSearch";
 a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = .1; %rhs parameters (note basin interpolant mat file must be changed if rhs parameters are changed)
 dim = 4; %deterministic system dimension
 rIC = 10^-15; %radius of momenta initial conditions
 pp = 0; %poincare phase
-nIC = 5; %number of initial conditions 
+nIC = 3000; %number of initial conditions 
 rhsString = 'TwoDuffing';
  T = 2*pi/w;  dT = T/2; dt = T/32; tf = 500*T;
 solver = @ode45;
@@ -22,11 +22,12 @@ iA = 3; %initial attractor fixed point identifier
 onceAPeriod = true;
 terminateType = 'DuffingBoundary'; 
 nWorkers = Inf;
-continueRun  = false;
+continueRun  = true;
 clusterRun = CheckIfCluster();
 xcoordinates = false;
-uniformInX = false;
+uniformInX = true;
 nRVs = 10000; %number random variables per dimension for random IC initialization
+saveMemory = true;
 
 
 %One oscillator modications
@@ -38,8 +39,8 @@ nRVs = 10000; %number random variables per dimension for random IC initializatio
 % nIC = 10;
 
 %MinSearch Parameters
-nLM = 4; %maximum number of local minimum to explore
-maxIter = 10;
+nLM = 25; %maximum number of local minimum to explore
+maxIter = 100;
 
 %Descent parameters
 descent.Gamma = .25; 
@@ -53,7 +54,9 @@ descent.optimizePerOscillator = false;
 descent.oscillatorToOptimize = 1;
 descent.oscillatorOrder = [1,2];
 
-descent.optimizeOscillatorCircles = true;
+descent.optimizeOscillatorCircles = false;
+descent.GradientDescent = false;
+descent.stochasticGridSearch = false;
 
 
 %Calculated parameters
@@ -101,6 +104,7 @@ M.xcoordinates = xcoordinates;
 M.uniformInX = uniformInX;
 M.transMatrix = [];
 M.nRVs = nRVs;
+M.saveMemory = saveMemory;
 
 
 M.paramNote = paramNote;

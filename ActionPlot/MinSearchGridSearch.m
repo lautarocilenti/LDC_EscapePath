@@ -134,7 +134,11 @@ function [thetaNew,iGridSearch] = GridSearch(thetaCurrent,iCurrent,stepSize,M)
     for i = 1:n
         j = (i-1)*(nNewPoints)+1;
         k = (i)*(nNewPoints);
-        v1 = rand(1,d);
+        if M.descent.stochasticGridSearch
+            v1 = rand(1,d);
+        else
+            v1 = zeros(1,d); v1(1) = 1;
+        end
         v = [v1'/norm(v1) null(v1)];
         step = stepSize(i)*[v -v];
         thetaNew(:,j:k) = thetaCurrent(:,i)+step;
@@ -158,7 +162,11 @@ function [xNew,iGridSearch] = GridSearchOnX(xCurrent,iCurrent,stepSize,M)
         vt = null(vr); %tangent vectors
         c = repmat(rand(1,size(vt,2)),size(vt,1),1); 
         v1 = sum(c.*vt,2); v1 = v1'./norm(v1); %random tangent vector
-        v = [v1' null([vr;v1])]; %orthogonal vectors including random tangent vector
+        if M.descent.stochasticGridSearch
+            v = [v1' null([vr;v1])]; %orthogonal vectors including random tangent vector
+        else
+            v = [vr' vt]; %orthogonal vectors not stochastic
+        end
         step = stepSize(i)*[v -v];
         xNew(:,j:k) = xCurrent(:,i)+step;
         xNew(:,j:k) = xNew(:,j:k)./vecnorm(xNew(:,j:k),2,1);
@@ -173,5 +181,6 @@ function [SNew,phiSetNew] = CostFunction(theta,M)
 %     M.progressbar = false;
      phiSetNew = PostProcessTrajectories2(IntegrateRHS(GenerateInitialConditionsFloquet(theta,M),M),M);
      SNew = IntegrateLagrangian(phiSetNew,M); 
+     [phiSetNew] = ReduceSizeToPeriods(phiSetNew,M);
 end
 

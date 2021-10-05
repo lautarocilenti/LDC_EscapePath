@@ -43,6 +43,11 @@ for i = 1:M.MS.maxIter
         [phiSet,msLog,TerminateFlag] = PerOscillatorGridSearch(phiSet,msLog,nLM,M);
 
         
+    elseif M.descent.GradientDescent
+        [phiSet,msLog,TerminateFlag] = MinSearch3DGradientDescent(phiSet,msLog,nLM,M);
+        if TerminateFlag
+            break
+        end
     else
         [phiSet,msLog,TerminateFlag] = MinSearchGridSearch(phiSet,msLog,nLM,M);
         if TerminateFlag
