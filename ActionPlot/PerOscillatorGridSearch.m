@@ -21,6 +21,12 @@ gsPrev = msLog{end}{3};
         thetaCurrent = theta(:,iLM);
         runGSOnTheta = true(size(sCurrent));
         stepSize = M.descent.Gamma*ones(size(thetaCurrent));
+    elseif length(msLog)>1 & gsPrev.newStart
+        c = gsPrev.Count;
+        thetaCurrent = gsPrev.thetaNew{c};
+        sCurrent =  gsPrev.sNew(c,:);
+        runGSOnTheta =  true(size(sCurrent));
+        stepSize = M.descent.Gamma*ones(size(thetaCurrent));
     else
         c = gsPrev.Count;
         thetaCurrent = gsPrev.thetaNew{c};

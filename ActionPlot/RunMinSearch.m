@@ -31,6 +31,7 @@ for i = 1:M.MS.maxIter
         if currentOscillator ~= M.descent.oscillatorToOptimize
             TerminateFlag = false;
             currentOscillator = M.descent.oscillatorToOptimize;
+            msLog{end}{3}.newStart = true;
         elseif TerminateFlag
             continue
         end

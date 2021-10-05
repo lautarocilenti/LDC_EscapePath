@@ -90,6 +90,9 @@ else
                 r2 = 0;
             end
             q_eps = [r1*cos(theta1);r2*cos(theta2);r1*sin(theta1);r2*sin(theta2)];
+        elseif M.descent.optimizeOscillatorCircles
+            r1 = M.rIC; theta1 = thetaSet(1,:); theta2 = thetaSet(2,:);
+            q_eps = [r1*cos(theta1);r1*cos(theta2);r1*sin(theta1);r1*sin(theta2)];
         else
             theta1 = thetaSet(1,:);
             theta2 = thetaSet(2,:);

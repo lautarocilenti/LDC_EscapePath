@@ -1,6 +1,19 @@
 function [] = PL_ThetaSpace(data)
 theta = data.theta;
-if size(theta,1) <= 2
+if size(theta,1) <= 1
+    return
+elseif size(theta,1) == 2
+    s = data.S;
+    x = mod(theta(1,:),2*pi);
+    y = mod(theta(2,:),2*pi);
+
+    scatter(x,y,40,s,'filled')    % draw the scatter plot
+    ax = gca;
+
+    cb = colorbar;                                     % create and label the colorbar
+    cb.Label.String = 'Action';
+    xlabel('Theta 1')
+    ylabel('Theta 2')
     return
 end
 s = data.S;

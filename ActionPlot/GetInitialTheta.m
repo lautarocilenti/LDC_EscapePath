@@ -21,7 +21,14 @@ function [theta] = GetInitialTheta(M);
             
             theta = zeros(length(M.descent.oscillatorOrder),size(theta1,2));
             theta(io,:) = theta1;
-
+    elseif M.descent.optimizeOscillatorCircles
+            dtheta1 =(2*pi)/(M.nIC);
+            theta1GridV = [dtheta1:dtheta1:2*pi];
+            theta2GridV = [dtheta1:dtheta1:2*pi];
+             [a,b] = ndgrid(theta1GridV,theta2GridV);
+            a = reshape(a,1,size(a,1)*size(a,2));
+            b = reshape(b,1,size(b,1)*size(b,2));
+            theta = [a;b];
     else
         if M.dim == 2
             dtheta =(2*pi)/(M.nIC);
