@@ -381,11 +381,6 @@ iCheck = SmartChecks3Ddiscontinuity(theta,S,thetaNew,runDescentOnTheta,sPrev,the
 end
 
 
-function [SNew,phiSetNew] = CostFunction(theta,M)
-%     M.progressbar = false;
-     phiSetNew = PostProcessTrajectories2(IntegrateRHS(GenerateInitialConditionsFloquet(theta,M),M),M);
-     SNew = IntegrateLagrangian(phiSetNew,M); 
-end
 
 function [iCheck] = SmartChecks1Ddiscontinuity(theta,S,thetaNew,runDescentOnTheta,sOld)
 

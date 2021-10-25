@@ -19,20 +19,10 @@ if ~M.continueRun
 
     theta = GetInitialTheta(M);
 
-    %Initial Conditions
+    %Initial Conditions cost
+    [S,phiSet] = CostFunction(theta,M)
 
-    [xoSet] = GenerateInitialConditionsFloquet(theta,M);
-
-    %Distributed Paths
-    phiSetRaw = IntegrateRHS(xoSet,M);
-    % 
-
-    phiSet = PostProcessTrajectories2(phiSetRaw,M);
     
-    %Distributed Path Energies
-    [S] = IntegrateLagrangian(phiSet,M);
-    
-    phiSet = ReduceSizeToPeriods(phiSet,M);
 
 
     %In a loop augment initial conditions near low energy local minima

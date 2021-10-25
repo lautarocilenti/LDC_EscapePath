@@ -1,7 +1,9 @@
 function [theta] = GetInitialTheta(M);
     fprintf("Getting initial theta ...")
 
-    if M.uniformInX
+    if M.methodTest
+        theta = rand(M.dim,M.nIC)*5;
+    elseif M.uniformInX
         rng(0);
         nRandom = M.nRVs;
         eta = randn(M.dim,nRandom);

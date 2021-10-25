@@ -177,10 +177,3 @@ end
 
  
 
-function [SNew,phiSetNew] = CostFunction(theta,M)
-%     M.progressbar = false;
-     phiSetNew = PostProcessTrajectories2(IntegrateRHS(GenerateInitialConditionsFloquet(theta,M),M),M);
-     SNew = IntegrateLagrangian(phiSetNew,M); 
-     [phiSetNew] = ReduceSizeToPeriods(phiSetNew,M);
-end
-

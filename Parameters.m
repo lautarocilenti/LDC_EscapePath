@@ -28,6 +28,9 @@ xcoordinates = false;
 uniformInX = true;
 nRVs = 10000; %number random variables per dimension for random IC initialization
 saveMemory = true;
+methodTest = false;
+searchAlgorithm = "GradientDescent";
+
 
 
 %One oscillator modications
@@ -37,6 +40,17 @@ saveMemory = true;
 % note = "One Forced Duffing Oscillator";
 % paramNote = "One Oscillator";
 % nIC = 10;
+
+%Test modifications
+methodTest = true;
+saveMemory = true;
+dim = 2;
+note = "methodTest";
+paramNote = "methodTest";
+nIC = 1;
+xcoordinates = true;
+
+
 
 %MinSearch Parameters
 nLM = 25; %maximum number of local minimum to explore
@@ -57,6 +71,7 @@ descent.oscillatorOrder = [1,2];
 descent.optimizeOscillatorCircles = false;
 descent.GradientDescent = false;
 descent.stochasticGridSearch = false;
+
 
 
 %Calculated parameters
@@ -105,6 +120,7 @@ M.uniformInX = uniformInX;
 M.transMatrix = [];
 M.nRVs = nRVs;
 M.saveMemory = saveMemory;
+M.methodTest = methodTest;
 
 
 M.paramNote = paramNote;
@@ -136,7 +152,8 @@ end
 M.RHS = str2func([M.rhsString,'RHS']);
 M.HamiltonianRHS = str2func([M.rhsString,'HamiltonianRHS']);
 M.Lagrangian = str2func([M.rhsString,'Lagrangian'])
-M.TerminateEvent = str2func(['TerminateAt',M.terminateType,'Event']);
+% M.TerminateEvent = str2func(['TerminateAt',M.terminateType,'Event']);
+M.SearchAlgorithm =  str2func(['MinSearch',M.searchAlgorithm]);
 
 M.Mrhs.RHS = M.RHS; M.Mrhs.solver= solver;
 end

@@ -1,4 +1,4 @@
-function [phiSetOut,msLog,TerminateFlag] = MinSearch3DGradientDescent(phiSet,msLog,nLM,M)
+function [phiSetOut,msLog,TerminateFlag] = MinSearchGradientDescent(phiSet,msLog,nLM,M)
 %MINSEARCH1D                 
 % Identify all local minima (all nearest neighbors have larger energy)
 % Select up to nLM local minima with smallest energy
