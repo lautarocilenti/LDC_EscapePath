@@ -21,7 +21,8 @@ end
 
 function [thetaOut,sOut,iOut] = IdentifyLocalMinima(theta,S,nLM)
 
-
+    thetaAug = [theta theta(:,1)];
+    sAug = [S S(1)];
  %Find local minima
     %Neighbor Differentials
     ds1 = [0 diff(sAug)]; 
@@ -29,11 +30,11 @@ function [thetaOut,sOut,iOut] = IdentifyLocalMinima(theta,S,nLM)
 
 
     iOut = find(ds1<0 & ds2>0); %index of local minima
-    sLM = S(iOut); %energy of local minima
+    sOut = S(iOut); %energy of local minima
 
     %Limit to max number of local minima to use
-    if length(sLM) > nLM
-        [~,iSort] = sort(sLM,'ascend');
+    if length(sOut) > nLM
+        [~,iSort] = sort(sOut,'ascend');
         iOut = iOut(iSort);
         iOut = iOut(1:nLM);
         sOut = S(iOut);

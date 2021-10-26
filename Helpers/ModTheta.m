@@ -1,5 +1,7 @@
-function [theta] = ModTheta(theta)
-
+function [theta] = ModTheta(theta,M)
+    if M.methodTest
+        return
+    end
     if size(theta,1) == 1
         theta = mod(theta,2*pi);
     elseif size(theta,1) == 2

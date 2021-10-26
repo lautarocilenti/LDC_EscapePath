@@ -21,7 +21,7 @@ if searchPrev.newStart  %first loop
     [~,sCurrent,iLM] = IdentifyInitialSearchValues(theta,S,nLM);
     thetaCurrent = theta(:,iLM);
     runTheta = true(size(sCurrent));
-    stepSize = M.descent.Gamma*ones(size(thetaCurrent));
+    stepSize = M.descent.Gamma*ones(size(sCurrent));
     fdCostPrev = NaN(size(thetaCurrent));
     iRepeat = false(size(sCurrent));
     
@@ -47,23 +47,23 @@ else
     
 end
 
-[thetaNewSearch,iNewSearch] = ... 
-    DetermineNextStep(thetaCurrent,sCurrent,runTheta,fdCostPrev,iRepeat,iNonGradient,stepSize,M)
+[thetaNewSearch,iNewSearch,fdCost,stepDirectionSearch] = ... 
+    DetermineNextStep(thetaCurrent,sCurrent,runTheta,fdCostPrev,iRepeat,iNonGradient,stepSize,M);
 
 
-[sNewSearch,~] = CostFunction(thetaNewSearch,M);
+[sNewSearch,phiSetNewSearch] = CostFunction(thetaNewSearch,M);
 
 [iBestNewValue] = BestNewSteps(sNewSearch,iNewSearch);
 
 thetaNew = thetaCurrent;
 sNew = sCurrent;
 thetaNew(:,runTheta) = thetaNewSearch(:,iBestNewValue);
-sNew(runGSOnTheta) = sNewSearch(iBestNewValue);
-[thetaOut,sOut] = MergeNewData(theta,s,thetaNewSearch,sNewSearch);
+sNew(runTheta) = sNewSearch(iBestNewValue);
+[thetaOut,sOut,phiSetOut] = MergeNewData(theta,S,phiSet,thetaNewSearch,sNewSearch,phiSetNewSearch);
    
 
 [thetaNew,sNew,stepSize,iNonGradient,iRepeatNext] =  ... 
-    EvaluateNewStep(thetaNew,sNew,thetaCurrent,sCurrent,iNonGradient,runTheta,M);
+    EvaluateNewStep(thetaNew,sNew,thetaCurrent,sCurrent,iNonGradient,runTheta,stepSize,M);
 
 
 iStop = find(stepSize<= 1E-5);
@@ -81,7 +81,8 @@ TerminateFlag = ~any(runTheta);
     search.Count = searchPrev.Count+1;
     c = search.Count;
 
-    search.runGSOnTheta(c,:) = runGSOnTheta;
+    search.fdCost{c} = fdCost;
+    search.runTheta(c,:) = runTheta;
     search.theta{c} = thetaOut;
     search.S{c} = sOut;
     search.thetaCurrent{c}= thetaCurrent;
@@ -91,6 +92,8 @@ TerminateFlag = ~any(runTheta);
     search.stepSize{c} = stepSize;
     search.iRepeatNext = iRepeatNext;
     search.iNonGradient = iNonGradient;
+    search.stepDirectionSearch{c} = stepDirectionSearch;
+    search.iNewSearch{c} = iNewSearch;
     msLog{end+1} = {thetaOut,sOut,search};
 
 end

@@ -1,6 +1,7 @@
-function [thetaOut,sOut] = MergeNewData(theta,s,thetaNewSearch,sNewSearch);
+function [thetaOut,sOut,phiSetOut] = MergeNewData(theta,S,phiSet,thetaNewSearch,sNewSearch,phiSetNewSearch)
 %MERGENEWDATA
     thetaOut = [theta thetaNewSearch];
-    sOut = [S  sNewSearch
+    sOut = [S  sNewSearch];
+    phiSetOut = [phiSet phiSetNewSearch];
 end
 

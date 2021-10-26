@@ -1,8 +1,8 @@
-function [thetaNew,sNew,stepSize,iNonGradient,iRepeatNext] = EvaluateNewStep(thetaNew,sNew,thetaCurrent,sCurrent,iNongradient,runTheta,M);
+function [thetaNew,sNew,stepSize,iNonGradient,iRepeatNext] = EvaluateNewStep(thetaNew,sNew,thetaCurrent,sCurrent,iNonGradient,runTheta,stepSize,M);
 %EVALUATENEWSTEP 
 
 %nongradient cancellations
-iCancelNonGradientMove = (sNew>=sCurrent & iNongradient & runTheta);
+iCancelNonGradientMove = (sNew>=sCurrent & iNonGradient & runTheta);
 
 
 %gradient descent cancellations

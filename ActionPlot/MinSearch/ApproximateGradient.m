@@ -1,18 +1,24 @@
-function [fdCost] = ApproximateGradient(thetaCurrent,sCurrent,runDescentOnTheta,fdCostPrev,iRepeat,iNonGradient,descentStep,M)
+function [fdCost] = ApproximateGradient(thetaCurrent,sCurrent,runDescentOnTheta,fdCostPrev,iRepeat,iNonGradient,M)
 %APPROXIMATEGRADIENT 
+    fprintf("Approximating Gradient ... \n")
     if M.xcoordinates
-        [fdCost] = FiniteDifferencePositiveGradientOnXCoordinates(thetaCurrent,sCurrent,runDescentOnTheta,fdCostPrev,iRepeat,iNonGradient,descentStep,M)
+        [fdCost] = FiniteDifferencePositiveGradientOnXCoordinates(thetaCurrent,sCurrent,runDescentOnTheta,fdCostPrev,iRepeat,iNonGradient,M)
     else
-        [fdCost] = FiniteDifferencePositiveGradient(thetaCurrent,sCurrent,runDescentOnTheta,fdCostPrev,iRepeat,iNonGradient,descentStep,M);
+        [fdCost] = FiniteDifferencePositiveGradient(thetaCurrent,sCurrent,runDescentOnTheta,fdCostPrev,iRepeat,iNonGradient,M);
     end
+    fprintf(" ... Completed Approximating Gradient \n")
 end
 
 
 
-function [fdCost] = FiniteDifferencePositiveGradient(thetaCurrent,sCurrent,runDescentOnTheta,fdCostPrev,iRepeat,iNonGradient,descentStep,M)
-    d = M.dim-1;
+function [fdCost] = FiniteDifferencePositiveGradient(thetaCurrent,sCurrent,runDescentOnTheta,fdCostPrev,iRepeat,iNonGradient,M)
+    if M.methodTest
+        d = M.dim;
+    else
+        d = M.dim-1;
+    end
+    
     fdStep = M.descent.fdStep*ones(size(sCurrent));
-    fdStep(iNonGradient) = descentStep(iNonGradient);
     iFindFDCost = find(~iRepeat & runDescentOnTheta &~iNonGradient); %check which indices need new gradient
     fdCost = fdCostPrev; %load prior gradient values
     if any(iFindFDCost)
@@ -41,7 +47,7 @@ end
 
 
 
-function [fdCost] = FiniteDifferencePositiveGradientOnXCoordinates(thetaCurrent,sCurrent,runDescentOnTheta,fdCostPrev,iRepeat,iNonGradient,descentStep,M)
+function [fdCost] = FiniteDifferencePositiveGradientOnXCoordinates(thetaCurrent,sCurrent,runDescentOnTheta,fdCostPrev,iRepeat,iNonGradient,M)
     % x1^2+x2^2+x3^2+x4^2 = 1;
     % df1 = 2x1; df2 = 2x2; df3 = 2x3; df4 = 2x4;
     % p = point, y = coordinate
@@ -55,7 +61,6 @@ function [fdCost] = FiniteDifferencePositiveGradientOnXCoordinates(thetaCurrent,
     
     
     fdStep = M.descent.fdStep*ones(size(sCurrent));
-    fdStep(iNonGradient) = descentStep(iNonGradient);
     iFindFDCost = find(~iRepeat & runDescentOnTheta & ~iNonGradient); %check which indices need new gradient
     fdCost = fdCostPrev; %load prior gradient values
     if any(iFindFDCost)

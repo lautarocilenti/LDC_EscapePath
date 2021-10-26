@@ -22,24 +22,24 @@ iA = 3; %initial attractor fixed point identifier
 onceAPeriod = true;
 terminateType = 'DuffingBoundary'; 
 nWorkers = Inf;
-continueRun  = true;
+continueRun  = false;
 clusterRun = CheckIfCluster();
 xcoordinates = false;
 uniformInX = true;
 nRVs = 10000; %number random variables per dimension for random IC initialization
-saveMemory = true;
+saveMemory = 1;
 methodTest = false;
-searchAlgorithm = "GradientDescent";
+searchAlgorithm = "Stochastic Grid Vector Constrained Circle";
 
 
 
 %One oscillator modications
-% iA = 1;
-% rhsString = 'Duffing';
-% dim = 2; 
-% note = "One Forced Duffing Oscillator";
-% paramNote = "One Oscillator";
-% nIC = 10;
+iA = 1;
+rhsString = 'Duffing';
+dim = 2; 
+note = "One Forced Duffing Oscillator";
+paramNote = "One Oscillator";
+nIC = 10;
 
 %Test modifications
 methodTest = true;
@@ -47,30 +47,30 @@ saveMemory = true;
 dim = 2;
 note = "methodTest";
 paramNote = "methodTest";
-nIC = 1;
+nIC = 3;
 xcoordinates = true;
 
 
 
 %MinSearch Parameters
 nLM = 25; %maximum number of local minimum to explore
-maxIter = 100;
+maxIter = 25;
 
 %Descent parameters
-descent.Gamma = .25; 
-descent.fdStep = 1E-1; %finite difference step
+descent.Gamma = 1; 
+descent.fdStep = 1E-4; %finite difference step
 descent.minGamma = 1E-10;
 descent.discGamma = 1E-2;
 descent.DiscThresh = 2.0;
 progressbar = true;
 
-descent.optimizePerOscillator = false;
-descent.oscillatorToOptimize = 1;
-descent.oscillatorOrder = [1,2];
-
-descent.optimizeOscillatorCircles = false;
-descent.GradientDescent = false;
-descent.stochasticGridSearch = false;
+% descent.optimizePerOscillator = false;
+% descent.oscillatorToOptimize = 1;
+% descent.oscillatorOrder = [1,2];
+% 
+% descent.optimizeOscillatorCircles = false;
+% descent.GradientDescent = false;
+descent.stochasticNonGradientSearch = true;
 
 
 
@@ -78,21 +78,6 @@ descent.stochasticGridSearch = false;
 % D = 2*length(qo);
 D = 2*dim;
 tspan = [0:dt:tf];
-
-
-% theta(end) = 4.74;
-% theta = 5.02655;
-
-% %higher resolution
-% ub = 1.2; lb = .9;
-% dtheta2 =(ub-lb)/(nIC);
-% theta2 = lb+dtheta2:dtheta2:ub;
-% nIC = 2*nIC;
-% theta = [theta,theta2];
-% theta = sort(theta,'ascend')
-% 
-% nIC = 1; theta = 1.0598;
-
 
 
 %Store Parameters in a structure
@@ -121,6 +106,7 @@ M.transMatrix = [];
 M.nRVs = nRVs;
 M.saveMemory = saveMemory;
 M.methodTest = methodTest;
+M.searchAlgorithm = searchAlgorithm;
 
 
 M.paramNote = paramNote;
@@ -153,7 +139,6 @@ M.RHS = str2func([M.rhsString,'RHS']);
 M.HamiltonianRHS = str2func([M.rhsString,'HamiltonianRHS']);
 M.Lagrangian = str2func([M.rhsString,'Lagrangian'])
 % M.TerminateEvent = str2func(['TerminateAt',M.terminateType,'Event']);
-M.SearchAlgorithm =  str2func(['MinSearch',M.searchAlgorithm]);
 
 M.Mrhs.RHS = M.RHS; M.Mrhs.solver= solver;
 end

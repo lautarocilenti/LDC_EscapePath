@@ -9,7 +9,7 @@ function [phiSet,msLog] = RunMinSearch(phiSet,msLog,M)
         fprintf("\nMinSearch Iter %d \n",i)
 
 
-        [phiSet,msLog,TerminateFlag] = M.SearchAlgorithm(phiSet,msLog,nLM,M);
+        [phiSet,msLog,TerminateFlag] = MinSearchAlgorithm(phiSet,msLog,nLM,M);
         if TerminateFlag
                 break
         end
