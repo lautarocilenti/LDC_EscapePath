@@ -6,7 +6,7 @@ a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = .1; %rhs parameters (note basin 
 dim = 4; %deterministic system dimension
 rIC = 10^-15; %radius of momenta initial conditions
 pp = 0; %poincare phase
-nIC = 3000; %number of initial conditions 
+nIC = 10; %number of initial conditions 
 rhsString = 'TwoDuffing';
  T = 2*pi/w;  dT = T/2; dt = T/32; tf = 500*T;
 solver = @ode45;
@@ -24,52 +24,46 @@ terminateType = 'DuffingBoundary';
 nWorkers = Inf;
 continueRun  = false;
 clusterRun = CheckIfCluster();
-xcoordinates = false;
+xcoordinates = true;
 uniformInX = true;
-nRVs = 10000; %number random variables per dimension for random IC initialization
+nRVs = 2000; %number random variables per dimension for random IC initialization
 saveMemory = 1;
 methodTest = false;
-searchAlgorithm = "Stochastic Grid Vector Constrained Circle";
+searchAlgorithm = "Grid";
 
 
 
 %One oscillator modications
-iA = 1;
-rhsString = 'Duffing';
-dim = 2; 
-note = "One Forced Duffing Oscillator";
-paramNote = "One Oscillator";
-nIC = 10;
+% iA = 1;
+% rhsString = 'Duffing';
+% dim = 2; 
+% note = "One Forced Duffing Oscillator";
+% paramNote = "One Oscillator";
+% nIC = 10;
 
 %Test modifications
-methodTest = true;
-saveMemory = true;
-dim = 2;
-note = "methodTest";
-paramNote = "methodTest";
-nIC = 3;
-xcoordinates = true;
+% methodTest = true;
+% saveMemory = true;
+% dim = 2;
+% note = "methodTest";
+% paramNote = "methodTest";
+% nIC = 3;
+% xcoordinates = true;
 
 
 
 %MinSearch Parameters
-nLM = 25; %maximum number of local minimum to explore
-maxIter = 25;
+nLM = 2; %maximum number of local minimum to explore
+maxIter = 3;
 
 %Descent parameters
-descent.Gamma = 1; 
+descent.Gamma = .1; 
 descent.fdStep = 1E-4; %finite difference step
 descent.minGamma = 1E-10;
 descent.discGamma = 1E-2;
 descent.DiscThresh = 2.0;
 progressbar = true;
 
-% descent.optimizePerOscillator = false;
-% descent.oscillatorToOptimize = 1;
-% descent.oscillatorOrder = [1,2];
-% 
-% descent.optimizeOscillatorCircles = false;
-% descent.GradientDescent = false;
 descent.stochasticNonGradientSearch = true;
 
 

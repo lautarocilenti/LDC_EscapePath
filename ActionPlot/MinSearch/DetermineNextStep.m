@@ -9,8 +9,13 @@ function [thetaNew,iNewSearch,fdCost,stepDirectionSearch] = DetermineNextStep(th
     if any(iGradient);
         [fdCost] = ApproximateGradient(thetaCurrent,sCurrent,runTheta,fdCostPrev,iRepeat,iNonGradient,M);
         thetaNew =  thetaCurrent(:,iGradient)-stepSize(iGradient).*fdCost(:,iGradient); %calculate new descent cost
-        iNewSearch = find(iGradient);
         stepDirectionSearch = -stepSize(iGradient).*fdCost(:,iGradient);
+        if M.xcoordinates
+            thetaNew = thetaNew./vecnorm(thetaNew,2,1);
+            stepDirectionSearch = stepDirectionSearch./vecnorm(stepDirectionSearch,2,1).*stepSize(iGradient);
+        end
+        iNewSearch = find(iGradient);
+        
     end
     
     if any(iNonGradient);
