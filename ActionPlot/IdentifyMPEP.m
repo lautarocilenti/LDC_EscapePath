@@ -3,4 +3,3 @@ function [minS,minPhiIndex] = IdentifyMPEP(S)
 [minS,iPhi] = min(S);
 minPhiIndex = iPhi;
 end
-

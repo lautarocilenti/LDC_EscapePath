@@ -19,27 +19,17 @@ if ~M.continueRun
 
     theta = GetInitialTheta(M);
 
-    %Initial Conditions
+    %Initial Conditions cost
+    [S,phiSet] = CostFunction(theta,M);
 
-    [xoSet] = GenerateInitialConditionsFloquet(theta,M);
-
-    %Distributed Paths
-    phiSetRaw = IntegrateRHS(xoSet,M);
-    % 
-
-    phiSet = PostProcessTrajectories2(phiSetRaw,M);
     
-    %Distributed Path Energies
-    [S] = IntegrateLagrangian(phiSet,M);
-    
-    phiSet = ReduceSizeToPeriods(phiSet,M);
 
 
     %In a loop augment initial conditions near low energy local minima
-    Descent.Count = 0;
-    Descent.newStart = true;
-    msLog = {{theta,S,Descent}};
-    save("Data/ActionPlot/initialsearch.mat",'M','phiSet','S','theta','Descent','msLog','-v7.3')
+    search.Count = 0;
+    search.newStart = true;
+    msLog = {{theta,S,search}};
+    save("Data/ActionPlot/initialsearch.mat",'M','phiSet','S','theta','search','msLog','-v7.3')
 else
     
      data = load('Data/ActionPlot/initialsearch.mat');
@@ -48,9 +38,9 @@ else
     theta = data.theta;
     S = data.S;
     
-    Descent.Count = 0;
-    Descent.newStart = true;
-    msLog = {{theta,S,Descent}};
+    search.Count = 0;
+    search.newStart = true;
+    msLog = {{theta,S,search}};
     phiSet = data.phiSet;
     M = data.M;
     mTemp = Parameters();

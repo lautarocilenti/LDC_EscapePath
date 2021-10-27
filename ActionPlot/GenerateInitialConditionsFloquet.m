@@ -76,29 +76,10 @@ else
     if M.dim == 2
         q_eps = [M.rIC*cos(thetaSet);M.rIC*sin(thetaSet)]; %initial offset from attractor
     elseif M.dim ==4
-        if M.descent.optimizePerOscillator
-            theta1 = thetaSet(1,:);
-            if any(theta1)
-                r1 = M.rIC;
-            else 
-                r1 = 0;
-            end
-            theta2 = thetaSet(2,:);
-            if any(theta2)
-                r2 = M.rIC;
-            else 
-                r2 = 0;
-            end
-            q_eps = [r1*cos(theta1);r2*cos(theta2);r1*sin(theta1);r2*sin(theta2)];
-        elseif M.descent.optimizeOscillatorCircles
-            r1 = M.rIC; theta1 = thetaSet(1,:); theta2 = thetaSet(2,:);
-            q_eps = [r1*cos(theta1);r1*cos(theta2);r1*sin(theta1);r1*sin(theta2)];
-        else
             theta1 = thetaSet(1,:);
             theta2 = thetaSet(2,:);
             theta3 = thetaSet(3,:);
             q_eps = [M.rIC*cos(theta1);M.rIC*sin(theta1).*cos(theta2);M.rIC*sin(theta1).*sin(theta2).*cos(theta3);M.rIC*sin(theta1).*sin(theta2).*sin(theta3)]; %initial offset from attractor  
-        end
     end
 end
 
@@ -126,7 +107,7 @@ end
 
 function [y] = ArrangeCoordinates(x,M)
     y = x;
-    if M. dim == 4 & M.descent.optimizePerOscillator
+    if M. dim == 4
         y(2,:) = x(3,:);
         y(3,:) = x(2,:);
         y(6,:) = x(7,:);

@@ -6,23 +6,19 @@ function [] = PlotGenerator(data)
 %     return
 % end
 
+if data.M.methodTest
+    
+    PL_TestSearch(data);
+    
+   return 
+end
+
 if data.M.dim == 2
     %Generate Gridded interpolant
 %     F = GenerateBasinInterpolant(data.M);
 %     data.basinInterpolant = F; 
 %     
-%     f1 = figure();
-% %     PL_BasinBoundary(data.basinInterpolant,"");
-%     PL_Attractors(data.attractors);
-%     PL_Paths(data.phiSet,data.M)
-%     axis([-4 4 -4 4])
-% %      ExportPNG(f1,"AllPaths")
-% 
-%     f2 = figure();
-%     PL_PathEnergy(data)
-%      ExportPNG(f2,"PathEnergy")
-    % 
-    % % 
+
     f3 = figure();
 %     PL_BasinBoundary(data.basinInterpolant,"");
     PL_Attractors(data.attractors);
