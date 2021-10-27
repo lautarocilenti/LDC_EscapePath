@@ -1,4 +1,4 @@
-function [thetaNew,sNew,State] = EvaluateNelderMead(thetaNew,sNew,thetaCurrent,sCurrent,State,M);
+function [thetaNew,sNew,State] = EvaluateNedlerMead(thetaNew,sNew,thetaCurrent,sCurrent,State,M);
 %EVALUATENELDERMEAD 
 n = M.dim+1;
 d = M.dim;

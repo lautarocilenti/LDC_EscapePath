@@ -1,4 +1,4 @@
-function [thetaNewNonGradient,iNonGradientSearch,stepDirection] = DetermineNextStepNelderMead(thetaCurrent,sCurrent,iCurrent,stepSize,State,M)
+function [thetaNewNonGradient,iNonGradientSearch,stepDirection] = DetermineNextStepNedlerMead(thetaCurrent,sCurrent,iCurrent,stepSize,State,M)
 %DERTERMINENEXTSTEPNELDERMEAD 
 %simplex state
 % 1 - perform standard reflection

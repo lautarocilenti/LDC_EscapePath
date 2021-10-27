@@ -3,7 +3,7 @@ function [thetaNew,sNew,stepSize,iNonGradient,iRepeatNext,State] = EvaluateNewSt
 
 %EvaluateNelderMead 
 if contains(M.searchAlgorithm,"Simplex")
-    [thetaNew,sNew,State] = EvaluateNelderMead(thetaNew,sNew,thetaCurrent,sCurrent,State,M);
+    [thetaNew,sNew,State] = EvaluateNedlerMead(thetaNew,sNew,thetaCurrent,sCurrent,State,M);
     iRepeatNext = false(size(sCurrent));
     return
 end
