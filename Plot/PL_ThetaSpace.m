@@ -1,9 +1,13 @@
 function [] = PL_ThetaSpace(data)
 theta = data.theta;
+s = data.S;
+ii = find(s> mean(s) +2*std(s));
+minTheta = mod(theta(:,data.minPhiIndex),2*pi);
+s(ii) = [];
+theta(:,ii) = [];
 if size(theta,1) <= 1
     return
 elseif size(theta,1) == 2
-    s = data.S;
     x = mod(theta(1,:),2*pi);
     y = mod(theta(2,:),2*pi);
 
@@ -16,7 +20,6 @@ elseif size(theta,1) == 2
     ylabel('Theta 2')
     return
 end
-s = data.S;
 x = mod(theta(1,:),pi);
 y = mod(theta(2,:),pi);
 z = mod(theta(3,:),2*pi);
@@ -26,7 +29,7 @@ ax = gca;
 ax.XDir = 'reverse';
 view(-31,14)
 
-minTheta = mod(theta(:,data.minPhiIndex),2*pi);
+
 minTheta(1:2) = mod(minTheta(1:2),pi);
 hold on
 plot3(minTheta(1),minTheta(2),minTheta(3),'xr','markerSize',40)

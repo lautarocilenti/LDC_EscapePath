@@ -1,4 +1,13 @@
-function [] = PL_PhiL2(phi,FP,T,M)
+function [] = PL_PhiL2(phi,FP,T,M,fullpath)
+
+if nargin ==4
+    fullpath = false;
+end
+
+if fullpath
+   phi = generateFullPath(phi,M); 
+end
+
 %PL_PHIL2 
 jList = [1,4];
 legendstr = {};
