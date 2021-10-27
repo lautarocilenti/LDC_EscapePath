@@ -29,7 +29,7 @@ uniformInX = true;
 nRVs = 2000; %number random variables per dimension for random IC initialization
 saveMemory = 1;
 methodTest = false;
-searchAlgorithm = "Nelder Mead Simplex Discontinuous 2";
+searchAlgorithm = "Nelder Mead Simplex Discontinuous 5";
 
 
 

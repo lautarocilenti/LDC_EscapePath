@@ -14,7 +14,8 @@ sPrev = State.sPrev;
 
 for i = 1:Ln
     j1 = (i-1)*n+1; j2 = (i)*n;
-    if simplexState(j1) > 4
+    fprintf("Current State %d,",simplexState(j1)) 
+    if simplexState(j1) > 5
         continue
     end
     
@@ -65,6 +66,7 @@ for i = 1:Ln
             flag = 1;
         end
     elseif simplexState(j1) == 5  
+        simplexState(j1:j2) = 1;
         flag =0;
     end
     
@@ -72,15 +74,16 @@ for i = 1:Ln
          thetaNew(:,j1:j2) = thetaPrev(:,j1:j2) ;
          sNew(j1:j2) = sPrev(j1:j2);
     elseif flag == 1
-        thetaNew(:,j1:j2) = thetaCurrent(:,j1:j2);
-        sNew(j1:j2) = sCurrent(j1:j2);
         thetaPrev(:,j1:j2) = thetaNew(:,j1:j2);
         sPrev = sNew(j1:j2);
+        thetaNew(:,j1:j2) = thetaCurrent(:,j1:j2);
+        sNew(j1:j2) = sCurrent(j1:j2);
+        
     else
         thetaPrev(:,j1:j2) = thetaNew(:,j1:j2);
         sPrev = sNew(j1:j2);
     end
-        
+        fprintf(" Next State %d\n",simplexState(j1)) 
 end
 State.simplexState = simplexState;
 State.thetaPrev = thetaPrev;
