@@ -11,7 +11,9 @@ function [SNew,phiSetNew] = CostFunction(theta,M)
     if M.methodTest
         x1 = theta(1,:);
         x2 = theta(2,:);
-        SNew = ((x1 - x2).^2 + (x1).^2 + (x2).^4./10);
+        ii = x2>0;
+        SNew(~ii) = ((x1(~ii) - x2(~ii)).^2 + (x1(~ii)).^2 + (x2(~ii)).^4./10);
+        SNew(ii) = 180*(1/sqrt(2*pi)*exp(1/25.*(-x1(ii).^2-3*x2(ii).^2)))+.1;
         for i = 1:size(theta,2)
            phi{1} = 0;
            phi{2} = theta(:,i);

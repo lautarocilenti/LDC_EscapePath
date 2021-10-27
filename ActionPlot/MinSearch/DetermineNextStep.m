@@ -1,4 +1,4 @@
-function [thetaNew,iNewSearch,fdCost,stepDirectionSearch] = DetermineNextStep(thetaCurrent,sCurrent,runTheta,fdCostPrev,iRepeat,iNonGradient,stepSize,M)
+function [thetaNew,iNewSearch,fdCost,stepDirectionSearch] = DetermineNextStep(thetaCurrent,sCurrent,runTheta,fdCostPrev,iRepeat,iNonGradient,stepSize,State,M)
 %DETERMINENEXTSTEP
     iGradient = ~iNonGradient & runTheta;
     iNonGradient = iNonGradient & runTheta;
@@ -19,7 +19,7 @@ function [thetaNew,iNewSearch,fdCost,stepDirectionSearch] = DetermineNextStep(th
     end
     
     if any(iNonGradient);
-        [thetaNewNonGradient,iNonGradientSearch,stepDirection] = DetermineNewNonGradientPoints(thetaCurrent(:,iNonGradient),find(iNonGradient),stepSize(iNonGradient),M);
+        [thetaNewNonGradient,iNonGradientSearch,stepDirection] = DetermineNewNonGradientPoints(thetaCurrent(:,iNonGradient),sCurrent(:,iNonGradient),find(iNonGradient),stepSize(iNonGradient),State,M);
         i1 = size(thetaNew,2)+1; i2 = (i1-1) + size(thetaNewNonGradient,2);
         thetaNew(:,i1:i2) = thetaNewNonGradient;
         stepDirectionSearch(:,i1:i2) = stepDirection;

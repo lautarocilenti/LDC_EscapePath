@@ -1,7 +1,9 @@
-function [thetaNewNonGradient,iNonGradientSearch,stepDirection] = DetermineNewNonGradientPoints(thetaCurrent,iCurrent,stepSize,M)
+function [thetaNewNonGradient,iNonGradientSearch,stepDirection] = DetermineNewNonGradientPoints(thetaCurrent,sCurrent,iCurrent,stepSize,State,M)
 %DETERMINENEWNONGRADIENTPOINTS 
-
-    if M.xcoordinates
+    if contains(M.searchAlgorithm,"Simplex")
+        [thetaNewNonGradient,iNonGradientSearch,stepDirection] = DetermineNextStepNelderMead(thetaCurrent,sCurrent,iCurrent,stepSize,State,M);
+        [thetaNewNonGradient] = ModTheta(thetaNewNonGradient,M);
+    elseif M.xcoordinates
         [thetaNewNonGradient,iNonGradientSearch,stepDirection] = GridSearchOnX(thetaCurrent,iCurrent,stepSize,M);
     else
         [thetaNewNonGradient,iNonGradientSearch,stepDirection] = GridSearch(thetaCurrent,iCurrent,stepSize,M);

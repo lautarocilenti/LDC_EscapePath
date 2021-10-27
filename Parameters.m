@@ -29,7 +29,7 @@ uniformInX = true;
 nRVs = 2000; %number random variables per dimension for random IC initialization
 saveMemory = 1;
 methodTest = false;
-searchAlgorithm = "Grid";
+searchAlgorithm = "Nelder Mead Simplex Discontinuous 2";
 
 
 
@@ -41,30 +41,30 @@ searchAlgorithm = "Grid";
 % paramNote = "One Oscillator";
 % nIC = 10;
 
-%Test modifications
-% methodTest = true;
-% saveMemory = true;
-% dim = 2;
-% note = "methodTest";
-% paramNote = "methodTest";
-% nIC = 3;
-% xcoordinates = true;
+% Test modifications
+methodTest = true;
+saveMemory = true;
+dim = 2;
+note = "methodTest";
+paramNote = "methodTest";
+nIC = 3;
+xcoordinates = false;
 
 
 
 %MinSearch Parameters
-nLM = 2; %maximum number of local minimum to explore
-maxIter = 3;
+nLM = 1; %maximum number of local minimum to explore
+maxIter = 40;
 
 %Descent parameters
-descent.Gamma = .1; 
+descent.Gamma = 1; 
 descent.fdStep = 1E-4; %finite difference step
 descent.minGamma = 1E-10;
 descent.discGamma = 1E-2;
 descent.DiscThresh = 2.0;
 progressbar = true;
 
-descent.stochasticNonGradientSearch = true;
+descent.stochasticNonGradientSearch = false;
 
 
 

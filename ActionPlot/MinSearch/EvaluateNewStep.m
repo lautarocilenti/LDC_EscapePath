@@ -1,5 +1,12 @@
-function [thetaNew,sNew,stepSize,iNonGradient,iRepeatNext] = EvaluateNewStep(thetaNew,sNew,thetaCurrent,sCurrent,iNonGradient,runTheta,stepSize,M);
+function [thetaNew,sNew,stepSize,iNonGradient,iRepeatNext,State] = EvaluateNewStep(thetaNew,sNew,thetaCurrent,sCurrent,iNonGradient,runTheta,stepSize,State,M);
 %EVALUATENEWSTEP 
+
+%EvaluateNelderMead 
+if contains(M.searchAlgorithm,"Simplex")
+    [thetaNew,sNew,State] = EvaluateNelderMead(thetaNew,sNew,thetaCurrent,sCurrent,State,M);
+    iRepeatNext = false(size(sCurrent));
+    return
+end
 
 %nongradient cancellations
 iCancelNonGradientMove = (sNew>=sCurrent & iNonGradient & runTheta);
