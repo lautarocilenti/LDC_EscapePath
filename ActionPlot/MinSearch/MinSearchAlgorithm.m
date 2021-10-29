@@ -30,10 +30,13 @@ if searchPrev.newStart  %first loop
         iNonGradient = false(size(sCurrent));
         State = {};
     elseif contains(M.searchAlgorithm,"Simplex")
-        State.simplexState = ones(size(sCurrent));;
+        State.simplexState = ones(size(sCurrent));
         State.thetaPrev = thetaCurrent;
         State.sPrev = sCurrent;
         iNonGradient = true(size(sCurrent));
+    elseif contains(M.searchAlgorithm,"Fletcher-Reeves")
+        iNonGradient = false(size(sCurrent));
+        State.state = ones(size(sCurrent));
     else
         State = {};
         iNonGradient = true(size(sCurrent));
@@ -56,7 +59,7 @@ else
     
 end
 
-[thetaNewSearch,iNewSearch,fdCost,stepDirectionSearch] = ... 
+[thetaNewSearch,iNewSearch,fdCost,stepDirectionSearch,State] = ... 
     DetermineNextStep(thetaCurrent,sCurrent,runTheta,fdCostPrev,iRepeat,iNonGradient,stepSize,State,M);
 
 

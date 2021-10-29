@@ -4,6 +4,8 @@
 *.eps
 *.mat
 *.avi
+*.mp4
+*.zip
 !Data/FixedPoints/FixedPointsTwoDuffing.mat
 <<<<<<< HEAD
 !Data/FixedPoints/FixedPointsDuffing.mat

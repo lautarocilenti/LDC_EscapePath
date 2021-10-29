@@ -7,7 +7,10 @@ for i = 1:size(xx,1)
     theta = [xx(i,:);yy(i,:)];
     [zz(i,:),~] = CostFunction(theta,data.M);;
 end
-contour(xx,yy,zz,[.1:10:180])
+contour(xx,yy,zz,[0 .1:10:130],'linewidth',2)
+% color1 = [1:-.01:.65]';
+% colors = [zeros(size(color1)) color1   color1*.5];
+% colormap(flipud(bone));
 c = colorbar;
 hold on
 if data.M.xcoordinates

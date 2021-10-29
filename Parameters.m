@@ -29,7 +29,7 @@ uniformInX = true;
 nRVs = 2000; %number random variables per dimension for random IC initialization
 saveMemory = 1;
 methodTest = false;
-searchAlgorithm = "Nelder Mead Simplex Discontinuous 5";
+searchAlgorithm = "Gradient Descent Discontinuous 2";
 
 
 
@@ -47,24 +47,28 @@ saveMemory = true;
 dim = 2;
 note = "methodTest";
 paramNote = "methodTest";
-nIC = 3;
+nIC = 10;
 xcoordinates = false;
 
 
 
 %MinSearch Parameters
-nLM = 1; %maximum number of local minimum to explore
+nLM = 10; %maximum number of local minimum to explore
 maxIter = 40;
 
 %Descent parameters
-descent.Gamma = 1; 
+if contains(searchAlgorithm,"Gradient") || contains(searchAlgorithm,"Fletcher")
+    descent.Gamma = .1; 
+else
+    descent.Gamma = 1; 
+end
 descent.fdStep = 1E-4; %finite difference step
 descent.minGamma = 1E-10;
-descent.discGamma = 1E-2;
+descent.discGamma = .5;
 descent.DiscThresh = 2.0;
 progressbar = true;
 
-descent.stochasticNonGradientSearch = false;
+descent.stochasticNonGradientSearch = true;
 
 
 

@@ -1,4 +1,4 @@
-function [thetaNew,iNewSearch,fdCost,stepDirectionSearch] = DetermineNextStep(thetaCurrent,sCurrent,runTheta,fdCostPrev,iRepeat,iNonGradient,stepSize,State,M)
+function [thetaNew,iNewSearch,fdCost,stepDirectionSearch,State] = DetermineNextStep(thetaCurrent,sCurrent,runTheta,fdCostPrev,iRepeat,iNonGradient,stepSize,State,M)
 %DETERMINENEXTSTEP
     iGradient = ~iNonGradient & runTheta;
     iNonGradient = iNonGradient & runTheta;
@@ -7,9 +7,21 @@ function [thetaNew,iNewSearch,fdCost,stepDirectionSearch] = DetermineNextStep(th
     stepDirectionSearch = [];
     fdCost = fdCostPrev;
     if any(iGradient);
-        [fdCost] = ApproximateGradient(thetaCurrent,sCurrent,runTheta,fdCostPrev,iRepeat,iNonGradient,M);
-        thetaNew =  thetaCurrent(:,iGradient)-stepSize(iGradient).*fdCost(:,iGradient); %calculate new descent cost
-        stepDirectionSearch = -stepSize(iGradient).*fdCost(:,iGradient);
+        
+        
+        if contains(M.searchAlgorithm,"Fletcher-Reeves")
+            fdCost = fdCostPrev;
+            runFRTheta = runTheta & State.state ~=2;
+            [fdCostNew] = ApproximateGradient(thetaCurrent,sCurrent,runFRTheta,fdCostPrev,iRepeat,iNonGradient,M);
+            fdCost(:,runFRTheta) = fdCostNew(:,runFRTheta);
+            [thetaNew,State] = DetermineFletcherReevesNextSteps(thetaCurrent,sCurrent,iGradient,fdCost,State,M);
+            stepDirectionSearch = thetaNew-thetaCurrent(:,iGradient);
+        else
+            [fdCost] = ApproximateGradient(thetaCurrent,sCurrent,runTheta,fdCostPrev,iRepeat,iNonGradient,M);
+            thetaNew =  thetaCurrent(:,iGradient)-stepSize(iGradient).*fdCost(:,iGradient); %calculate new descent cost
+            stepDirectionSearch = -stepSize(iGradient).*fdCost(:,iGradient);
+        end
+        
         if M.xcoordinates
             thetaNew = thetaNew./vecnorm(thetaNew,2,1);
             stepDirectionSearch = stepDirectionSearch./vecnorm(stepDirectionSearch,2,1).*stepSize(iGradient);

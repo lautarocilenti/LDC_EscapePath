@@ -2,7 +2,7 @@ function [theta] = GetInitialTheta(M);
     fprintf("Getting initial theta ...")
 
     if M.methodTest
-        theta = rand(M.dim,M.nIC)*6-3;
+        theta = rand(M.dim,M.nIC)*8-4;
         if M.xcoordinates
             theta =  theta./vecnorm(theta,2,1);
         end
