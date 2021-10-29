@@ -6,7 +6,7 @@ a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = .1; %rhs parameters (note basin 
 dim = 4; %deterministic system dimension
 rIC = 10^-15; %radius of momenta initial conditions
 pp = 0; %poincare phase
-nIC = 10; %number of initial conditions 
+nIC = 40; %number of initial conditions 
 rhsString = 'TwoDuffing';
  T = 2*pi/w;  dT = T/2; dt = T/32; tf = 500*T;
 solver = @ode45;
@@ -18,18 +18,18 @@ rA1 = .3; %radius of initial sphere around initial attractor
 rA = .1; %accepted radius around an attractor
 rS =.001; %accepted radius around a saddle
 tstep = .1; %time that must pass prior to checking for sphere condition
-iA = 3; %initial attractor fixed point identifier
+iA = 4; %initial attractor fixed point identifier
 onceAPeriod = true;
 terminateType = 'DuffingBoundary'; 
 nWorkers = Inf;
 continueRun  = false;
 clusterRun = CheckIfCluster();
-xcoordinates = true;
+xcoordinates = false;
 uniformInX = true;
 nRVs = 2000; %number random variables per dimension for random IC initialization
 saveMemory = 1;
 methodTest = false;
-searchAlgorithm = "Gradient Descent Discontinuous 2";
+searchAlgorithm = "Fletcher-Reeves";
 
 
 
@@ -42,19 +42,19 @@ searchAlgorithm = "Gradient Descent Discontinuous 2";
 % nIC = 10;
 
 % Test modifications
-methodTest = true;
-saveMemory = true;
-dim = 2;
-note = "methodTest";
-paramNote = "methodTest";
-nIC = 10;
-xcoordinates = false;
+% methodTest = true;
+% saveMemory = true;
+% dim = 2;
+% note = "methodTest";
+% paramNote = "methodTest";
+% nIC = 10;
+% xcoordinates = false;
 
 
 
 %MinSearch Parameters
-nLM = 10; %maximum number of local minimum to explore
-maxIter = 40;
+nLM = 2; %maximum number of local minimum to explore
+maxIter = 4;
 
 %Descent parameters
 if contains(searchAlgorithm,"Gradient") || contains(searchAlgorithm,"Fletcher")

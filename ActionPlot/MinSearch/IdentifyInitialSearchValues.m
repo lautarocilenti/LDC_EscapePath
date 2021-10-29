@@ -10,8 +10,46 @@ function [thetaOut,sOut,iOut] = IdentifyInitialSearchValues(theta,S,nLM,M)
 
 end
 
+
+function [d,id] = distance(theta,theta1)
+    d = vecnorm(theta-theta1,2,1);
+    [d, id] = sort(d,'ascend');
+    d = d(2:end);
+    id = id(2:end);
+end
+
 function [thetaOut,sOut,iOut] = IdentifySmallValues(theta,S,nLM) 
     [~,is] = sort(S,'ascend');
+   
+    %remove too close values
+    [d,id1] = distance(theta,theta(:,1)); 
+    nNeighbors = 3;
+    if length(id1) >=nNeighbors
+        r = mean(d(1:nNeighbors));
+    else
+        r = mean(d);
+    end
+    
+    rejectedIndeces = [];
+    for i = 1:length(is)
+        if any(i==rejectedIndeces)
+            continue
+        else
+            [d,id] = distance(theta,theta(:,is(i))); 
+            iClose = d<r;
+            rejectedIndeces = [rejectedIndeces id(iClose)];
+            rejectedIndeces = unique(rejectedIndeces)
+        end
+        
+    end
+    isRejected = is(sort(rejectedIndeces,'ascend'));
+    [~,isRejected] = sort(S,'ascend');
+    is(rejectedIndeces) = [];
+    is = [is isRejected];
+    
+
+    
+    
     if length(is) > nLM
         is = is(1:nLM);
     end

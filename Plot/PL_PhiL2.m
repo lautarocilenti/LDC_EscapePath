@@ -5,7 +5,7 @@ if nargin ==4
 end
 
 if fullpath
-   phi = generateFullPath(phi,M); 
+   phi = GenerateFullPath(phi,M); 
 end
 
 %PL_PHIL2 

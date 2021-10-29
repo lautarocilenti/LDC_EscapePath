@@ -45,7 +45,7 @@ f4 = figure()
 PL_MPEP_2DProject(data)
 % 
 f5 = figure();
-PL_L2MPEPPath2(data)
+PL_L2MPEPPath(data)
 %  ExportPNG(f5,"L2MPEP")
 % 
 f6 = figure();

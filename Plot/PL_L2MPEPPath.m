@@ -15,7 +15,7 @@ T = 2*pi/M.Mrhs.w;
 
 phi = minPhi;
 
-PL_PhiL2(phi,FP,T,M,data.fullpath)
+PL_PhiL2(phi,FP,T,M,true)
 
 
 
