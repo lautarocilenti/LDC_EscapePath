@@ -13,22 +13,28 @@ classdef FixedPointsClass <handle
         nSaddles
         iSaddles
         interpolant
+        names
     end
     
     methods
         function o = FixedPointsClass(fp,phi,stability,solution)
             % Constructor
-            o.FP = fp;
-            o.Phi = phi;
-            o.Stability = stability;
-            o.Solution = solution;
+             fpNorm = vecnorm(fp,2,2);
+            [~,is] = sort(fpNorm,'ascend');
+            o.FP = fp(is,:);
+            o.Phi = phi(is);
+            o.Stability = stability(is);
+            o.Solution = solution(is);
             o.D = size(fp,2);
             o.nFP = size(fp,1);
-            o.nSaddles = sum(stability<0);
-            o.iSaddles = find(stability<0);
+            o.nSaddles = sum(o.Stability<0);
+            o.iSaddles = find(o.Stability<0);
             o.L2max = 1.5*max(vecnorm(fp,2,2));
             PrepareInterpolant(o);
+            ClassifyFixedPoints(o);
         end
+        
+        
         
         function [] = PrepareInterpolant(o)
             for iFP = 1:o.nFP
@@ -58,6 +64,36 @@ classdef FixedPointsClass <handle
                 end
             end
             stability = o.Stability;
+        end
+        
+        function [] = ClassifyFixedPoints(o)
+            stability = o.Stability;
+            fp = o.FP;
+            if size(o.FP,2) == 2
+               
+                names{1} = "Low Attractor";
+                names{size(o.FP,1)} = "High Attractor";
+                names{2} = "Saddle";
+            elseif size(o.FP,2) == 4
+                names{1} = "LL Attractor";
+                names{size(o.FP,1)} = "High Attractor";
+                c = 1;
+                for i = 2:size(o.FP,1)-1
+                    if stability(i) == -1
+                        names{i} = sprintf("Saddle %d",c); c = c+1;
+                    else
+                        fp1 = vecnorm(fp(i,1:2),2,2);
+                        fp2 = vecnorm(fp(i,3:4),2,2);
+                        if fp1>fp2
+                            names{i} = "HL Attractor";
+                        else
+                            names{i} = "LH Attractor";
+                        end
+                    end
+                end
+            end
+            o.names = names;
+            
         end
     end
 end

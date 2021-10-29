@@ -9,11 +9,15 @@ for i = 1:length(phiSet)
 
     
     if M.saveMemory == 1;
-        phiOut{1} = phi{1}(1);
-        phiOut{2} = phi{1}(1,:);
-        phiOut{3} = phi{1};
-        phiOut{4} = phi{1}(1);
-        phiOut{5} = phi{1}(1,:);
+        i1 = [1,length(phi{1})];
+        ifall = [1,length(phi{4})];
+        
+        phiOut{1} = phi{1}(i1);
+        phiOut{2} = phi{2}(i1,:);
+        phiOut{3} = phi{3};
+        phiOut{4} = phi{4}(ifall);
+        phiOut{5} = phi{5}(ifall,:);
+        phiSet{i} = phiOut;
     else
         t = phi{1};
         y = phi{2};
