@@ -6,7 +6,7 @@ a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = .1; %rhs parameters (note basin 
 dim = 4; %deterministic system dimension
 rIC = 10^-15; %radius of momenta initial conditions
 pp = 0; %poincare phase
-nIC = 3000; %number of initial conditions 
+nIC = 100; %number of initial conditions 
 rhsString = 'TwoDuffing';
  T = 2*pi/w;  dT = T/2; dt = T/32; tf = 500*T;
 solver = @ode45;
@@ -29,18 +29,18 @@ uniformInX = true;
 nRVs = 10000; %number random variables per dimension for random IC initialization
 saveMemory = 1;
 methodTest = false;
-searchAlgorithm = "Gradient";
+searchAlgorithm = "Stochastic Grid";
 
 
 
 % One oscillator modications
-iA = 3;
-rhsString = 'Duffing';
-dim = 2; 
-note = "One Forced Duffing Oscillator";
-paramNote = "One Oscillator";
-nIC = 20;
-uniformInX = false;
+% iA = 3;
+% rhsString = 'Duffing';
+% dim = 2; 
+% note = "One Forced Duffing Oscillator";
+% paramNote = "One Oscillator";
+% nIC = 100;
+% uniformInX = false;
 
 % Test modifications
 % methodTest = true;
@@ -54,14 +54,14 @@ uniformInX = false;
 
 
 %MinSearch Parameters
-nLM = 4; %maximum number of local minimum to explore
+nLM = 25; %maximum number of local minimum to explore
 maxIter = 20;
 
 %Descent parameters
 if contains(searchAlgorithm,"Gradient") || contains(searchAlgorithm,"Fletcher")
     descent.Gamma = .1; 
 else
-    descent.Gamma = 1; 
+    descent.Gamma = .25; 
 end
 descent.fdStep = 1E-2; %finite difference step
 descent.minGamma = 1E-10;
