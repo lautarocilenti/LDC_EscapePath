@@ -7,7 +7,7 @@ y = linspace(-4,4,500);
 zGrid  = basinInterpolant(xGrid,yGrid);
 
 ii = find(round(zGrid,0)==2);
-plot(xGrid(ii),yGrid(ii),'.');
+plot(xGrid(ii),yGrid(ii),'.','color','c','displayname','Basin Boundary');
 hold on
 title(titleString,'interpreter','latex')
 xlabel('x')

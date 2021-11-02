@@ -15,15 +15,13 @@ end
 
 if data.M.dim == 2
     %Generate Gridded interpolant
-%     F = GenerateBasinInterpolant(data.M);
-%     data.basinInterpolant = F; 
-%     
-
-    f3 = figure();
-%     PL_BasinBoundary(data.basinInterpolant,"");
-    PL_Attractors(data.attractors);
-    PL_MPEP(data);
-    axis([-4 4 -4 4])
+    f1 = figure();
+    if data.M.Mrhs.w == 1.4
+        F = GenerateBasinInterpolant(data.M);
+        data.basinInterpolant = F; 
+        PL_BasinBoundary(data.basinInterpolant,"");
+    end
+    PL_MPEP_2DProject(data)
 %      ExportPNG(f3,"MPEP")
 end
 
@@ -34,15 +32,15 @@ end
 % %  ExportPNG(f4,"L2Paths")
 %     F = GenerateBasinInterpolant(data.M);
 %     data.basinInterpolant = F; 
-%  PL_BasinBoundary(data.basinInterpolant,"");
-f4 = figure()
-for i = 1:1
-PL_Path_2DProject(data,i)
-hold on
-end
+% %  PL_BasinBoundary(data.basinInterpolant,"");
+% f4 = figure()
+% % for i = 1:1
+% % PL_Path_2DProject(data,i)
+% % hold on
+% % end
+% 
+% f4 = figure()
 
-f4 = figure()
-PL_MPEP_2DProject(data)
 % 
 f5 = figure();
 PL_L2MPEPPath(data)

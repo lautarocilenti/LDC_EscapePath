@@ -25,6 +25,7 @@ function [SNew,phiSetNew] = CostFunction(theta,M)
     else
          phiSetNew = PostProcessTrajectories2(IntegrateRHS(GenerateInitialConditionsFloquet(theta,M),M),M);
          SNew = IntegrateLagrangian(phiSetNew,M); 
+%          SNew = MaximumTime(phiSetNew,M); 
          if M.saveMemory
              [phiSetNew] = ReduceSizeToPeriods(phiSetNew,M);
          end

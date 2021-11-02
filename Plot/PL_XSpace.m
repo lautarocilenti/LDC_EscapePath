@@ -94,12 +94,20 @@ elseif M.dim == 2
             theta = ConvertThetaToX(theta);
             minTheta = ConvertThetaToX(minTheta);
         end
-
-        x = theta(1,:)
-        y = theta(2,:)
-        scatter(x,y,40,s,'filled')
+        
+        A = data.attractors(data.M.Mrhs.iA,:);
+        r = 1E-10;
+        x = (r*theta(1,:)+A(1));
+        y = (r*theta(2,:)+A(2));
+        scatter(x,y,40,s,'filled','displayname','Escape Action')
         cb = colorbar;
         hold on 
-         plot(minTheta(1),minTheta(2),'xr','markerSize',40)
+        m = 1.2;
+        limts = ([A(1)-m*r A(1)+m*r A(2)-m*r A(2)+m*r]);
+        axis(limts)
+        plot(A(1),A(2),'bv','displayname',data.M.Mrhs.FixedPoints.names{data.M.Mrhs.iA},'linewidth',4)
+%         axis([-2*r 2*r -2*r 2*r])
+         plot(r*minTheta(1)+A(1),r*minTheta(2)+A(2),'*r','markerSize',10,'displayname','Initial point for MPEP','linewidth',3)
+         legend('location','southeast')
 end
 end

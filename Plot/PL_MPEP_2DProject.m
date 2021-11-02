@@ -2,7 +2,7 @@ function [iS] = PL_MPEP_2DProject(data)
 %PL_MPEP 
 theta = data.theta(data.minPhiIndex);
 minPhi = data.phiSet{data.minPhiIndex}; 
-minS = data.minS;
+minS = data.S;
 M = data.M;
 
 

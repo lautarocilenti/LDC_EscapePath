@@ -113,7 +113,7 @@ TerminateFlag = ~any(runTheta);
     search.stepDirectionSearch{c} = stepDirectionSearch;
     search.iNewSearch{c} = iNewSearch;
     search.State = State;
-    msLog{end+1} = {thetaOut,sOut,search};
+    msLog{end} = {thetaOut,sOut,search};
 
 end
 

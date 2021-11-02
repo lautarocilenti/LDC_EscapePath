@@ -46,13 +46,14 @@ else
     mTemp = Parameters();
     M.MS = mTemp.MS;
     M.descent = mTemp.descent;
+    M.searchAlgorithm = mTemp.searchAlgorithm;
     
 end
 
 [phiSet,msLog] = RunMinSearch(phiSet,msLog,M); 
 theta = msLog{end}{1}; S = msLog{end}{2};
 % 
-[minS,minPhiIndex] = IdentifyMPEP(S);
+[minS,minPhiIndex] = IdentifyMPEP(S); 
 
 toc
 
@@ -63,7 +64,7 @@ data.M = M; data.attractors = M.Mrhs.FixedPoints.FP;
 data.msLog = msLog;
 
 % save('temp.mat');
-% SaveToFile(data,M);
+SaveToFile(data,M);
 if ~CheckIfCluster()
     PlotGenerator(data)
 end

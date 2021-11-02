@@ -1,12 +1,12 @@
 function [M] = Parameters(parameterNames,parameterValues)
 %Configure PARAMETERS here 
 note = "Two Forced Duffing Oscillators";
-paramNote = "Two Oscillator,Theta GridSearch";
+paramNote = "Two_Oscillator_StochasticGrid_iA7";
 a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = .1; %rhs parameters (note basin interpolant mat file must be changed if rhs parameters are changed)
 dim = 4; %deterministic system dimension
 rIC = 10^-15; %radius of momenta initial conditions
 pp = 0; %poincare phase
-nIC = 40; %number of initial conditions 
+nIC = 3000; %number of initial conditions 
 rhsString = 'TwoDuffing';
  T = 2*pi/w;  dT = T/2; dt = T/32; tf = 500*T;
 solver = @ode45;
@@ -18,7 +18,7 @@ rA1 = .3; %radius of initial sphere around initial attractor
 rA = .1; %accepted radius around an attractor
 rS =.001; %accepted radius around a saddle
 tstep = .1; %time that must pass prior to checking for sphere condition
-iA = 4; %initial attractor fixed point identifier
+iA = 7; %initial attractor fixed point identifier
 onceAPeriod = true;
 terminateType = 'DuffingBoundary'; 
 nWorkers = Inf;
@@ -26,20 +26,21 @@ continueRun  = false;
 clusterRun = CheckIfCluster();
 xcoordinates = false;
 uniformInX = true;
-nRVs = 2000; %number random variables per dimension for random IC initialization
+nRVs = 10000; %number random variables per dimension for random IC initialization
 saveMemory = 1;
 methodTest = false;
-searchAlgorithm = "Fletcher-Reeves";
+searchAlgorithm = "Gradient";
 
 
 
-%One oscillator modications
-% iA = 1;
-% rhsString = 'Duffing';
-% dim = 2; 
-% note = "One Forced Duffing Oscillator";
-% paramNote = "One Oscillator";
-% nIC = 10;
+% One oscillator modications
+iA = 3;
+rhsString = 'Duffing';
+dim = 2; 
+note = "One Forced Duffing Oscillator";
+paramNote = "One Oscillator";
+nIC = 20;
+uniformInX = false;
 
 % Test modifications
 % methodTest = true;
@@ -53,8 +54,8 @@ searchAlgorithm = "Fletcher-Reeves";
 
 
 %MinSearch Parameters
-nLM = 2; %maximum number of local minimum to explore
-maxIter = 4;
+nLM = 4; %maximum number of local minimum to explore
+maxIter = 20;
 
 %Descent parameters
 if contains(searchAlgorithm,"Gradient") || contains(searchAlgorithm,"Fletcher")
@@ -62,7 +63,7 @@ if contains(searchAlgorithm,"Gradient") || contains(searchAlgorithm,"Fletcher")
 else
     descent.Gamma = 1; 
 end
-descent.fdStep = 1E-4; %finite difference step
+descent.fdStep = 1E-2; %finite difference step
 descent.minGamma = 1E-10;
 descent.discGamma = .5;
 descent.DiscThresh = 2.0;

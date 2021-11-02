@@ -101,7 +101,10 @@ end
 
 function [qo] = GetInitialFixedPoint(pp,Mrhs)
     t = pp/Mrhs.w;
-    [fp,~] = Mrhs.FixedPoints.GetFixedPoint(mod(t,Mrhs.T),Mrhs.iA);
+    if t~=0
+        error("need to interpolate fixed point")
+    end
+    [fp] = Mrhs.FixedPoints.FP(Mrhs.iA,:);
     qo = fp';
 end
 

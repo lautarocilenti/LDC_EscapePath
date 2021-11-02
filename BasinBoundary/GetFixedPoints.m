@@ -19,7 +19,7 @@ if M.rhsString == "Duffing"
                 foundFlag = true;
                 break;
             end
-            data.Auto.FixedPoints{i}.W
+            data.Auto.FixedPoints{i}.W;
         end
         if foundFlag == false
             error("did not find fixedpoint data with that frequency")

@@ -22,7 +22,7 @@ for i = length(msLog)
     S = msLog{i}{2};
     S = S(iSortTheta);
     if i == length(msLog)
-        plot(thetaNorm,S,'s:','linewidth',1)
+        plot(thetaNorm,S,'s-','linewidth',2)
     else
         plot(thetaNorm,S,'x--','linewidth',2)
     end
@@ -36,12 +36,12 @@ for i = length(msLog)
         end
          thetaCurrent = vecnorm(thetaCurrent,2,1);
          sCurrent = descent.sCurrent(i-1,:);
-         plot(thetaCurrent,sCurrent,'or')
+%          plot(thetaCurrent,sCurrent,'*r','linewidth',4)
     end
 end
 % legend(legendstr)
-xlabel('$||\theta||$ (radians)','interpreter','latex')
-ylabel('$S(q)$','interpreter','latex')
+xlabel('$\theta$ (radians)','interpreter','latex')
+ylabel('$S(\theta)$','interpreter','latex')
 title(sprintf('Global Min: %e',data.minS))
 
 end
