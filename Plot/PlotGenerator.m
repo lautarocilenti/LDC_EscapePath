@@ -13,17 +13,17 @@ if data.M.methodTest
    return 
 end
 
-if data.M.dim == 2
-    %Generate Gridded interpolant
-    f1 = figure();
-    if data.M.Mrhs.w == 1.4
-        F = GenerateBasinInterpolant(data.M);
-        data.basinInterpolant = F; 
-        PL_BasinBoundary(data.basinInterpolant,"");
-    end
-    PL_MPEP_2DProject(data)
-%      ExportPNG(f3,"MPEP")
+
+%Generate Gridded interpolant
+f1 = figure();
+if data.M.Mrhs.w == 1.4 & data.M.dim == 2
+    F = GenerateBasinInterpolant(data.M);
+    data.basinInterpolant = F; 
+    PL_BasinBoundary(data.basinInterpolant,"");
 end
+PL_MPEP_2DProject(data)
+
+
 
 
 
@@ -53,8 +53,8 @@ PL_MinimumSearch(data);
  f7 = figure()
  PL_GridSearch(data);
 %  
- f8 = figure();
-PL_L2AllPath(data)
+%  f8 = figure();
+% PL_L2AllPath(data)
 
  f9 = figure();
  if data.M.xcoordinates

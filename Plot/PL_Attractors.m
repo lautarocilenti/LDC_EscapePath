@@ -16,7 +16,7 @@ for iA = 1:L
     lwidth = 2;
     if contains(names{iA},"Saddle")
         color = SaddleColors(iA,:)
-         msize = 13;
+%          msize = 13;
     else
         color = AttractorColor(iA,:);
     end
