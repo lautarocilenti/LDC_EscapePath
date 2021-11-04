@@ -73,6 +73,7 @@ end
 if M.xcoordinates
         q_eps = M.rIC*thetaSet;
 else
+
     if M.dim == 2
         q_eps = [M.rIC*cos(thetaSet);M.rIC*sin(thetaSet)]; %initial offset from attractor
     elseif M.dim ==4
@@ -110,6 +111,8 @@ end
 
 function [y] = ArrangeCoordinates(x,M)
     y = x;
+    % y = [x1 v1 x2 v2 p1 p1d p2 p2d]; %hamiltonian rhs
+    % x = [x1 x2 v1 v2 p1 p2 p1d p2d]; %jacobian rhs
     if M. dim == 4
         y(2,:) = x(3,:);
         y(3,:) = x(2,:);

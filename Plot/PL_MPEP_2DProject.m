@@ -1,15 +1,25 @@
-function [iS] = PL_MPEP_2DProject(data)
+function [iC] = PL_MPEP_2DProject(data,type,quantity)
+
+if nargin == 1
+   type = "action"; 
+   quantity = 1;
+elseif nargin == 2
+    quantity = 1;
+end
+
 %PL_MPEP 
-theta = data.theta(data.minPhiIndex);
-minPhi = data.phiSet{data.minPhiIndex}; 
-minS = data.S;
+if strcmp(type,"action")
+    costSet = data.S;
+else
+    costSet = data.C;
+end
 M = data.M;
 
+[~,iC] = sort(costSet,'ascend');
 
-
-[minS,iS] = min(minS);
-
- PL_Path_2DProject(data,iS);
+for i = 1:quantity
+    PL_Path_2DProject(data,iC(i));
+end
 
 end
 

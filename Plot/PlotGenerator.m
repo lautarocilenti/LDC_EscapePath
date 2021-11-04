@@ -23,6 +23,8 @@ if data.M.Mrhs.w == 1.4 & data.M.dim == 2
 end
 PL_MPEP_2DProject(data)
 
+PL_MPEP_2DProject(data,"cost")
+
 
 
 

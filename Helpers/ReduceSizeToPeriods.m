@@ -17,6 +17,7 @@ for i = 1:length(phiSet)
         phiOut{3} = phi{3};
         phiOut{4} = phi{4}(ifall);
         phiOut{5} = phi{5}(ifall,:);
+        phiOut{6} = phi{6}
         phiSet{i} = phiOut;
     else
         t = phi{1};
@@ -30,6 +31,7 @@ for i = 1:length(phiSet)
         [tq,q] = InterpAtPeriods(M,tf,yf);
         phi{4} = tq;
         phi{5} = q;
+        phi{6} = phi{6};
         phiSet{i} = phi;
     end
 end

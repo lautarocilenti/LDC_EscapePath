@@ -1,6 +1,6 @@
-function [S] = DistanceFromSaddle(phiSet,M)
+function [D] = DistanceFromSaddle(phiSet,M)
 %DISTANCEFROMSADDLE 
-S = zeros(1,length(phiSet));
+D = zeros(1,length(phiSet));
 for i = 1:length(phiSet)
    phi = phiSet{i};
    t = phi{1};
@@ -14,10 +14,7 @@ for i = 1:length(phiSet)
     Saddles(:,j) = M.Mrhs.FixedPoints.GetFixedPoint(tmod,iSaddle(j));
    end
    d = vecnorm(Saddles - xf,2,1);
-   S(i) = min(d);
-   
-   
-    
+   D(i) = min(d);
 end
 
 end

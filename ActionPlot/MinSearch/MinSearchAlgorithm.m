@@ -10,7 +10,7 @@ function [phiSetOut,msLog,TerminateFlag] = MinSearchAlgorithm(phiSet,msLog,nLM,M
 
 %extract data from min search log
 theta = msLog{end}{1};
-S = msLog{end}{2};
+cost = msLog{end}{2};
 searchPrev = msLog{end}{3};
 
 
@@ -18,28 +18,28 @@ searchPrev = msLog{end}{3};
 
 if searchPrev.newStart  %first loop
 
-    [~,sCurrent,iLM] = IdentifyInitialSearchValues(theta,S,nLM,M);
+    [~,cCurrent,iLM] = IdentifyInitialSearchValues(theta,cost,nLM,M);
     thetaCurrent = theta(:,iLM);
-    runTheta = true(size(sCurrent));
-    stepSize = M.descent.Gamma*ones(size(sCurrent));
+    runTheta = true(size(cCurrent));
+    stepSize = M.descent.Gamma*ones(size(cCurrent));
     fdCostPrev = NaN(size(thetaCurrent));
-    iRepeat = false(size(sCurrent));
+    iRepeat = false(size(cCurrent));
 
     
     if contains(M.searchAlgorithm,"Gradient")
-        iNonGradient = false(size(sCurrent));
+        iNonGradient = false(size(cCurrent));
         State = {};
     elseif contains(M.searchAlgorithm,"Simplex")
-        State.simplexState = ones(size(sCurrent));
+        State.simplexState = ones(size(cCurrent));
         State.thetaPrev = thetaCurrent;
-        State.sPrev = sCurrent;
-        iNonGradient = true(size(sCurrent));
+        State.sPrev = cCurrent;
+        iNonGradient = true(size(cCurrent));
     elseif contains(M.searchAlgorithm,"Fletcher-Reeves")
-        iNonGradient = false(size(sCurrent));
-        State.state = ones(size(sCurrent));
+        iNonGradient = false(size(cCurrent));
+        State.state = ones(size(cCurrent));
     else
         State = {};
-        iNonGradient = true(size(sCurrent));
+        iNonGradient = true(size(cCurrent));
     end
 
     
@@ -47,7 +47,7 @@ else
     
     c = searchPrev.Count;
     thetaCurrent = searchPrev.thetaNew{c};
-    sCurrent =  searchPrev.sNew(c,:);
+    cCurrent =  searchPrev.sNew(c,:);
     runTheta =  searchPrev.runTheta(c,:);
     fdCostPrev = searchPrev.fdCost{c};
     stepSize = searchPrev.stepSize{c};
@@ -60,28 +60,28 @@ else
 end
 
 [thetaNewSearch,iNewSearch,fdCost,stepDirectionSearch,State] = ... 
-    DetermineNextStep(thetaCurrent,sCurrent,runTheta,fdCostPrev,iRepeat,iNonGradient,stepSize,State,M);
+    DetermineNextStep(thetaCurrent,cCurrent,runTheta,fdCostPrev,iRepeat,iNonGradient,stepSize,State,M);
 
 
-[sNewSearch,phiSetNewSearch] = CostFunction(thetaNewSearch,M);
+[cNewSearch,phiSetNewSearch] = CostFunction(thetaNewSearch,M);
 
 thetaNew = thetaCurrent;
-sNew = sCurrent;
+cNew = cCurrent;
 if contains(M.searchAlgorithm,"Simplex")
     thetaNew(:,iNewSearch) = thetaNewSearch;
-    sNew(iNewSearch) = sNewSearch;
+    cNew(iNewSearch) = cNewSearch;
 else
-    [iBestNewValue] = BestNewSteps(sNewSearch,iNewSearch);
+    [iBestNewValue] = BestNewSteps(cNewSearch,iNewSearch);
     thetaNew(:,runTheta) = thetaNewSearch(:,iBestNewValue);
-    sNew(runTheta) = sNewSearch(iBestNewValue);
+    cNew(runTheta) = cNewSearch(iBestNewValue);
 end
 
 
-[thetaOut,sOut,phiSetOut] = MergeNewData(theta,S,phiSet,thetaNewSearch,sNewSearch,phiSetNewSearch);
+[thetaOut,cOut,phiSetOut] = MergeNewData(theta,cost,phiSet,thetaNewSearch,cNewSearch,phiSetNewSearch);
    
 
-[thetaNew,sNew,stepSize,iNonGradient,iRepeatNext,State] =  ... 
-    EvaluateNewStep(thetaNew,sNew,thetaCurrent,sCurrent,iNonGradient,runTheta,stepSize,State,M);
+[thetaNew,cNew,stepSize,iNonGradient,iRepeatNext,State] =  ... 
+    EvaluateNewStep(thetaNew,cNew,thetaCurrent,cCurrent,iNonGradient,runTheta,stepSize,State,M);
 
 
 iStop = find(stepSize<= 1E-5);
@@ -102,18 +102,18 @@ TerminateFlag = ~any(runTheta);
     search.fdCost{c} = fdCost;
     search.runTheta(c,:) = runTheta;
     search.theta{c} = thetaOut;
-    search.S{c} = sOut;
+    search.S{c} = cOut;
     search.thetaCurrent{c}= thetaCurrent;
-    search.sCurrent(c,:) = sCurrent;
+    search.sCurrent(c,:) = cCurrent;
     search.thetaNew{c} = thetaNew;
-    search.sNew (c,:) = sNew;
+    search.sNew (c,:) = cNew;
     search.stepSize{c} = stepSize;
     search.iRepeatNext = iRepeatNext;
     search.iNonGradient = iNonGradient;
     search.stepDirectionSearch{c} = stepDirectionSearch;
     search.iNewSearch{c} = iNewSearch;
     search.State = State;
-    msLog{end} = {thetaOut,sOut,search};
+    msLog{end} = {thetaOut,cOut,search};
 
 end
 

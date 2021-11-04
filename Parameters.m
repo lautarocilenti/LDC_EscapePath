@@ -16,7 +16,7 @@ plotFall = true;
 fastPostProcessing = false;
 rA1 = .3; %radius of initial sphere around initial attractor
 rA = .1; %accepted radius around an attractor
-rS =.001; %accepted radius around a saddle
+rS =1E-5; %accepted radius around a saddle
 tstep = .1; %time that must pass prior to checking for sphere condition
 iA = 7; %initial attractor fixed point identifier
 onceAPeriod = true;
@@ -30,17 +30,18 @@ nRVs = 10000; %number random variables per dimension for random IC initializatio
 saveMemory = 1;
 methodTest = false;
 searchAlgorithm = "Stochastic Grid";
+costType = "distancefromSaddle";
 
 
 
 % One oscillator modications
-% iA = 3;
-% rhsString = 'Duffing';
-% dim = 2; 
-% note = "One Forced Duffing Oscillator";
-% paramNote = "One Oscillator";
-% nIC = 100;
-% uniformInX = false;
+iA = 3;
+rhsString = 'Duffing';
+dim = 2; 
+note = "One Forced Duffing Oscillator";
+paramNote = "One Oscillator";
+nIC = 100;
+uniformInX = false;
 
 % Test modifications
 % methodTest = true;
@@ -54,8 +55,8 @@ searchAlgorithm = "Stochastic Grid";
 
 
 %MinSearch Parameters
-nLM = 25; %maximum number of local minimum to explore
-maxIter = 20;
+nLM = 10; %maximum number of local minimum to explore
+maxIter = 25;
 
 %Descent parameters
 if contains(searchAlgorithm,"Gradient") || contains(searchAlgorithm,"Fletcher")
@@ -106,6 +107,7 @@ M.nRVs = nRVs;
 M.saveMemory = saveMemory;
 M.methodTest = methodTest;
 M.searchAlgorithm = searchAlgorithm;
+M.costType = costType;
 
 
 M.paramNote = paramNote;

@@ -20,7 +20,7 @@ if ~M.continueRun
     theta = GetInitialTheta(M);
 
     %Initial Conditions cost
-    [S,phiSet] = CostFunction(theta,M);
+    [cost,phiSet] = CostFunction(theta,M);
 
     
 
@@ -28,19 +28,19 @@ if ~M.continueRun
     %In a loop augment initial conditions near low energy local minima
     search.Count = 0;
     search.newStart = true;
-    msLog = {{theta,S,search}};
-    save("Data/ActionPlot/initialsearch.mat",'M','phiSet','S','theta','search','msLog','-v7.3')
+    msLog = {{theta,cost,search}};
+    save("Data/ActionPlot/initialsearch.mat",'M','phiSet','cost','theta','search','msLog','-v7.3')
 else
     
      data = load('Data/ActionPlot/initialsearch.mat');
          
  
     theta = data.theta;
-    S = data.S;
+    cost = data.S;
     
     search.Count = 0;
     search.newStart = true;
-    msLog = {{theta,S,search}};
+    msLog = {{theta,cost,search}};
     phiSet = data.phiSet;
     M = data.M;
     mTemp = Parameters();
@@ -51,15 +51,16 @@ else
 end
 
 [phiSet,msLog] = RunMinSearch(phiSet,msLog,M); 
-theta = msLog{end}{1}; S = msLog{end}{2};
+theta = msLog{end}{1}; cost = msLog{end}{2};
 % 
-[minS,minPhiIndex] = IdentifyMPEP(S); 
+[minS,minPhiIndex] = IdentifyMPEP(cost); 
 
 toc
 
 %Data output
 data.minPhiIndex = minPhiIndex; data.minS = minS; data.theta = theta;
-data.S = S; data.phiSet = phiSet;
+data.S = ExtractAction(phiSet); data.phiSet = phiSet;
+data.C = cost;
 data.M = M; data.attractors = M.Mrhs.FixedPoints.FP;
 data.msLog = msLog;
 
