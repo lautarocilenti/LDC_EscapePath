@@ -13,7 +13,9 @@ ii = find(cost> mean(cost) +3*std(cost));
 minTheta = mod(theta(:,data.minPhiIndex),2*pi);
 cost(ii) = [];
 theta(:,ii) = [];
-if size(theta,1) <= 1
+if size(theta,1) == 1
+    [theta,isort] = sort(theta,'ascend');
+    plot(theta,cost(isort),'s-')
     return
 elseif size(theta,1) == 2
     x = mod(theta(1,:),2*pi);

@@ -23,6 +23,7 @@ if data.M.Mrhs.w == 1.4 & data.M.dim == 2
 end
 PL_MPEP_2DProject(data)
 
+f2 = figure();
 PL_MPEP_2DProject(data,"cost")
 
 
@@ -50,6 +51,8 @@ PL_L2MPEPPath(data)
 % 
 f6 = figure();
 PL_MinimumSearch(data);
+
+
 %  ExportPNG(f6,"MinSearch")
  
  f7 = figure()
@@ -62,7 +65,10 @@ PL_MinimumSearch(data);
  if data.M.xcoordinates
     PL_XSpace(data)
  else
+     
      PL_ThetaSpace(data)
+     figure()
+     PL_ThetaSpace(data,"cost")
 %      PL_XSpace(data)
  end
  
