@@ -28,25 +28,30 @@ if ~M.continueRun
     %In a loop augment initial conditions near low energy local minima
     search.Count = 0;
     search.newStart = true;
-    msLog = {{theta,cost,search}};
+    search.M = M;
+    msLog = {};
     save("Data/ActionPlot/initialsearch.mat",'M','phiSet','cost','theta','search','msLog','-v7.3')
+    msLog = {{theta,cost,search}};
 else
     
      data = load('Data/ActionPlot/initialsearch.mat');
          
  
     theta = data.theta;
-    cost = data.S;
+    cost = data.cost;
     
     search.Count = 0;
     search.newStart = true;
-    msLog = {{theta,cost,search}};
+    msLog = data.msLog;
+    
     phiSet = data.phiSet;
     M = data.M;
     mTemp = Parameters();
     M.MS = mTemp.MS;
     M.descent = mTemp.descent;
     M.searchAlgorithm = mTemp.searchAlgorithm;
+    search.M = M;
+    msLog{end+1} = {theta,cost,search};
     
 end
 
@@ -65,6 +70,7 @@ data.M = M; data.attractors = M.Mrhs.FixedPoints.FP;
 data.msLog = msLog;
 
 % save('temp.mat');
+save("Data/ActionPlot/initialsearch.mat",'M','phiSet','cost','theta','search','msLog','-v7.3')
 SaveToFile(data,M);
 if ~CheckIfCluster()
     PlotGenerator(data)

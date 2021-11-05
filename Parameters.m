@@ -1,12 +1,12 @@
 function [M] = Parameters(parameterNames,parameterValues)
 %Configure PARAMETERS here 
 note = "Two Forced Duffing Oscillators";
-paramNote = "Two_Oscillator_StochasticGrid_iA7";
+paramNote = "Two_Oscillator_Simplex_iA4";
 a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = .1; %rhs parameters (note basin interpolant mat file must be changed if rhs parameters are changed)
 dim = 4; %deterministic system dimension
 rIC = 10^-15; %radius of momenta initial conditions
 pp = 0; %poincare phase
-nIC = 100; %number of initial conditions 
+nIC = 10; %number of initial conditions 
 rhsString = 'TwoDuffing';
  T = 2*pi/w;  dT = T/2; dt = T/32; tf = 500*T;
 solver = @ode45;
@@ -18,30 +18,30 @@ rA1 = .3; %radius of initial sphere around initial attractor
 rA = .1; %accepted radius around an attractor
 rS =1E-5; %accepted radius around a saddle
 tstep = .1; %time that must pass prior to checking for sphere condition
-iA = 7; %initial attractor fixed point identifier
+iA = 4; %initial attractor fixed point identifier
 onceAPeriod = true;
 terminateType = 'DuffingBoundary'; 
 nWorkers = Inf;
-continueRun  = false;
+continueRun  = true;
 clusterRun = CheckIfCluster();
-xcoordinates = false;
+xcoordinates = true;
 uniformInX = true;
-nRVs = 10000; %number random variables per dimension for random IC initialization
+nRVs = 10000; %number random variables for random IC initialization
 saveMemory = 1;
 methodTest = false;
 searchAlgorithm = "Stochastic Grid";
-costType = "distancefromSaddle";
+costType = "action";
 
 
 
 % One oscillator modications
-iA = 3;
-rhsString = 'Duffing';
-dim = 2; 
-note = "One Forced Duffing Oscillator";
-paramNote = "One Oscillator";
-nIC = 100;
-uniformInX = false;
+% iA = 3;
+% rhsString = 'Duffing';
+% dim = 2; 
+% note = "One Forced Duffing Oscillator";
+% paramNote = "One Oscillator";
+% nIC = 100;
+% uniformInX = false;
 
 % Test modifications
 % methodTest = true;
@@ -55,8 +55,8 @@ uniformInX = false;
 
 
 %MinSearch Parameters
-nLM = 10; %maximum number of local minimum to explore
-maxIter = 25;
+nLM = 2; %maximum number of local minimum to explore
+maxIter = 2;
 
 %Descent parameters
 if contains(searchAlgorithm,"Gradient") || contains(searchAlgorithm,"Fletcher")
