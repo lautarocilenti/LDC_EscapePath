@@ -46,7 +46,7 @@ parfor(ixo = 1:size(xoSet,2),M.nWorkers)
            
 %         if norm(y(end,1:M.dim)) > blewUpThreshold %solution blew up
         if norm(y(end,:)) > blewUpThreshold 
-            if dT < T/32
+            if dT < T/4
                 fprintf("Terminating because dT is too small\n")
                 break 
             end

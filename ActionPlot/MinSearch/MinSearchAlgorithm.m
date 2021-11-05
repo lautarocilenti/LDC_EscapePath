@@ -84,7 +84,7 @@ end
     EvaluateNewStep(thetaNew,cNew,thetaCurrent,cCurrent,iNonGradient,runTheta,stepSize,State,M);
 
 
-iStop = find(stepSize<= 1E-5);
+iStop = find(stepSize<= M.descent.minGamma);
 runTheta(iStop) = false;
 
 TerminateFlag = ~any(runTheta);

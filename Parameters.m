@@ -1,10 +1,10 @@
 function [M] = Parameters(parameterNames,parameterValues)
 %Configure PARAMETERS here 
 note = "Two Forced Duffing Oscillators";
-paramNote = "Two_Oscillator_Simplex_iA4";
-a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = .1; %rhs parameters (note basin interpolant mat file must be changed if rhs parameters are changed)
+paramNote = "Two_Oscillator_StochasticGrid_iA7_wChange";
+a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.35; kc = .1; %rhs parameters (note basin interpolant mat file must be changed if rhs parameters are changed)
 dim = 4; %deterministic system dimension
-rIC = 10^-15; %radius of momenta initial conditions
+rIC = 10^-10; %radius of momenta initial conditions
 pp = 0; %poincare phase
 nIC = 10; %number of initial conditions 
 rhsString = 'TwoDuffing';
@@ -14,15 +14,15 @@ psiEps = .05; %phase threshold
 tFall = 10*T; %Max amount of time for system to fall to attractor radius
 plotFall = true;
 fastPostProcessing = false;
-rA1 = .3; %radius of initial sphere around initial attractor
+rA1 = .1; %radius of initial sphere around initial attractor
 rA = .1; %accepted radius around an attractor
 rS =1E-5; %accepted radius around a saddle
 tstep = .1; %time that must pass prior to checking for sphere condition
-iA = 4; %initial attractor fixed point identifier
+iA = 7; %initial attractor fixed point identifier
 onceAPeriod = true;
 terminateType = 'DuffingBoundary'; 
 nWorkers = Inf;
-continueRun  = true;
+continueRun  = false;
 clusterRun = CheckIfCluster();
 xcoordinates = true;
 uniformInX = true;
