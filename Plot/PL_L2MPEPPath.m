@@ -1,22 +1,32 @@
-function [] = PL_L2MPEPPath(data)
-%PL_L2PATH Summary of this function goes here
-%   Detailed explanation goes here
+function [] = PL_L2MPEPPath(data,type,quantity)
+%PL_L2PATH 
+
+
+if nargin == 1
+   type = "action"; 
+   quantity = 1;
+elseif nargin == 2
+    quantity = 1;
+end
+
+%PL_MPEP 
+if strcmp(type,"action")
+    costSet = data.S;
+else
+    costSet = data.C;
+end
+
+[~,iC] = sort(costSet,'ascend');
+
 M = data.M;
-
-
-[M] = GetFixedPoints(M);
-theta = data.theta(data.minPhiIndex);
-minPhi = data.phiSet{data.minPhiIndex}; 
-minS = data.minS;
-
-FP = M.Mrhs.FixedPoints.FP;
-t = M.tspan;
 T = 2*pi/M.Mrhs.w;
+FP = M.Mrhs.FixedPoints.FP;
 
-phi = minPhi;
 
-PL_PhiL2(phi,FP,T,M,true)
-
+for i = 1:quantity
+    phi = data.phiSet{iC(i)};
+    PL_PhiL2(phi,FP,T,M,true)
+end
 
 
 end

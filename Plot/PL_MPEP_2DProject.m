@@ -1,4 +1,4 @@
-function [iC] = PL_MPEP_2DProject(data,type,quantity)
+function [] = PL_MPEP_2DProject(data,type,quantity)
 
 if nargin == 1
    type = "action"; 
@@ -13,7 +13,6 @@ if strcmp(type,"action")
 else
     costSet = data.C;
 end
-M = data.M;
 
 [~,iC] = sort(costSet,'ascend');
 

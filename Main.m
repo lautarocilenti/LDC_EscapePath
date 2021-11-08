@@ -66,7 +66,7 @@ toc
 data.minPhiIndex = minPhiIndex; data.minS = minS; data.theta = theta;
 data.S = ExtractAction(phiSet); data.phiSet = phiSet;
 data.C = cost;
-data.M = M; data.attractors = M.Mrhs.FixedPoints.FP;
+data.M = M; data.attractors = M.Mrhs.FixedPoints.FP; 
 data.msLog = msLog;
 
 % save('temp.mat');

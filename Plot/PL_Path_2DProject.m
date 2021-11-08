@@ -8,7 +8,7 @@ M = data.M;
 
 
 
-[Phi] = GenerateFullPath(Phi,M)
+[Phi] = GenerateFullPath(Phi,M);
 
 t = Phi{1};
 phiAll = Phi{2};
@@ -32,7 +32,11 @@ for i = 1:M.dim/2
             [tqFall,xqFall] = InterpolateToPhaseAngle(tFall,phiFall,M);
             plot([xq(end,1);xqFall(:,1)],[xq(end,2);xqFall(:,2)],'.-.','markersize',msize,'Color',color,'displayname','Duffing Trajectory');      
         end
-    PL_Attractors(data.attractors,M.Mrhs.FixedPoints.names,(i-1)*2);
+    if isfield(M.Mrhs,"FixedPoints")
+        PL_Attractors(data.attractors,M.Mrhs.FixedPoints.names,(i-1)*2);
+    else
+        PL_Attractors(data.attractors,[],(i-1)*2);
+    end
     axis([-2  2 -2 3])
     xL = sprintf('q_%d',(i-1)*2+1);
     xlabel(['$',xL,'$'],'interpreter','latex')

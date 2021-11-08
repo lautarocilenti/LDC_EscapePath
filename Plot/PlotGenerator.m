@@ -21,32 +21,15 @@ if data.M.Mrhs.w == 1.4 & data.M.dim == 2
     data.basinInterpolant = F; 
     PL_BasinBoundary(data.basinInterpolant,"");
 end
-PL_MPEP_2DProject(data)
+PL_MPEP_2DProject(data);
 
 f2 = figure();
-PL_MPEP_2DProject(data,"cost")
+PL_MPEP_2DProject(data,"cost");
 
-
-
-
-
-% f4 = figure();
-% PL_L2Path(data)
-% %  ExportPNG(f4,"L2Paths")
-%     F = GenerateBasinInterpolant(data.M);
-%     data.basinInterpolant = F; 
-% %  PL_BasinBoundary(data.basinInterpolant,"");
-% f4 = figure()
-% % for i = 1:1
-% % PL_Path_2DProject(data,i)
-% % hold on
-% % end
-% 
-% f4 = figure()
 
 % 
 f5 = figure();
-PL_L2MPEPPath(data)
+PL_L2MPEPPath(data);
 %  ExportPNG(f5,"L2MPEP")
 % 
 f6 = figure();
@@ -55,7 +38,7 @@ PL_MinimumSearch(data);
 
 %  ExportPNG(f6,"MinSearch")
  
- f7 = figure()
+ f7 = figure();
  PL_GridSearch(data);
 %  
 %  f8 = figure();

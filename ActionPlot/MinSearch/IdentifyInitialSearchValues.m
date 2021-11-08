@@ -38,7 +38,7 @@ function [thetaOut,sOut,iOut] = IdentifySmallValues(theta,S,nLM)
             [d,id] = distance(theta,theta(:,is(i))); 
             iClose = d<r;
             rejectedIndeces = [rejectedIndeces id(iClose)];
-            rejectedIndeces = unique(rejectedIndeces)
+            rejectedIndeces = unique(rejectedIndeces);
         end
         
     end

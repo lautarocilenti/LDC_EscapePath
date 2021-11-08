@@ -18,7 +18,13 @@ color = abs([rand() rand() rand()]-.5);
 lspec = ["-",":"];
 tqAll = [];
 names = {"Escape Path","Trajectory"};
-for j = 1:1%length(jList)
+plotfall = true;
+if plotfall
+    jL = length(jList);
+else
+    jL = 1;
+end
+for j = 1:jL
     xq = []; tq = [];
     t = phi{jList(j)};
     x = phi{jList(j)+1};

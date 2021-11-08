@@ -24,7 +24,7 @@ if M.rhsString == "Duffing"
         if foundFlag == false
             error("did not find fixedpoint data with that frequency")
         end
-        M.Mrhs.FixedPoints =  FixedPointsClass(fpData.FP,fpData.phi,fpData.Stability,fpData.solution)
+        M.Mrhs.FixedPoints =  FixedPointsClass(fpData.FP,fpData.phi,fpData.Stability,fpData.solution);
     else
         error("Parameters do not match with requested file");
     end
@@ -33,7 +33,7 @@ elseif M.rhsString == "TwoDuffing"
         data = load(fullfile(folder,"FixedPointsTwoDuffing.mat"));
     elseif M.Mrhs.a1 == 1 & M.Mrhs.a3 == .3 & M.Mrhs.nu == .1 & M.Mrhs.F == .4 & M.Mrhs.kc == 0 & M.Mrhs.w == 1.4
         data1 = load(fullfile(folder,"FixedPoints.mat"));
-        fpData1 = data1.Auto.FixedPoints{121}
+        fpData1 = data1.Auto.FixedPoints{121};
         data2 =  load(fullfile(folder,"FixedPointsTwoDuffing.mat"));
         fpData2 = data2.Auto.FixedPoints{91};
         FP1 = fpData1.FP;
@@ -83,7 +83,7 @@ elseif M.rhsString == "TwoDuffing"
         if foundFlag == false
             error("did not find fixedpoint data with that frequency")
         end
-        M.Mrhs.FixedPoints =  FixedPointsClass(fpData.FP,fpData.phi,fpData.stability,fpData.solution)
+        M.Mrhs.FixedPoints =  FixedPointsClass(fpData.FP,fpData.phi,fpData.stability,fpData.solution);
     else
         error("Parameters do not match with requested file");
     end

@@ -15,8 +15,8 @@ if M.dim == 4
         if ~data.M.xcoordinates
             theta = ConvertThetaToX(theta);
         end
-        x = theta(1,:)
-        y = theta(2,:)
+        x = theta(1,:);
+        y = theta(2,:);
         z = sqrt(theta(3,:).^2+theta(4,:).^2).*sign(theta(4,:));
 
         scatter3(x,y,z,40,s,'filled')    % draw the scatter plot
@@ -43,7 +43,7 @@ if M.dim == 4
         ii = theta(4,:)>=0;
         x = theta(1,ii);
         y = theta(2,ii) ;
-        z = theta(3,ii); ; %sqrt(theta(3,:).^2+theta(4,:).^2).*sign(theta(4,:));
+        z = theta(3,ii);  %sqrt(theta(3,:).^2+theta(4,:).^2).*sign(theta(4,:));
         x2 = theta(1,~ii) ;
         y2 = theta(2,~ii) ;
         z2 = theta(3,~ii);
