@@ -31,6 +31,8 @@ if M.rhsString == "Duffing"
 elseif M.rhsString == "TwoDuffing"
     if M.Mrhs.a1 == 1 & M.Mrhs.a3 == .3 & M.Mrhs.nu == .1 & M.Mrhs.F == .4 & M.Mrhs.kc == .1
         data = load(fullfile(folder,"FixedPointsTwoDuffing.mat"));
+    elseif M.Mrhs.a1 == 1 & M.Mrhs.a3 == .3 & M.Mrhs.nu == .1 & M.Mrhs.F == .4 & M.Mrhs.kc == .01
+         data = load(fullfile(folder,"FixedPointsTwoDuffingkcp01.mat"));
     elseif M.Mrhs.a1 == 1 & M.Mrhs.a3 == .3 & M.Mrhs.nu == .1 & M.Mrhs.F == .4 & M.Mrhs.kc == 0 & M.Mrhs.w == 1.4
         data1 = load(fullfile(folder,"FixedPoints.mat"));
         fpData1 = data1.Auto.FixedPoints{121};
@@ -70,7 +72,7 @@ elseif M.rhsString == "TwoDuffing"
 
     %validate parameters
     m = data.Auto.M;
-    if M.Mrhs.a1 == m.a & M.Mrhs.a3 == m.beta & M.Mrhs.nu == m.nu & M.Mrhs.F == m.F & M.Mrhs.kc == .1
+    if M.Mrhs.a1 == m.a & M.Mrhs.a3 == m.beta & M.Mrhs.nu == m.nu & M.Mrhs.F == m.F
         foundFlag = false;
         for i = 1:length(data.Auto.FixedPoints)
             if round(data.Auto.FixedPoints{i}.W,8) == round(M.Mrhs.w,8)
