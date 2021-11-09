@@ -77,10 +77,19 @@ else
     if M.dim == 2
         q_eps = [M.rIC*cos(thetaSet);M.rIC*sin(thetaSet)]; %initial offset from attractor
     elseif M.dim ==4
+        if contains(M.searchAlgorithm,"OneO")
+            if M.io == 1
+                q_eps = [M.rIC*cos(thetaSet);zeros(size(thetaSet));M.rIC*sin(thetaSet);zeros(size(thetaSet))]; 
+            else
+                q_eps = [zeros(size(thetaSet));M.rIC*cos(thetaSet);zeros(size(thetaSet));M.rIC*sin(thetaSet)]; 
+            end
+            
+        else
             theta1 = thetaSet(1,:);
             theta2 = thetaSet(2,:);
             theta3 = thetaSet(3,:);
-            q_eps = [M.rIC*cos(theta1);M.rIC*sin(theta1).*cos(theta2);M.rIC*sin(theta1).*sin(theta2).*cos(theta3);M.rIC*sin(theta1).*sin(theta2).*sin(theta3)]; %initial offset from attractor  
+            q_eps = [M.rIC*cos(theta1);M.rIC*sin(theta1).*cos(theta2);M.rIC*sin(theta1).*sin(theta2).*cos(theta3);M.rIC*sin(theta1).*sin(theta2).*sin(theta3)]; %initial offset from attractor 
+        end
     end
 end
 

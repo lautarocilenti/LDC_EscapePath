@@ -20,7 +20,7 @@ function [theta] = GetInitialTheta(M);
             [theta] = ConvertXToTheta(x);
        end
     else
-        if M.dim == 2
+        if M.dim == 2 || contains(M.searchAlgorithm,"OneO")
             dtheta =(2*pi)/(M.nIC);
             theta = [dtheta:dtheta:2*pi]; 
         elseif M.dim == 4

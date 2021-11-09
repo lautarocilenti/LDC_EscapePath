@@ -32,7 +32,8 @@ for i = 1:M.dim/2
             [tqFall,xqFall] = InterpolateToPhaseAngle(tFall,phiFall,M);
             plot([xq(end,1);xqFall(:,1)],[xq(end,2);xqFall(:,2)],'.-.','markersize',msize,'Color',color,'displayname','Duffing Trajectory');      
         end
-    if isfield(M.Mrhs,"FixedPoints")
+    if ~isempty(M.Mrhs.FixedPoints)%isfield(M.Mrhs,"FixedPoints")
+        
         PL_Attractors(data.attractors,M.Mrhs.FixedPoints.names,(i-1)*2);
     else
         PL_Attractors(data.attractors,[],(i-1)*2);

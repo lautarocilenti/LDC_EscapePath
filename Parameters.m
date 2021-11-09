@@ -2,11 +2,11 @@ function [M] = Parameters(parameterNames,parameterValues)
 %Configure PARAMETERS here 
 note = "Two Forced Duffing Oscillators";
 paramNote = "Two_Oscillator_StochasticGrid_iA7_wChange";
-a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.35; kc = .1; %rhs parameters (note basin interpolant mat file must be changed if rhs parameters are changed)
+a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = .1; %rhs parameters (note basin interpolant mat file must be changed if rhs parameters are changed)
 dim = 4; %deterministic system dimension
 rIC = 10^-10; %radius of momenta initial conditions
 pp = 0; %poincare phase
-nIC = 10; %number of initial conditions 
+nIC = 100; %number of initial conditions 
 rhsString = 'TwoDuffing';
  T = 2*pi/w;  dT = T/2; dt = T/32; tf = 500*T;
 solver = @ode45;
@@ -31,7 +31,7 @@ saveMemory = 1;
 methodTest = false;
 searchAlgorithm = "Stochastic Grid";
 costType = "action";
-
+io = 0;
 
 
 % One oscillator modications
@@ -52,17 +52,29 @@ costType = "action";
 % nIC = 10;
 % xcoordinates = false;
 
+% One O modications
+iA = 4;
+io = 2;
+rhsString = 'TwoDuffing';
+dim = 4; 
+note = "TwoOscillators_HighOscillatorOnly";
+paramNote = "TwoOscillators_HighOscillatorFirst";
+nIC = 100;
+xcoordinates = false;
+uniformInX = false;
+searchAlgorithm = "Stochastic Grid OneO";
+
 
 
 %MinSearch Parameters
-nLM = 2; %maximum number of local minimum to explore
-maxIter = 2;
+nLM = 4; %maximum number of local minimum to explore
+maxIter = 50;
 
 %Descent parameters
 if contains(searchAlgorithm,"Gradient") || contains(searchAlgorithm,"Fletcher")
     descent.Gamma = .1; 
 else
-    descent.Gamma = .25; 
+    descent.Gamma = .05; 
 end
 descent.fdStep = 1E-2; %finite difference step
 descent.minGamma = 1E-10;
@@ -115,7 +127,7 @@ M.Mrhs.a1 = a1; M.Mrhs.a3 = a3; M.Mrhs.nu = nu; M.Mrhs.kc = kc;
 M.Mrhs.F = F; M.Mrhs.w = w; M.Mrhs.psiEps = psiEps;
  M.Mrhs.rA = rA; M.Mrhs.rS = rS; M.Mrhs.tstep = tstep; %M.Mrhs.qo = qo;
 M.Mrhs.rA1 = rA1; M.Mrhs.tFall = tFall; M.Mrhs.iA = iA; M.Mrhs.T = T;
-M.Mrhs.onceAPeriod = onceAPeriod; M.Mrhs.dim = dim;
+M.Mrhs.onceAPeriod = onceAPeriod; M.Mrhs.dim = dim; M.io = io;
 
 M.MS.nLM = nLM; M.MS.maxIter = maxIter;
 

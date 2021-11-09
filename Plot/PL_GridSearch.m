@@ -23,9 +23,14 @@ for i = 1:size(sCurrent,2)
 end
 
 iteration = [1:size(sCurrent,1)]-1;
-
+PlotAll = false;
+if PlotAll
+    iter = 1:size(sCurrent,2)
+else
+    [~,iter] = min(sCurrent(end,:));
+end
 subplot(3,1,1)
-for i = 1:size(sCurrent,2)
+for i = iter
    semilogy(iteration,s(:,i),'x-')
    hold on
 end
@@ -35,7 +40,7 @@ ylabel('action')
 subplot(3,1,2)
 iteration = [1:size(s,1)-1];
 
-for i = 1:size(s,2)
+for i = iter
    stairs(iteration,(abs(diff(s(:,i)))),'x-')
    hold on
 end
@@ -45,7 +50,7 @@ ylabel('descent improvement')
 set(gca, 'YScale', 'log')
 subplot(3,1,3)
 iteration = [1:size(sCurrent,1)]-1;
-for i = 1:size(s,2)
+for i = iter
    stairs(iteration,(stepSizeNorm(:,i)),'x-')
    hold on
 end

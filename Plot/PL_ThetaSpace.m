@@ -11,6 +11,7 @@ else
 end
 ii = find(cost> mean(cost) +3*std(cost));
 minTheta = mod(theta(:,data.minPhiIndex),2*pi);
+minCost = cost(data.minPhiIndex);
 cost(ii) = [];
 theta(:,ii) = [];
 if size(theta,1) == 1
@@ -43,6 +44,7 @@ view(-31,14)
 minTheta(1:2) = mod(minTheta(1:2),pi);
 hold on
 plot3(minTheta(1),minTheta(2),minTheta(3),'xr','markerSize',40)
+title(sprintf("Min value: %f",minCost))
 cb = colorbar;                                     % create and label the colorbar
 cb.Label.String = 'Action';
 xlabel('Theta 1')

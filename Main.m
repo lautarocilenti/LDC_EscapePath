@@ -8,8 +8,10 @@ CreateParpool();
 %Parameters
 if nargin == 2
     M = Parameters(parameterNames,parameterValues);
+    mTemp = M;
 else
     M = Parameters();
+    mTemp = M;
 end
 tic 
 
@@ -46,7 +48,6 @@ else
     
     phiSet = data.phiSet;
     M = data.M;
-    mTemp = Parameters();
     M.MS = mTemp.MS;
     M.descent = mTemp.descent;
     M.searchAlgorithm = mTemp.searchAlgorithm;
