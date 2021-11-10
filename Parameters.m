@@ -18,7 +18,8 @@ rA1 = .1; %radius of initial sphere around initial attractor
 rA = .1; %accepted radius around an attractor
 rS =1E-5; %accepted radius around a saddle
 tstep = .1; %time that must pass prior to checking for sphere condition
-iA = 9; %initial attractor fixed point identifier
+iAString = "HL Attractor"; %initial attractor fixed point identifier
+fAString = "HH Attractor"; 
 onceAPeriod = true;
 terminateType = 'DuffingBoundary'; 
 nWorkers = Inf;
@@ -120,13 +121,15 @@ M.saveMemory = saveMemory;
 M.methodTest = methodTest;
 M.searchAlgorithm = searchAlgorithm;
 M.costType = costType;
+M.iAString = iAString;
+M.fAString = fAString;
 
 
 M.paramNote = paramNote;
 M.Mrhs.a1 = a1; M.Mrhs.a3 = a3; M.Mrhs.nu = nu; M.Mrhs.kc = kc;
 M.Mrhs.F = F; M.Mrhs.w = w; M.Mrhs.psiEps = psiEps;
- M.Mrhs.rA = rA; M.Mrhs.rS = rS; M.Mrhs.tstep = tstep; %M.Mrhs.qo = qo;
-M.Mrhs.rA1 = rA1; M.Mrhs.tFall = tFall; M.Mrhs.iA = iA; M.Mrhs.T = T;
+M.Mrhs.rA = rA; M.Mrhs.rS = rS; M.Mrhs.tstep = tstep; %M.Mrhs.qo = qo;
+M.Mrhs.rA1 = rA1; M.Mrhs.tFall = tFall; M.Mrhs.T = T;
 M.Mrhs.onceAPeriod = onceAPeriod; M.Mrhs.dim = dim; M.io = io;
 
 M.MS.nLM = nLM; M.MS.maxIter = maxIter;

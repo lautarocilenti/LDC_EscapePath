@@ -85,7 +85,11 @@ elseif M.rhsString == "TwoDuffing"
         if foundFlag == false
             error("did not find fixedpoint data with that frequency")
         end
-        M.Mrhs.FixedPoints =  FixedPointsClass(fpData.FP,fpData.phi,fpData.stability,fpData.solution);
+        M.Mrhs.FixedPoints =  FixedPointsClass(fpData.FP,fpData.phi,fpData.stability,fpData.solution,M.iAString,M.fAString);
+        M.attractors = M.Mrhs.FixedPoints.FP;
+        M.attractorNames = M.Mrhs.FixedPoints.names;
+        M.Mrhs.iA = M.Mrhs.FixedPoints.iA;
+        M.Mrhs.fA = M.Mrhs.FixedPoints.fA;
     else
         error("Parameters do not match with requested file");
     end

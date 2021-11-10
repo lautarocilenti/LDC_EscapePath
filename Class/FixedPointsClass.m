@@ -14,10 +14,12 @@ classdef FixedPointsClass <handle
         iSaddles
         interpolant
         names
+        iA
+        fA
     end
     
     methods
-        function o = FixedPointsClass(fp,phi,stability,solution)
+        function o = FixedPointsClass(fp,phi,stability,solution,iAString,fAString)
             % Constructor
              fpNorm = vecnorm(fp,2,2);
             [~,is] = sort(fpNorm,'ascend');
@@ -32,6 +34,8 @@ classdef FixedPointsClass <handle
             o.L2max = 1.5*max(vecnorm(fp,2,2));
             PrepareInterpolant(o);
             ClassifyFixedPoints(o);
+            SetInitalAttractor(o,iAString);
+            SetFinalAttractor(o,fAString);
         end
         
         
@@ -76,14 +80,33 @@ classdef FixedPointsClass <handle
                 names{2} = "Saddle";
             elseif size(o.FP,2) == 4
                 names{1} = "LL Attractor";
-                names{size(o.FP,1)} = "High Attractor";
+                names{size(o.FP,1)} = "HH Attractor";
                 c = 1;
                 for i = 2:size(o.FP,1)-1
+                    fp1 = vecnorm(fp(i,1:2),2,2);
+                    fp2 = vecnorm(fp(i,3:4),2,2);
+                    if stability(i) == -1 & fp1 == fp2
+                        saddleNorm = fp1;
+                    end
+                end
+                for i = 2:size(o.FP,1)-1
+                    fp1 = vecnorm(fp(i,1:2),2,2);
+                    fp2 = vecnorm(fp(i,3:4),2,2);
+                    
                     if stability(i) == -1
                         names{i} = sprintf("Saddle %d",c); c = c+1;
+                        if fp1>fp2 & fp1>saddleNorm
+                            names{i} = "HS Saddle";
+                        elseif fp2>fp1 & fp2>saddleNorm
+                            names{i} = "SH Saddle";
+                        elseif fp1==fp2 
+                            names{i} = "SS Saddle";
+                        elseif fp1>fp2 & fp2<saddleNorm
+                            names{i} = "SL Saddle";
+                        elseif fp2>fp1 & fp1<saddleNorm
+                            names{i} = "LS Saddle";
+                        end
                     else
-                        fp1 = vecnorm(fp(i,1:2),2,2);
-                        fp2 = vecnorm(fp(i,3:4),2,2);
                         if fp1>fp2
                             names{i} = "HL Attractor";
                         else
@@ -91,9 +114,34 @@ classdef FixedPointsClass <handle
                         end
                     end
                 end
+
             end
             o.names = names;
             
+        end
+        
+        function [iA] = SetInitalAttractor(o,iAString)
+            for i = 1:length(o.names)
+                if strcmp(o.names{i},iAString)
+                    iA = i;
+                    o.iA = iA;
+                    return
+                end
+            end
+            error("could not find %s",iAString) 
+        end
+        
+                
+        function [fA] = SetFinalAttractor(o,fAString)
+            for i = 1:length(o.names)
+                if strcmp(o.names{i},fAString)
+                    fA = i;
+                    o.fA = fA;
+                    return
+                end
+            end
+            fA = 0;
+            o.fA = 0;
         end
     end
 end
