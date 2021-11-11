@@ -2,11 +2,11 @@ function [M] = Parameters(parameterNames,parameterValues)
 %Configure PARAMETERS here 
 note = "Two Forced Duffing Oscillators Small kc";
 paramNote = "Two_OscillatorSmallKC_StochasticGrid_iA9";
-a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = .01; %rhs parameters (note basin interpolant mat file must be changed if rhs parameters are changed)
+a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.28; kc = .01; %rhs parameters (note basin interpolant mat file must be changed if rhs parameters are changed)
 dim = 4; %deterministic system dimension
 rIC = 10^-10; %radius of momenta initial conditions
 pp = 0; %poincare phase
-nIC = 10; %number of initial conditions 
+nIC = 1000; %number of initial conditions 
 rhsString = 'TwoDuffing';
  T = 2*pi/w;  dT = T/2; dt = T/32; tf = 500*T;
 solver = @ode45;
@@ -19,7 +19,7 @@ rA = .1; %accepted radius around an attractor
 rS =1E-5; %accepted radius around a saddle
 tstep = .1; %time that must pass prior to checking for sphere condition
 iAString = "HL Attractor"; %initial attractor fixed point identifier
-fAString = "HH Attractor"; 
+fAString = "Any"; 
 onceAPeriod = true;
 terminateType = 'DuffingBoundary'; 
 nWorkers = Inf;
@@ -68,8 +68,8 @@ io = 0;
 
 
 %MinSearch Parameters
-nLM = 2; %maximum number of local minimum to explore
-maxIter = 2;
+nLM = 30; %maximum number of local minimum to explore
+maxIter = 100;
 
 %Descent parameters
 if contains(searchAlgorithm,"Gradient") || contains(searchAlgorithm,"Fletcher")
@@ -78,7 +78,7 @@ else
     descent.Gamma = .05; 
 end
 descent.fdStep = 1E-2; %finite difference step
-descent.minGamma = 1E-10;
+descent.minGamma = 1E-5;
 descent.discGamma = .5;
 descent.DiscThresh = 2.0;
 progressbar = true;
