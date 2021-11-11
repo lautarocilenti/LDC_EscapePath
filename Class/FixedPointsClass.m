@@ -16,6 +16,7 @@ classdef FixedPointsClass <handle
         names
         iA
         fA
+        nFP_Original
     end
     
     methods
@@ -29,6 +30,7 @@ classdef FixedPointsClass <handle
             o.Solution = solution(is);
             o.D = size(fp,2);
             o.nFP = size(fp,1);
+            o.nFP_Original = o.nFP;
             o.nSaddles = sum(o.Stability<0);
             o.iSaddles = find(o.Stability<0);
             o.L2max = 1.5*max(vecnorm(fp,2,2));
@@ -63,8 +65,12 @@ classdef FixedPointsClass <handle
         function [fp,stability] = GetAllFixedPoint(o,t)
             fp = zeros(o.nFP,o.D);
             for iFP = 1:o.nFP
-                for d = 1:o.D
-                    fp(iFP,d) = o.interpolant{d,iFP}(t);
+                if iFP > o.nFP_Original
+                    fp(iFP,:) = o.FP(iFP,:);
+                else
+                    for d = 1:o.D
+                        fp(iFP,d) = o.interpolant{d,iFP}(t);
+                    end
                 end
             end
             stability = o.Stability;

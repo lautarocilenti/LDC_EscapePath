@@ -22,7 +22,7 @@ function [status,tout,yout] = IntegrateToFixedPoint(t,xo,Mrhs)
         opts = odeset('RelTol',1e-6,'AbsTol',1e-6);
         tout = []; yout = [];
         tsol = t;
-        for i = 1:1000
+        for i = 1:50
             tspan = [tsol(end),Mrhs.tFall+tsol(end)];
            
             [tsol,y] =  Mrhs.solver(Mrhs.RHS, tspan, xo,[opts],Mrhs);
@@ -41,7 +41,7 @@ function [status,tout,yout] = IntegrateToFixedPoint(t,xo,Mrhs)
             ie = find(value);
         else
             ie = 0;
-            error("ie = 0")
+%             error("ie = 0")
         end
         status = ie;
     end
