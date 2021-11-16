@@ -20,7 +20,8 @@ end
 
 M = data.M;
 T = 2*pi/M.Mrhs.w;
-FP = M.Mrhs.FixedPoints.FP;
+FP = M.attractors;
+vecnorm(FP,2,2)
 
 
 for i = 1:quantity

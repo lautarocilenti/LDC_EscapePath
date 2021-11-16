@@ -4,7 +4,7 @@ if nargin == 2
     offset = 0;
 end
 if isempty(names)
-    names = {'1','2','3','4','5','6','7'};
+    names = {'1','2','3','4','5','6','7','8','9'};
 end
 L = size(attractors,1);
 Markers = {'s','x','v','+','*','d','^','>','<'};

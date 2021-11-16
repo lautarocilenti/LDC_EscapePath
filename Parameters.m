@@ -2,11 +2,11 @@ function [M] = Parameters(parameterNames,parameterValues)
 %Configure PARAMETERS here 
 note = "Two Forced Duffing Oscillators Small kc";
 paramNote = "Two_OscillatorSmallKC_StochasticGrid_iA9";
-a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.28; kc = .01; %rhs parameters (note basin interpolant mat file must be changed if rhs parameters are changed)
+a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = .01; %rhs parameters (note basin interpolant mat file must be changed if rhs parameters are changed)
 dim = 4; %deterministic system dimension
 rIC = 10^-10; %radius of momenta initial conditions
 pp = 0; %poincare phase
-nIC = 1000; %number of initial conditions 
+nIC = 10; %number of initial conditions 
 rhsString = 'TwoDuffing';
  T = 2*pi/w;  dT = T/2; dt = T/32; tf = 500*T;
 solver = @ode45;
@@ -68,8 +68,8 @@ io = 0;
 
 
 %MinSearch Parameters
-nLM = 30; %maximum number of local minimum to explore
-maxIter = 100;
+nLM = 2; %maximum number of local minimum to explore
+maxIter = 2;
 
 %Descent parameters
 if contains(searchAlgorithm,"Gradient") || contains(searchAlgorithm,"Fletcher")

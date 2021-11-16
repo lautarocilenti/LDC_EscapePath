@@ -52,7 +52,7 @@ end
 
 for i = 1:size(FP,1)
     FP_L2 = norm(FP(i,:));
-    plot(tqAll,FP_L2*ones(size(tqAll)),'.','DisplayName',sprintf('%s Poincare',M.Mrhs.FixedPoints.names{i}),'markersize',10)
+    plot(tqAll,FP_L2*ones(size(tqAll)),'.','DisplayName',sprintf('%s Poincare',M.attractorNames{i}),'markersize',10)
     hold on
 end
 
