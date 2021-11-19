@@ -44,6 +44,14 @@ io = 0;
 % nIC = 100;
 % uniformInX = false;
 
+% Three oscillator modications
+rhsString = 'ThreeDuffing';
+dim = 6; 
+note = "Three Forced Duffing Oscillator";
+paramNote = "ThreeDuffing";
+nIC = 1;
+uniformInX = true;
+
 % Test modifications
 % methodTest = true;
 % saveMemory = true;
@@ -68,8 +76,8 @@ io = 0;
 
 
 %MinSearch Parameters
-nLM = 2; %maximum number of local minimum to explore
-maxIter = 2;
+nLM = 1; %maximum number of local minimum to explore
+maxIter = 0;
 
 %Descent parameters
 if contains(searchAlgorithm,"Gradient") || contains(searchAlgorithm,"Fletcher")
