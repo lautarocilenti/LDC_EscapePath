@@ -35,7 +35,7 @@ classdef FixedPointsClass <handle
             o.iSaddles = find(o.Stability<0);
             o.L2max = 1.5*max(vecnorm(fp,2,2));
             PrepareInterpolant(o);
-            ClassifyFixedPoints(o);
+            CallClassifyFixedPoints(o);
             SetInitalAttractor(o,iAString);
             SetFinalAttractor(o,fAString);
         end
@@ -76,52 +76,11 @@ classdef FixedPointsClass <handle
             stability = o.Stability;
         end
         
-        function [] = ClassifyFixedPoints(o)
+        function [] = CallClassifyFixedPoints(o)
             stability = o.Stability;
             fp = o.FP;
-            if size(o.FP,2) == 2
-               
-                names{1} = "Low Attractor";
-                names{size(o.FP,1)} = "High Attractor";
-                names{2} = "Saddle";
-            elseif size(o.FP,2) == 4
-                names{1} = "LL Attractor";
-                names{size(o.FP,1)} = "HH Attractor";
-                c = 1;
-                for i = 2:size(o.FP,1)-1
-                    fp1 = vecnorm(fp(i,1:2),2,2);
-                    fp2 = vecnorm(fp(i,3:4),2,2);
-                    if stability(i) == -1 & fp1 == fp2
-                        saddleNorm = fp1;
-                    end
-                end
-                for i = 2:size(o.FP,1)-1
-                    fp1 = vecnorm(fp(i,1:2),2,2);
-                    fp2 = vecnorm(fp(i,3:4),2,2);
-                    
-                    if stability(i) == -1
-                        names{i} = sprintf("Saddle %d",c); c = c+1;
-                        if fp1>fp2 & fp1>saddleNorm
-                            names{i} = "HS Saddle";
-                        elseif fp2>fp1 & fp2>saddleNorm
-                            names{i} = "SH Saddle";
-                        elseif fp1==fp2 
-                            names{i} = "SS Saddle";
-                        elseif fp1>fp2 & fp2<saddleNorm
-                            names{i} = "SL Saddle";
-                        elseif fp2>fp1 & fp1<saddleNorm
-                            names{i} = "LS Saddle";
-                        end
-                    else
-                        if fp1>fp2
-                            names{i} = "HL Attractor";
-                        else
-                            names{i} = "LH Attractor";
-                        end
-                    end
-                end
-
-            end
+            
+            [names] = ClassifyFixedPoints(stability,fp);
             o.names = names;
             
         end

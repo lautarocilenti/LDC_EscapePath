@@ -1,7 +1,17 @@
 function [theta] = ConvertXToTheta(x)
 %CONVERTXTOTHETA Convert X coordinates to spherical coordinates.
 %Coordinates must be in unit n-sphere
-if size(x,1) == 4
+if size(x,1) == 6
+       theta = zeros(size(x,1)-1,size(x,2));
+       for i = 1:size(x,1)-2
+           d = vecnorm(x(i:end,:),2,1);
+           theta(i,:) = acos(x(i,:)./d);
+       end
+       d = vecnorm(x(end-1:end,:),2,1);
+       ii = x(end,:)>= 0;
+       theta(end,ii) = acos(x(end-1,ii)./d(ii));
+       theta(end,~ii) = 2*pi - acos(x(end-1,~ii)./d(~ii));
+elseif size(x,1) == 4
        theta = zeros(3,size(x,2));
        d1 = vecnorm(x,2,1);
        theta(1,:) = acos(x(1,:)./d1);
@@ -13,9 +23,6 @@ if size(x,1) == 4
        theta(3,ii) = acos(x(3,ii)./d3(ii));
        theta(3,~ii) = 2*pi - acos(x(3,~ii)./d3(~ii));
        
-%        theta(1,:) = mod(theta(1,:),pi);
-%        theta(2,:) = mod(theta(2,:),pi);
-%        theta(3,:) = mod(theta(3,:),2*pi);
 elseif size(x,1) == 2
     theta = zeros(1,size(x,2));
     theta(1,:) = atan2(x(2,:),x(1,:)); 

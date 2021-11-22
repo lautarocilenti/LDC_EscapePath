@@ -24,6 +24,8 @@ if isempty(M.transMatrix)
         J = [A E;zeros(size(E)) -A.']; %Jacobian of hamiltonian system 
     elseif strcmp(M.rhsString,'TwoDuffing')
         J = TwoDuffingJacobian(qo(1),qo(3),M.Mrhs); 
+    elseif strcmp(M.rhsString,'ThreeDuffing')
+        J = ThreeDuffingJacobian([qo(1),qo(3),qo(5)],M.Mrhs); 
     else
         error("Unknown Jacobian\n")
     end
@@ -55,21 +57,19 @@ if isempty(M.transMatrix)
 
     if M.dim == 2
         u_ev = ev(:,iUnstableLambda(1)); %eigenvectors of unstable eigenvalues, just grab 1 of conjugate pair
-
-        Z_xv = [real(u_ev(1:M.dim,:)),imag(u_ev(1:M.dim,:))];
-        Z_pxpv = [real(u_ev(M.dim+1:2*M.dim,:)),imag(u_ev(M.dim+1:2*M.dim,:))];
     elseif M.dim ==4
         u_ev = ev(:,iUnstableLambda([1,3])); %eigenvectors of unstable eigenvalues, just grab 1 per conjugate pair
-
-        Z_xv = [real(u_ev(1:M.dim,:)),imag(u_ev(1:M.dim,:))];
-        Z_pxpv = [real(u_ev(M.dim+1:2*M.dim,:)),imag(u_ev(M.dim+1:2*M.dim,:))];
+    elseif M.dim == 6
+        u_ev = ev(:,iUnstableLambda([1,3,5])); %eigenvectors of unstable eigenvalues, just grab 1 per conjugate pair
     end
+    Z_xv = [real(u_ev(1:M.dim,:)),imag(u_ev(1:M.dim,:))];
+    Z_pxpv = [real(u_ev(M.dim+1:2*M.dim,:)),imag(u_ev(M.dim+1:2*M.dim,:))];
     T = Z_xv\Z_pxpv; %transformation matrix
     M.transMatrix = T;
     
 end
 %     
-% M.dim = 4;
+
 if M.xcoordinates
         q_eps = M.rIC*thetaSet;
 else
@@ -90,6 +90,13 @@ else
             theta3 = thetaSet(3,:);
             q_eps = [M.rIC*cos(theta1);M.rIC*sin(theta1).*cos(theta2);M.rIC*sin(theta1).*sin(theta2).*cos(theta3);M.rIC*sin(theta1).*sin(theta2).*sin(theta3)]; %initial offset from attractor 
         end
+    elseif M.dim == 6
+        q_eps = [M.rIC*cos(thetaSet(1,:)); ...
+                 M.rIC*sin(thetaSet(1,:)).*cos(thetaSet(2,:)); ...
+                 M.rIC*sin(thetaSet(1,:)).*sin(thetaSet(2,:)).*cos(thetaSet(3,:)); ... 
+                 M.rIC*sin(thetaSet(1,:)).*sin(thetaSet(2,:)).*sin(thetaSet(3,:)).*cos(thetaSet(4,:)); ... 
+                 M.rIC*sin(thetaSet(1,:)).*sin(thetaSet(2,:)).*sin(thetaSet(3,:)).*sin(thetaSet(4,:)).*cos(thetaSet(5,:)); ... 
+                 M.rIC*sin(thetaSet(1,:)).*sin(thetaSet(2,:)).*sin(thetaSet(3,:)).*sin(thetaSet(4,:)).*sin(thetaSet(5,:))]; %initial offset from attractor 
     end
 end
 
@@ -120,13 +127,25 @@ end
 
 function [y] = ArrangeCoordinates(x,M)
     y = x;
-    % y = [x1 v1 x2 v2 p1 p1d p2 p2d]; %hamiltonian rhs
-    % x = [x1 x2 v1 v2 p1 p2 p1d p2d]; %jacobian rhs
-    if M. dim == 4
+
+    if M.dim == 4
+        % y = [x1 v1 x2 v2 p1 p1d p2 p2d]; %hamiltonian rhs
+        % x = [x1 x2 v1 v2 p1 p2 p1d p2d]; %jacobian rhs
         y(2,:) = x(3,:);
         y(3,:) = x(2,:);
         y(6,:) = x(7,:);
         y(7,:) = x(6,:);
+    elseif M.dim == 6
+        % y = [x1 v1 x2 v2 x3 v3 p1 p1d p2 p2d p3 p3d]; %hamiltonian rhs
+        % x = [x1 x2 x3 v1 v2 v3 p1 p2 p3 p1d p2d p3d]; %jacobian rhs
+        y(2,:) = x(4,:);
+        y(3,:) = x(2,:);
+        y(4,:) = x(5,:);
+        y(5,:) = x(3,:);
+        y(8,:) = x(10,:);
+        y(9,:) = x(8,:);
+        y(10,:) = x(11,:);
+        y(11,:) = x(9,:);        
     end
 
 end

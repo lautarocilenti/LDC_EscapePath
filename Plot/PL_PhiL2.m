@@ -52,7 +52,12 @@ end
 
 for i = 1:size(FP,1)
     FP_L2 = norm(FP(i,:));
-    plot(tqAll,FP_L2*ones(size(tqAll)),'.','DisplayName',sprintf('%s Poincare',M.attractorNames{i}),'markersize',10)
+    if contains(M.attractorNames{i},"Saddle")
+       marker = "+";
+    else
+       marker = "o";
+    end
+    plot(tqAll,FP_L2*ones(size(tqAll)),marker,'DisplayName',sprintf('%s Poincare',M.attractorNames{i}),'markersize',3)
     hold on
 end
 

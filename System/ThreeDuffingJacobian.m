@@ -1,4 +1,4 @@
-function [res] = TwoDuffingJacobian(X,M)
+function [res] = ThreeDuffingJacobian(X,M)
 % 
 
 J11 = zeros(3,3);
@@ -12,7 +12,7 @@ J21 = @(a1,a3,kc,x1,x3,x5) ...
     kc, kc, -3*a3*x5^2];
 J22 =  @(delta) -eye(3)*delta;
 J23 = zeros(3);
-J24 = =eye(3);
+J24 = eye(3);
 
 J31 = @(a3,p2,p4,p6,x1,x3,x5) ...
     [ 6*a3*p2*x1, 0, 0; 0 6*a3*p4*x3 0; 0 0 6*a3*p6*x5];

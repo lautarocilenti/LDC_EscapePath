@@ -4,12 +4,17 @@ if nargin == 2
     offset = 0;
 end
 if isempty(names)
-    names = {'1','2','3','4','5','6','7','8','9'};
+    names = {'1','2','3','4','5','6','7','8','9','10'};
 end
 L = size(attractors,1);
-Markers = {'s','x','v','+','*','d','^','>','<'};
-SaddleColors = repmat([1 0 0], L,1);
-AttractorColor = repmat([0 0 1], L,1);
+Markers = {'s','x','v','+','*','d','^','>','<','s','x','v','+','*','d','^','>','<','s','x','v','+','*','d','^','>','<','s','x','v','+','*','d','^','>','<'};
+if L >10
+    SaddleColors = repmat([1 0 0], L,1).*(rand(L,1)*.5+.5);
+    AttractorColor = repmat([0 0 1], L,1).*(rand(L,1)*.5+.5);
+else
+    SaddleColors = repmat([1 0 0], L,1);
+    AttractorColor = repmat([0 0 1], L,1);
+end
 for iA = 1:L
     marker = Markers{iA};
     msize = 7;

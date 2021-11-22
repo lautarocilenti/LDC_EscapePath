@@ -13,7 +13,7 @@ if M.progressbar
     [isCluster] = ProgressBar(size(xoSet,2),"Rise and Fall");
 end
 
-try
+% try
 parfor(ixo = 1:size(xoSet,2),M.nWorkers)
     m = parConstant.Value;
 %     for ixo = 1:size(xoSet,2)
@@ -90,15 +90,15 @@ parfor(ixo = 1:size(xoSet,2),M.nWorkers)
     end
     fprintf("\n")
     clear parConstant
-catch exception
-    error("no exception handling")
-   msg = exception.message;
-   values = textscan(msg,['StatusIs0,Position:',repmat('%.4f,',1,M.dim)]);
-   aNew = cellfun(@(x) x,values)
-   M.Mrhs.FixedPoints.FP(end+1,:) = aNew;
-   M.Mrhs.FixedPoints.nFP =  M.Mrhs.FixedPoints.nFP +1;
-   IntegrateRHS(xoSet,M)
-end 
+% catch exception
+%     error("no exception handling")
+%    msg = exception.message;
+%    values = textscan(msg,['StatusIs0,Position:',repmat('%.4f,',1,M.dim)]);
+%    aNew = cellfun(@(x) x,values)
+%    M.Mrhs.FixedPoints.FP(end+1,:) = aNew;
+%    M.Mrhs.FixedPoints.nFP =  M.Mrhs.FixedPoints.nFP +1;
+%    IntegrateRHS(xoSet,M)
+% end 
 
 
 end

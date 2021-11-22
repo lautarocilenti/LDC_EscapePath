@@ -28,11 +28,13 @@ if M.rhsString == "Duffing"
     else
         error("Parameters do not match with requested file");
     end
-elseif M.rhsString == "TwoDuffing"
+elseif M.rhsString == "TwoDuffing" || M.rhsString == "ThreeDuffing" 
     if M.Mrhs.a1 == 1 & M.Mrhs.a3 == .3 & M.Mrhs.nu == .1 & M.Mrhs.F == .4 & M.Mrhs.kc == .1
         data = load(fullfile(folder,"FixedPointsTwoDuffing.mat"));
-    elseif M.Mrhs.a1 == 1 & M.Mrhs.a3 == .3 & M.Mrhs.nu == .1 & M.Mrhs.F == .4 & M.Mrhs.kc == .01
+    elseif M.Mrhs.a1 == 1 & M.Mrhs.a3 == .3 & M.Mrhs.nu == .1 & M.Mrhs.F == .4 & M.Mrhs.kc == .01 & M.dim == 4
          data = load(fullfile(folder,"FixedPointsTwoDuffingkcp01.mat"));
+    elseif M.Mrhs.a1 == 1 & M.Mrhs.a3 == .3 & M.Mrhs.nu == .1 & M.Mrhs.F == .4 & M.Mrhs.kc == .01 & M.dim == 6
+        data = load(fullfile(folder,"FixedPointsThreeDuffingkcp01.mat"));
     elseif M.Mrhs.a1 == 1 & M.Mrhs.a3 == .3 & M.Mrhs.nu == .1 & M.Mrhs.F == .4 & M.Mrhs.kc == 0 & M.Mrhs.w == 1.4
         data1 = load(fullfile(folder,"FixedPoints.mat"));
         fpData1 = data1.Auto.FixedPoints{121};

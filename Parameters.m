@@ -18,7 +18,7 @@ rA1 = .1; %radius of initial sphere around initial attractor
 rA = .1; %accepted radius around an attractor
 rS =1E-5; %accepted radius around a saddle
 tstep = .1; %time that must pass prior to checking for sphere condition
-iAString = "HL Attractor"; %initial attractor fixed point identifier
+iAString = "LHL Attractor"; %initial attractor fixed point identifier
 fAString = "Any"; 
 onceAPeriod = true;
 terminateType = 'DuffingBoundary'; 
@@ -27,7 +27,7 @@ continueRun  = false;
 clusterRun = CheckIfCluster();
 xcoordinates = true;
 uniformInX = true;
-nRVs = 10000; %number random variables for random IC initialization
+nRVs = 2000; %number random variables for random IC initialization
 saveMemory = 1;
 methodTest = false;
 searchAlgorithm = "Stochastic Grid";
@@ -49,8 +49,11 @@ rhsString = 'ThreeDuffing';
 dim = 6; 
 note = "Three Forced Duffing Oscillator";
 paramNote = "ThreeDuffing";
-nIC = 1;
+nIC = 5;
 uniformInX = true;
+xcoordinates = false;
+rA = .5; 
+rA1 = .5; 
 
 % Test modifications
 % methodTest = true;
@@ -76,8 +79,8 @@ uniformInX = true;
 
 
 %MinSearch Parameters
-nLM = 1; %maximum number of local minimum to explore
-maxIter = 0;
+nLM = 3; %maximum number of local minimum to explore
+maxIter = 3;
 
 %Descent parameters
 if contains(searchAlgorithm,"Gradient") || contains(searchAlgorithm,"Fletcher")
