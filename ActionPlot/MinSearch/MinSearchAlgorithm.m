@@ -87,6 +87,15 @@ end
 iStop = find(stepSize<= M.descent.minGamma);
 runTheta(iStop) = false;
 
+if searchPrev.Count>=1 & sum(runTheta)>M.minICStopRemoval %every iteration remove worst cost search until min
+    [~,isortCostNew] = sort(cNew,'descend');
+    sortedRunTheta = runTheta(isortCostNew);
+    iStop2 = isortCostNew(min(find(sortedRunTheta==true)));
+    runTheta(iStop2) = false;
+    cNew
+    runTheta
+end
+
 TerminateFlag = ~any(runTheta);
     
 

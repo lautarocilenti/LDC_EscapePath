@@ -33,6 +33,7 @@ methodTest = false;
 searchAlgorithm = "Stochastic Grid";
 costType = "action";
 io = 0;
+minICStopRemoval = 5;
 
 
 % One oscillator modications
@@ -49,7 +50,7 @@ rhsString = 'ThreeDuffing';
 dim = 6; 
 note = "Three Forced Duffing Oscillator";
 paramNote = "ThreeDuffing";
-nIC = 5;
+nIC = 20;
 uniformInX = true;
 xcoordinates = false;
 rA = .5; 
@@ -79,8 +80,8 @@ rA1 = .5;
 
 
 %MinSearch Parameters
-nLM = 3; %maximum number of local minimum to explore
-maxIter = 0;
+nLM = 10; %maximum number of local minimum to explore
+maxIter = 10;
 
 %Descent parameters
 if contains(searchAlgorithm,"Gradient") || contains(searchAlgorithm,"Fletcher")
@@ -134,6 +135,7 @@ M.searchAlgorithm = searchAlgorithm;
 M.costType = costType;
 M.iAString = iAString;
 M.fAString = fAString;
+M.minICStopRemoval = minICStopRemoval;
 
 
 M.paramNote = paramNote;
