@@ -18,7 +18,7 @@ tic
 if ~M.continueRun
     %Final Condition
     [M] = GetFixedPoints(M);
-
+    
     theta = GetInitialTheta(M);
 
     %Initial Conditions cost

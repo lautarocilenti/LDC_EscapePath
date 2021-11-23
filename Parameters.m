@@ -10,7 +10,7 @@ nIC = 10; %number of initial conditions
 rhsString = 'TwoDuffing';
  T = 2*pi/w;  dT = T/2; dt = T/32; tf = 500*T;
 solver = @ode45;
-psiEps = .05; %phase threshold
+psiEps = .005; %phase threshold
 tFall = 10*T; %Max amount of time for system to fall to attractor radius
 plotFall = true;
 fastPostProcessing = false;
@@ -25,7 +25,7 @@ terminateType = 'DuffingBoundary';
 nWorkers = Inf;
 continueRun  = false;
 clusterRun = CheckIfCluster();
-xcoordinates = true;
+xcoordinates = false;
 uniformInX = true;
 nRVs = 2000; %number random variables for random IC initialization
 saveMemory = 1;
@@ -41,10 +41,10 @@ io = 0;
 % dim = 2; 
 % note = "One Forced Duffing Oscillator";
 % paramNote = "One Oscillator";
-% nIC = 100;
+% nIC = 10;
 % uniformInX = false;
 
-% Three oscillator modications
+% % Three oscillator modications
 rhsString = 'ThreeDuffing';
 dim = 6; 
 note = "Three Forced Duffing Oscillator";
@@ -80,13 +80,13 @@ rA1 = .5;
 
 %MinSearch Parameters
 nLM = 3; %maximum number of local minimum to explore
-maxIter = 3;
+maxIter = 0;
 
 %Descent parameters
 if contains(searchAlgorithm,"Gradient") || contains(searchAlgorithm,"Fletcher")
     descent.Gamma = .1; 
 else
-    descent.Gamma = .05; 
+    descent.Gamma = .25; 
 end
 descent.fdStep = 1E-2; %finite difference step
 descent.minGamma = 1E-5;
