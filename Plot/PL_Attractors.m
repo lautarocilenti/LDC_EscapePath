@@ -1,5 +1,8 @@
 function [] = PL_Attractors(attractors,names,offset)
 %PL_ATTRACTORS 
+if size(attractors,2) > 6
+    return
+end
 if nargin == 2
     offset = 0;
 end
@@ -15,6 +18,7 @@ else
     SaddleColors = repmat([1 0 0], L,1);
     AttractorColor = repmat([0 0 1], L,1);
 end
+
 for iA = 1:L
     marker = Markers{iA};
     msize = 7;

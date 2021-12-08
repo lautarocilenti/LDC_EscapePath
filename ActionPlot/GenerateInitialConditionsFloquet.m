@@ -26,6 +26,9 @@ if isempty(M.transMatrix)
         J = TwoDuffingJacobian(qo(1),qo(3),M.Mrhs); 
     elseif strcmp(M.rhsString,'ThreeDuffing')
         J = ThreeDuffingJacobian([qo(1),qo(3),qo(5)],M.Mrhs); 
+    elseif strcmp(M.rhsString,'NDuffing')
+        Xj = [qo',zeros(size(qo'))];
+        J = NDuffingJacobian(Xj,M.Mrhs); 
     else
         error("Unknown Jacobian\n")
     end
@@ -61,6 +64,9 @@ if isempty(M.transMatrix)
         u_ev = ev(:,iUnstableLambda([1,3])); %eigenvectors of unstable eigenvalues, just grab 1 per conjugate pair
     elseif M.dim == 6
         u_ev = ev(:,iUnstableLambda([1,3,5])); %eigenvectors of unstable eigenvalues, just grab 1 per conjugate pair
+    elseif M.dim > 6
+        iev = 1:2:M.dim;
+        u_ev = ev(:,iUnstableLambda([iev])); %eigenvectors of unstable eigenvalues, just grab 1 per conjugate pair
     end
     Z_xv = [real(u_ev(1:M.dim,:)),imag(u_ev(1:M.dim,:))];
     Z_pxpv = [real(u_ev(M.dim+1:2*M.dim,:)),imag(u_ev(M.dim+1:2*M.dim,:))];
@@ -97,6 +103,30 @@ else
                  M.rIC*sin(thetaSet(1,:)).*sin(thetaSet(2,:)).*sin(thetaSet(3,:)).*cos(thetaSet(4,:)); ... 
                  M.rIC*sin(thetaSet(1,:)).*sin(thetaSet(2,:)).*sin(thetaSet(3,:)).*sin(thetaSet(4,:)).*cos(thetaSet(5,:)); ... 
                  M.rIC*sin(thetaSet(1,:)).*sin(thetaSet(2,:)).*sin(thetaSet(3,:)).*sin(thetaSet(4,:)).*sin(thetaSet(5,:))]; %initial offset from attractor 
+     elseif M.dim > 6
+         % build n sphere from angles
+         q_eps = zeros(M.dim,size(thetaSet,2));
+         for i = 1:M.dim
+             if i == M.dim
+                jSines = 1:i-1;
+                jCos = [];
+             else
+                jSines = 1:i-1;
+                jCos = i;
+             end
+            if ~isempty(jSines)
+                sines = sin(thetaSet(jSines,:));
+                sines = prod(sines,1);
+            else
+                sines = ones(1,size(thetaSet,2));
+            end
+            if ~isempty(jCos)
+            	cosines = cos(thetaSet(jCos,:));
+            else
+                 cosines = ones(1,size(thetaSet,2));
+            end
+            q_eps(i,:) = M.rIC.*sines.*cosines;
+         end
     end
 end
 
@@ -145,7 +175,23 @@ function [y] = ArrangeCoordinates(x,M)
         y(8,:) = x(10,:);
         y(9,:) = x(8,:);
         y(10,:) = x(11,:);
-        y(11,:) = x(9,:);        
+        y(11,:) = x(9,:);  
+    elseif M.dim >6
+        %x =[ix iv ipx ipv]
+        L = size(x,1)/2;
+        ix1 = 1:L/2;
+        iv1 = L/2+1:L;
+        ipx1 = L+1:L+L/2;
+        ipv1 = L+L/2+1:2*L;
+        ix2 = 1:2:L;
+        iv2 = 2:2:L;
+        ipx2 = L+1:2:2*L;
+        ipv2 = L+2:2:2*L;
+        y(ix2) = x(ix1);
+        y(iv2) = x(iv1);
+        y(ipx2) = x(ipx1);
+        y(ipv2) = x(ipv1);
+        
     end
 
 end

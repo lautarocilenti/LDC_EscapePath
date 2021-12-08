@@ -43,7 +43,7 @@ function [status,tout,yout] = IntegrateToFixedPoint(t,xo,Mrhs)
             ie = 0;
 %             error("ie = 0")
         end
-        status = ie;
+        status = ie(1);
     end
     
 %     figure()

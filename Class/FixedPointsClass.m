@@ -17,10 +17,11 @@ classdef FixedPointsClass <handle
         iA
         fA
         nFP_Original
+        L2;
     end
     
     methods
-        function o = FixedPointsClass(fp,phi,stability,solution,iAString,fAString)
+        function o = FixedPointsClass(fp,phi,stability,solution,iAString,fAString,L2)
             % Constructor
              fpNorm = vecnorm(fp,2,2);
             [~,is] = sort(fpNorm,'ascend');
@@ -34,6 +35,7 @@ classdef FixedPointsClass <handle
             o.nSaddles = sum(o.Stability<0);
             o.iSaddles = find(o.Stability<0);
             o.L2max = 1.5*max(vecnorm(fp,2,2));
+            o.L2 = L2;
             PrepareInterpolant(o);
             CallClassifyFixedPoints(o);
             SetInitalAttractor(o,iAString);
@@ -80,14 +82,14 @@ classdef FixedPointsClass <handle
             stability = o.Stability;
             fp = o.FP;
             
-            [names] = ClassifyFixedPoints(stability,fp);
+            [names] = ClassifyFixedPoints(stability,fp,o.L2);
             o.names = names;
             
         end
         
         function [iA] = SetInitalAttractor(o,iAString)
             for i = 1:length(o.names)
-                if strcmp(o.names{i},iAString)
+                if contains(o.names{i},iAString)
                     iA = i;
                     o.iA = iA;
                     return
@@ -99,7 +101,7 @@ classdef FixedPointsClass <handle
                 
         function [fA] = SetFinalAttractor(o,fAString)
             for i = 1:length(o.names)
-                if strcmp(o.names{i},fAString)
+                if contains(o.names{i},fAString)
                     fA = i;
                     o.fA = fA;
                     return

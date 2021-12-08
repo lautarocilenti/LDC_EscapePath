@@ -14,6 +14,7 @@ end
 jList = [1,4];
 legendstr = {};
 color = abs([rand() rand() rand()]-.5);
+color = [ 0 0 0];
 
 lspec = ["-",":"];
 tqAll = [];
@@ -53,19 +54,26 @@ end
 for i = 1:size(FP,1)
     FP_L2 = norm(FP(i,:));
     if contains(M.attractorNames{i},"Saddle")
-       marker = "+";
+       marker = "p";
+       color = [1 0 0];
+       if M.dim > 6
+           continue
+       end
     else
-       marker = "o";
+        marker = "o";
+        color = [0 .7 0];
     end
-    plot(tqAll,FP_L2*ones(size(tqAll)),marker,'DisplayName',sprintf('%s Poincare',M.attractorNames{i}),'markersize',3)
+    s1 = scatter(tqAll,FP_L2*ones(size(tqAll)),10,marker,'DisplayName',sprintf('%s Poincare',M.attractorNames{i}),'markerfacecolor',color)
+    s1.MarkerFaceAlpha = .7;
+    s1.MarkerEdgeColor = color;
     hold on
 end
 
 
 xlim([0 max(tqAll)])
-legend('location','southwest')
-xlabel('time (s)')
-ylabel('$||q||$','interpreter','latex')
+legend('location','southwest','fontsize',12)
+xlabel('time (s)','fontsize',12)
+ylabel('$||\textbf{q}||$','interpreter','latex','fontsize',12)
 hYLabel = get(gca,'YLabel');
  set(hYLabel,'rotation',0,'VerticalAlignment','middle','HorizontalAlignment','right')
 end

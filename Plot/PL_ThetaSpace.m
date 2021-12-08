@@ -46,7 +46,7 @@ hold on
 plot3(minTheta(1),minTheta(2),minTheta(3),'xr','markerSize',40)
 title(sprintf("Min value: %f",minCost))
 cb = colorbar;                                     % create and label the colorbar
-cb.Label.String = 'Action';
+% cb.Label.String = 'Action';
 xlabel('Theta 1')
 ylabel('Theta 2')
 zlabel('Theta 3')

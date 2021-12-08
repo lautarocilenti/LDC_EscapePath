@@ -41,14 +41,16 @@ parfor(ixo = 1:size(xoSet,2),M.nWorkers)
             A = m.Mrhs.FixedPoints.GetFixedPoint(mod(t(end),T),m.Mrhs.iA);
             if m.dim == 2
                 blewUpThreshold = 1E2;
-            else
+            elseif M.dim <=6
+                blewUpThreshold = 1E2;
+            elseif M.dim > 6
                 blewUpThreshold = 1E2;
             end
 
 
     %         if norm(y(end,1:M.dim)) > blewUpThreshold %solution blew up
             if norm(y(end,:)) > blewUpThreshold 
-                if dT < T/4
+               if dT < T/4
                     fprintf("Terminating because dT is too small\n")
                     break 
                 end
@@ -64,12 +66,13 @@ parfor(ixo = 1:size(xoSet,2),M.nWorkers)
                 [status,~,~] = IntegrateToFixedPoint(t(end),y(end,1:M.dim),m.Mrhs);
 
                 if status~=m.Mrhs.iA & status~=0
+                  
                    break 
                 elseif status == 0 
                     errID = 'MyComponent:noSuchVariable';
                     msg = ['StatusIs0,Position:',sprintf(repmat('%.4f,',1,M.dim),y(end,1:M.dim))];
                     baseException = MException(errID,msg);
-                    throw(baseException)
+%                     throw(baseException)
                 end
             end
             xo = y(end,:)';

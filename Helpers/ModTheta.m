@@ -13,6 +13,9 @@ function [theta] = ModTheta(theta,M)
     elseif size(theta,1) == 5
         theta(5,:) = mod(theta(5,:),2*pi);
         theta(1:4,:) = mod(theta(1:4,:),pi);
+    elseif size(theta,1) == 9
+        theta(9,:) = mod(theta(9,:),2*pi);
+        theta(1:8,:) = mod(theta(1:8,:),pi);
     else
         error("mod theta Dim not programmed")
     end

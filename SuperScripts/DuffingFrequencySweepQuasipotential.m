@@ -1,21 +1,14 @@
-function [] = TwoDuffingFrequencySweepQuasipotential()
+function [] = DuffingFrequencySweepQuasipotential()
 %FREQUENCYSWEEPQUASIPOTENTIAL Summary of this function goes here
 cd ..
 AddAllPaths()
-data = load("FixedPointsDuffing.mat");
-Wlist = cellfun(@(x) x.W,data.Auto.FixedPoints);
-Wlist(1) = [];
-Wlist = [1.35:.01:1.54];
+Wlist = [1.28:.01:1.56];
+Wlist = [1.3825];
 for i = 1:length(Wlist)
     w = Wlist(i);
-    if w<1.4
-        rA1 = 1;
-    else
-        rA1 = .1;
-    end
      T = 2*pi/w;  dt = T/32; tf = 500*T; dT = T/2;
      tspan = [0:dt:tf];
-    [data] = Main({'MRHS_w','MRHS_T','dt','tspan','tf','dT','rA1'},{w,T,dt,tspan,tf,dT,rA1})
+    [data] = Main({'MRHS_w','MRHS_T','dt','tspan','tf','dT'},{w,T,dt,tspan,tf,dT})
     W(i) = w;
     Q(i) = data.minS;
     Data{i} = data;

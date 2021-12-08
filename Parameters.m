@@ -18,7 +18,7 @@ rA1 = .1; %radius of initial sphere around initial attractor
 rA = .1; %accepted radius around an attractor
 rS =1E-5; %accepted radius around a saddle
 tstep = .1; %time that must pass prior to checking for sphere condition
-iAString = "LHL Attractor"; %initial attractor fixed point identifier
+iAString = "LLHLL Attractor"; %initial attractor fixed point identifier
 fAString = "Any"; 
 onceAPeriod = true;
 terminateType = 'DuffingBoundary'; 
@@ -27,10 +27,11 @@ continueRun  = false;
 clusterRun = CheckIfCluster();
 xcoordinates = false;
 uniformInX = true;
-nRVs = 2000; %number random variables for random IC initialization
+nRVs = 500; %number random variables for random IC initialization
 saveMemory = 1;
 methodTest = false;
 searchAlgorithm = "Stochastic Grid";
+searchAlgorithm = "Simplex";
 costType = "action";
 io = 0;
 minICStopRemoval = 5;
@@ -46,15 +47,28 @@ minICStopRemoval = 5;
 % uniformInX = false;
 
 % % Three oscillator modications
-rhsString = 'ThreeDuffing';
-dim = 6; 
-note = "Three Forced Duffing Oscillator";
-paramNote = "ThreeDuffing";
-nIC = 20;
+% rhsString = 'ThreeDuffing';
+% dim = 6; 
+% note = "Three Forced Duffing Oscillator";
+% paramNote = "ThreeDuffing";
+% nIC = 10;
+% uniformInX = true;
+% xcoordinates = false;
+% rA = .5; 
+% rA1 = .5; 
+% iAString = "LHL Attractor"; %initial attractor fixed point identifier
+
+% % % N oscillator modications
+rhsString = 'NDuffing';
+dim = 10; 
+note = "Five Forced Duffing Oscillator";
+paramNote = "FiveDuffing";
+nIC = 15;
 uniformInX = true;
 xcoordinates = false;
-rA = .5; 
-rA1 = .5; 
+rA = .1; 
+rA1 = .2; 
+
 
 % Test modifications
 % methodTest = true;
@@ -80,8 +94,8 @@ rA1 = .5;
 
 
 %MinSearch Parameters
-nLM = 10; %maximum number of local minimum to explore
-maxIter = 10;
+nLM = 3; %maximum number of local minimum to explore
+maxIter = 2;
 
 %Descent parameters
 if contains(searchAlgorithm,"Gradient") || contains(searchAlgorithm,"Fletcher")

@@ -12,8 +12,8 @@ end
         [isCluster] = ProgressBar(length(phiSet),"Post Process Trajectories");
     end
     statusSet = cellfun(@(phi) phi{3},phiSet);
-    parfor(iPhi = 1:length(phiSet),M.nWorkers)
-       m = parConstant.Value;
+parfor(iPhi = 1:length(phiSet),M.nWorkers)
+   m = parConstant.Value;
 % for iPhi = 1:length(phiSet)
 %     m = M;
 
