@@ -14,10 +14,10 @@ if M.progressbar
 end
 
 % try
-parfor(ixo = 1:size(xoSet,2),M.nWorkers)
-    m = parConstant.Value;
+parfor(ixo = 1:size(xoSet,2))
+%     m = parConstant.Value;
 %     for ixo = 1:size(xoSet,2)
-%     m = M;
+    m = M;
         status = []; t= [];
 
 
@@ -28,7 +28,9 @@ parfor(ixo = 1:size(xoSet,2),M.nWorkers)
         to = m.pp/m.Mrhs.w;
         dT = m.dT;
         tVector = 0:dT:m.tspan(end);
-        tVector(1) = to;
+        iSmaller = tVector <= to;
+        tVector(iSmaller) = [];
+        tVector = [to tVector];
         tAll = [tVector(1)]; yAll = [xo'];
         iT = 1;
         while  iT <length(tVector)

@@ -37,7 +37,11 @@ function [M] = GetFixedPoints(M)
         if foundFlag == false
             error("did not find fixedpoint data with that frequency")
         end
-        M.Mrhs.FixedPoints =  FixedPointsClass(fpData.FP,fpData.phi,fpData.stability,fpData.solution,M.iAString,M.fAString,fpData.L2);
+        if isfield(fpData,'L2')
+            M.Mrhs.FixedPoints =  FixedPointsClass(fpData.FP,fpData.phi,fpData.stability,fpData.solution,M.iAString,M.fAString,fpData.L2);
+        else
+             M.Mrhs.FixedPoints =  FixedPointsClass(fpData.FP,fpData.phi,fpData.stability,fpData.solution,M.iAString,M.fAString);
+        end
         M.attractors = M.Mrhs.FixedPoints.FP;
         M.attractorNames = M.Mrhs.FixedPoints.names;
         M.Mrhs.iA = M.Mrhs.FixedPoints.iA;

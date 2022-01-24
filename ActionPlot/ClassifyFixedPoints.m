@@ -4,7 +4,9 @@ function [names,stability,fp] = ClassifyFixedPoints(stability,fp,L2)
         [~,is] = sort(fpNorms,'ascend');
         fp = fp(is,:);
         stability = stability(is);
-        L2 = L2(is); L2 = reshape(L2,length(L2),1);
+        if ~isempty(L2)
+            L2 = L2(is); L2 = reshape(L2,length(L2),1);
+        end
         if size(fp,2) == 2
                
                 names{1} = "Low Attractor";

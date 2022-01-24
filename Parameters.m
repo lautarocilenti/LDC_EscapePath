@@ -5,7 +5,7 @@ paramNote = "Two_OscillatorSmallKC_StochasticGrid_iA9";
 a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = .01; %rhs parameters (note basin interpolant mat file must be changed if rhs parameters are changed)
 dim = 4; %deterministic system dimension
 rIC = 10^-10; %radius of momenta initial conditions
-pp = 0; %poincare phase
+pp = pi; %poincare phase
 nIC = 10; %number of initial conditions 
 rhsString = 'TwoDuffing';
  T = 2*pi/w;  dT = T/2; dt = T/32; tf = 500*T;
@@ -31,20 +31,21 @@ nRVs = 500; %number random variables for random IC initialization
 saveMemory = 1;
 methodTest = false;
 searchAlgorithm = "Stochastic Grid";
-searchAlgorithm = "Simplex";
+% searchAlgorithm = "Simplex";
 costType = "action";
 io = 0;
 minICStopRemoval = 5;
 
 
 % One oscillator modications
-% iA = 3;
-% rhsString = 'Duffing';
-% dim = 2; 
-% note = "One Forced Duffing Oscillator";
-% paramNote = "One Oscillator";
-% nIC = 10;
-% uniformInX = false;
+iA = 3;
+rhsString = 'Duffing';
+dim = 2; 
+note = "One Forced Duffing Oscillator";
+paramNote = "One Oscillator";
+nIC = 10;
+uniformInX = false;
+iAString = "High Attractor"; %initial attractor fixed point identifier
 
 % % Three oscillator modications
 % rhsString = 'ThreeDuffing';
@@ -59,15 +60,15 @@ minICStopRemoval = 5;
 % iAString = "LHL Attractor"; %initial attractor fixed point identifier
 
 % % % N oscillator modications
-rhsString = 'NDuffing';
-dim = 10; 
-note = "Five Forced Duffing Oscillator";
-paramNote = "FiveDuffing";
-nIC = 15;
-uniformInX = true;
-xcoordinates = false;
-rA = .1; 
-rA1 = .2; 
+% rhsString = 'NDuffing';
+% dim = 10; 
+% note = "Five Forced Duffing Oscillator";
+% paramNote = "FiveDuffing";
+% nIC = 15;
+% uniformInX = true;
+% xcoordinates = false;
+% rA = .1; 
+% rA1 = .2; 
 
 
 % Test modifications
@@ -94,7 +95,7 @@ rA1 = .2;
 
 
 %MinSearch Parameters
-nLM = 3; %maximum number of local minimum to explore
+nLM = 4; %maximum number of local minimum to explore
 maxIter = 2;
 
 %Descent parameters

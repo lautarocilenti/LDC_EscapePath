@@ -23,6 +23,9 @@
     methods
         function o = FixedPointsClass(fp,phi,stability,solution,iAString,fAString,L2)
             % Constructor
+            if nargin == 6
+                L2 = [];
+            end
              fpNorm = vecnorm(fp,2,2);
             [~,is] = sort(fpNorm,'ascend');
             o.FP = fp(is,:);
