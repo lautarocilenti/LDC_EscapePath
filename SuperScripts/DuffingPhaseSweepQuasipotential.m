@@ -1,10 +1,10 @@
-function [] = DuffingCouplingSweepQuasipotential()
+function [] = DuffingPhaseSweepQuasipotential()
 %FREQUENCYSWEEPQUASIPOTENTIAL Summary of this function goes here
 cd ..
 AddAllPaths()
 
 Wlist = [1.4];
-ppList = [0:pi:pi];
+ppList = [0:pi/10:2*pi-pi/10];
 for i = 1:length(ppList)
     w = Wlist(1);
     pp = ppList(i);
@@ -15,13 +15,13 @@ for i = 1:length(ppList)
     Q(i) = data.minS;
     Data{i} = data;
     M = data.M;
-    fileName = sprintf("Data/ActionPlot/PQ_%s_%s_kc%.2f.mat",M.rhsString,M.paramNote,pp);
-    save(fileName,'data','kc','-v7.3');
+    fileName = sprintf("Data/ActionPlot/PQ_%s_%s_pp%.3f.mat",M.rhsString,M.paramNote,pp);
+    save(fileName,'data','pp','-v7.3');
 end
 M = data.M;
 dateLog = datenum(datetime('now'));
 formatOut = 'yyyy_mm_dd_HH_MM_SS_FFF';
 fileName = sprintf("Data/ActionPlot/PQ_%s_%s_%s.mat",M.rhsString,M.paramNote,datestr(dateLog,formatOut));
-save(fileName,'Data','Q','Kc','dateLog','-v7.3');
+save(fileName,'Data','Q','PP','dateLog','-v7.3');
 end
 
