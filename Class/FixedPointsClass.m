@@ -1,4 +1,4 @@
-classdef FixedPointsClass <handle
+ classdef FixedPointsClass <handle
     %This handle class is used to refer to large fixed point data without
     %making too many copies of the data
     
