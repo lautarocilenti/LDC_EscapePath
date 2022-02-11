@@ -15,8 +15,8 @@ paramNote = "";
 
 %deterministic system
 a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = .01; %rhs parameters
-dim = 4; %deterministic system dimension
-rhsString = 'TwoDuffing'; %Options {'Duffing','TwoDuffing','NDuffing'}
+dim = 2; %deterministic system dimension
+rhsString = 'Duffing'; %Options {'Duffing','TwoDuffing','NDuffing'}
 
 %Radius
 rIC = 10^-10; %gamma - radius of Lagrangian Manifold Approximation
@@ -25,9 +25,9 @@ rA = .1; %accepted radius around a new attractor
 rS = 1E-5; %accepted radius around a saddle
 
 %Attractors
-iAString = "LLHLL Attractor"; %initial attractor fixed point identifier must match system dimension
+iAString = "Low Attractor"; %initial attractor fixed point identifier must match system dimension
 fAString = "Any"; 
-pp = pi; %theta_0 initial phase angle from 0 to 2*pi
+pp = 0; %theta_0 initial phase angle from 0 to 2*pi, only used when includePhase parameter is false 
 
 
 %Optimization Parameters
@@ -39,11 +39,12 @@ uniformInX = true; %initial points are selected uniformly in the sphere. when fa
 nRVs = 500; %number random variables in R^d for random IC initialization. Recommend range 100 - 15000 and always >nIC. Actual nIC initial conditions are downsampled uniformly from this initial set.  If the dimension is very large this will create an nRV X d matrix so be careful not to make too large.  
 minICStopRemoval = 5; %optimization will run on nLM candidates for local minima in parallel. To reduce comp. time, it will throw out one candidate with highest cost each iteration but it will always keep at least minICStopRemoval 
 nLM = 4; %maximum number of local minimum to explore (recommended 4 for testing, 30 to 50 for actual running) candidates are selected based on the initial guesses with lowest costs that are not too close to each other
-maxIter = 2; %Stop Condition 1: maximum number of iterations of the optimizer. 
+maxIter = 0; %Stop Condition 1: maximum number of iterations of the optimizer. 
 fdStep = 1E-2; %finite difference step size for approximating gradient. Too small or too large leads to errors in gradient estimate
 minGamma = 1E-5; %Stop Condition 2: optimizer step size decreases below min gamma
 discGamma = .5; %gradient descent switches to stochastic grid vector method after reaching discontinuity and resets the step size to this.
 DiscThresh = 2.0; %cost multiplier to identify small step led to a discontinuous jump
+includePhase = true; %increase the dimension of the optimization problem to include initial phase. true by default
 
 %Plot Paramteters
 plotFall = true; %includes the descent into a new attractor after laeaving initial basin
@@ -63,9 +64,9 @@ dt = T/32; %used to create time span but doesnt anything important since ode45 c
 tf = 500*T; %maximum integration (integration will terminate early if another basin is reached)
 tFall = 10*T; %Basin check integration time interval
 if contains(searchAlgorithm,"Gradient") || contains(searchAlgorithm,"Fletcher")
-    descent.Gamma = .1; %initial step size for optimizer
+    Gamma = .1; %initial step size for optimizer
 else
-    descent.Gamma = .25; %initial step size for optimizer
+    Gamma = .25; %initial step size for optimizer
 end
 if contains(searchAlgorithm,"Gradient") || contains(searchAlgorithm,"Fletcher") || contains(searchAlgorithm,"Stochastic")
     stochasticNonGradientSearch = true;
@@ -137,6 +138,7 @@ M.costType = costType;
 M.iAString = iAString;
 M.fAString = fAString;
 M.minICStopRemoval = minICStopRemoval;
+M.includePhase = includePhase;
 
 
 M.paramNote = paramNote;

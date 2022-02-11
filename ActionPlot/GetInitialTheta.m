@@ -10,15 +10,22 @@ function [theta] = GetInitialTheta(M);
         rng(0);
         nRandom = M.nRVs;
         eta = randn(M.dim,nRandom);
+        
         etaNorm = vecnorm(eta,2,1); 
         etaNorm = repmat(etaNorm,M.dim,1);
         x = eta./etaNorm;
+        
+        
        [x] = ReduceToNumberofInitialPoints(x,M.nIC); %reduce by arclength to neighbors
+       
+
+       
        if M.xcoordinates
             theta = x;
        else
             [theta] = ConvertXToTheta(x);
        end
+       
     else
         if M.dim == 2 || contains(M.searchAlgorithm,"OneO")
             dtheta =(2*pi)/(M.nIC);
@@ -34,6 +41,15 @@ function [theta] = GetInitialTheta(M);
             c = reshape(c,1,size(c,1)*size(c,2)*size(c,3));
             theta = [a;b;c];
         end
+    end
+    
+    if M.includePhase
+        xi = randn(2,size(x,2));
+        xiNorm = vecnorm(xi,2,1); 
+        xiNorm = repmat(xiNorm,2,1);
+        zeta = xi./xiNorm;
+        phase = atan2(zeta(2,:),zeta(1,:));
+        theta = [theta;phase];
     end
 
     fprintf("Done\n")
