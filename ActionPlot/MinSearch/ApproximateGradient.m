@@ -13,9 +13,9 @@ end
 
 function [fdCost] = FiniteDifferencePositiveGradient(thetaCurrent,sCurrent,runDescentOnTheta,fdCostPrev,iRepeat,iNonGradient,M)
     if M.methodTest
-        d = M.dim;
+        d = size(thetaCurrent,1);
     else
-        d = M.dim-1;
+        d = size(thetaCurrent,1)-1;
     end
     
     fdStep = M.descent.fdStep*ones(size(sCurrent));
@@ -56,7 +56,7 @@ function [fdCost] = FiniteDifferencePositiveGradientOnXCoordinates(thetaCurrent,
     % NewX = X + fdStep*gradS
     % NewTheta = ConverToTheta(X)
     
-    d = M.dim;
+    d = size(thetaCurrent,1);
     dT = d - 1; %d tangent space
     
     

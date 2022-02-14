@@ -2,6 +2,12 @@ function [phiSet] = IntegrateRHS(xoSet,M)
 %IntegrateRHS - Uses ode45 to integrate Hamiltonian  from initial conditions until
 %maximum time or until TerminateAtBoundaryEvent has a value of zero. 
 
+if M.includePhase
+   phaseSet = xoSet(end,:);
+   xoSet(end,:) = [];
+end
+
+
 opts = odeset('RelTol',1e-6,'AbsTol',1e-6);
 
 
@@ -13,11 +19,11 @@ if M.progressbar
     [isCluster] = ProgressBar(size(xoSet,2),"Rise and Fall");
 end
 
-% try
+
 parfor(ixo = 1:size(xoSet,2))
-%     m = parConstant.Value;
+    m = parConstant.Value;
 %     for ixo = 1:size(xoSet,2)
-    m = M;
+%     m = M;
         status = []; t= [];
 
 
@@ -25,7 +31,12 @@ parfor(ixo = 1:size(xoSet,2))
         xo = xoSet(:,ixo);
     %     A = m.Mrhs.FixedPoints.FP(m.Mrhs.iA,:);
         T = 2*pi/m.Mrhs.w;
-        to = m.pp/m.Mrhs.w;
+        if m.includePhase
+           to = phaseSet(ixo)/m.Mrhs.w;
+        else
+           to = m.pp/m.Mrhs.w;
+        end
+        
         dT = m.dT;
         tVector = 0:dT:m.tspan(end);
         iSmaller = tVector <= to;
@@ -95,15 +106,6 @@ parfor(ixo = 1:size(xoSet,2))
     end
     fprintf("\n")
     clear parConstant
-% catch exception
-%     error("no exception handling")
-%    msg = exception.message;
-%    values = textscan(msg,['StatusIs0,Position:',repmat('%.4f,',1,M.dim)]);
-%    aNew = cellfun(@(x) x,values)
-%    M.Mrhs.FixedPoints.FP(end+1,:) = aNew;
-%    M.Mrhs.FixedPoints.nFP =  M.Mrhs.FixedPoints.nFP +1;
-%    IntegrateRHS(xoSet,M)
-% end 
 
 
 end

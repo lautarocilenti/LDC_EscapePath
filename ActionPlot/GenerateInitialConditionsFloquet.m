@@ -15,12 +15,14 @@ end
 if isempty(M.transMatrix)
     %objects for rhs generation 
     if ~M.includePhase
-        [T] = ApproximateLagrangianManifold(theta_0,M)
+        [T,qo] = ApproximateLagrangianManifold(theta_0,M)
         M.transMatrix = T;
+        M.qo = qo;
     else
         parfor (j = 1:size(phaseSet,2))
-            [T] = ApproximateLagrangianManifold(phaseSet(j),M);
+            [T,qo] = ApproximateLagrangianManifold(phaseSet(j),M);
             T_Set{j} = T;
+            qoSet{j} = qo;
         end
     end  
 end
@@ -83,17 +85,20 @@ end
 if ~M.includePhase
     T = M.transMatrix;
     p_eps = T*q_eps; %initial momenta
+    qoMatrix = qo*ones(M.dim,size(thetaSet,2));
 else
     p_eps = zeros(size(q_eps));
+    qoMatrix = zeros(M.dim,size(thetaSet,2));
     for (j = 1:size(phaseSet,2))
         T = T_Set{j}; 
         p_eps(:,j) = T*q_eps(:,j);
+        qoMatrix(:,j) = qoSet{j};
     end
 end
 
 eps = ArrangeCoordinates([q_eps;p_eps],M);
 
-xoSet = [qo.*ones(M.dim,size(thetaSet,2));zeros(M.dim,size(thetaSet,2))]+eps;
+xoSet = [qoMatrix;zeros(M.dim,size(thetaSet,2))]+eps;
     
 if M.includePhase
     xoSet = [xoSet;phaseSet];
@@ -156,7 +161,7 @@ function [y] = ArrangeCoordinates(x,M)
 
 end
 
-function [T] = ApproximateLagrangianManifold(theta_0,M)
+function [T,qo] = ApproximateLagrangianManifold(theta_0,M)
 
     x = sym('x',[M.dim*2,1]);
     syms tau

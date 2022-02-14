@@ -20,16 +20,35 @@ function [theta] = GetInitialTheta(M);
        
 
        
-       if M.xcoordinates
+        if M.xcoordinates
             theta = x;
-       else
+        else
             [theta] = ConvertXToTheta(x);
-       end
+        end
+        if M.includePhase
+            xi = randn(2,size(theta,2));
+            xiNorm = vecnorm(xi,2,1); 
+            xiNorm = repmat(xiNorm,2,1);
+            zeta = xi./xiNorm;
+            phase = mod(atan2(zeta(2,:),zeta(1,:)),2*pi);
+            theta = [theta;phase];
+        end
        
     else
-        if M.dim == 2 || contains(M.searchAlgorithm,"OneO")
+        if M.dim == 2 & ~M.includePhase
             dtheta =(2*pi)/(M.nIC);
             theta = [dtheta:dtheta:2*pi]; 
+        elseif M.dim == 2 & M.includePhase
+            D = M.dim-1;
+            if M.includePhase
+                D = D+1;
+            end
+            dtheta1 =(2*pi)/ceil(M.nIC^(1/D));
+            theta1GridV = [dtheta1:dtheta1:2*pi];
+            [a,b] = ndgrid(theta1GridV,theta1GridV);
+            a = reshape(a,1,size(a,1)*size(a,2));
+            b = reshape(b,1,size(b,1)*size(b,2));
+            theta = [a;b];
         elseif M.dim == 4
             dtheta1 =(2*pi)/(M.nIC);
             dtheta23 =(pi)/(M.nIC);
@@ -43,14 +62,7 @@ function [theta] = GetInitialTheta(M);
         end
     end
     
-    if M.includePhase
-        xi = randn(2,size(x,2));
-        xiNorm = vecnorm(xi,2,1); 
-        xiNorm = repmat(xiNorm,2,1);
-        zeta = xi./xiNorm;
-        phase = atan2(zeta(2,:),zeta(1,:));
-        theta = [theta;phase];
-    end
+
 
     fprintf("Done\n")
 end 

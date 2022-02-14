@@ -9,8 +9,8 @@ function [thetaNewNonGradient,iNonGradientSearch,stepDirection] = DetermineNextS
 % 6 - do nothing
 
 
-n = M.dim+1;
-d = M.dim;
+n = size(thetaCurrent,1)+1;
+d = size(thetaCurrent,1);
 L = size(thetaCurrent,2);
 Ln = L/n;
 if M.xcoordinates | floor(Ln) ~= Ln

@@ -85,7 +85,7 @@ function [thetaOut,sOut,iOut] = IdentifyLocalMinima(theta,S,nLM)
 end
 
 function [thetaOut,sOut,iOut] = IdentifySmallValuesSimplex(theta,S,nLM,M) 
-    n = M.dim+1;
+    n = size(theta,1)+1;
     if size(theta,2) <n
         error("Not enough initial points to build simplex\n")
     end
