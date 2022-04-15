@@ -3,7 +3,13 @@ function [M] = GetFixedPoints(M)
 
     %load data
     folder = "Data/FixedPoints";
-    if M.Mrhs.a1 == 1 & M.Mrhs.a3 == .3 & M.Mrhs.nu == .1 & M.Mrhs.F == .4 & M.dim == 2
+    if M.methodTest
+        M.attractors = [];
+        M.attractorNames = [];
+        M.Mrhs.iA = [];
+        M.Mrhs.fA = [];
+        return
+    elseif M.Mrhs.a1 == 1 & M.Mrhs.a3 == .3 & M.Mrhs.nu == .1 & M.Mrhs.F == .4 & M.dim == 2
         
         data = load(fullfile(folder,"FixedPointsDuffing.mat"))
         m = data.Auto.M;

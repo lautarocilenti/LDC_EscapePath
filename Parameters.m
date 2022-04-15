@@ -161,6 +161,12 @@ if nargin == 2
         if contains(parameterNames{i},'MRHS_')
             PN = strrep(parameterNames{i},'MRHS_','');
             M.Mrhs = setfield(M.Mrhs,PN,parameterValues{i});
+        elseif contains(parameterNames{i},'MS_')
+            PN = strrep(parameterNames{i},'MS_','');
+            M.MS = setfield(M.MS,PN,parameterValues{i});
+        elseif contains(parameterNames{i},'DESCENT_')
+            PN = strrep(parameterNames{i},'DESCENT_','');
+            M.descent = setfield(M.descent,PN,parameterValues{i});
         else
             M = setfield(M,parameterNames{i},parameterValues{i});
         end
