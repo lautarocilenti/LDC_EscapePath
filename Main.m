@@ -14,7 +14,7 @@ else
     mTemp = M;
 end
 tic 
-ErrorChecks(M);
+% ErrorChecks(M);
 
 if ~M.continueRun
     %Final Condition

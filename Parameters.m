@@ -16,9 +16,9 @@ paramNote = "";
 %deterministic system
 a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = .01; wc = 2*pi;%rhs parameters
 a1 = 1; a3 = -.48; nu = .009; F = .007; w = .84; kc = .0;%rhs one cantilever parameters
-a1 = 1; a3 = -.2605; nu = .0069; F = .0059; w = .94; kc = .002;%rhs parameters
-dim = 4; %deterministic system dimension
-rhsString = 'TwoDuffing'; %Options {'Duffing','TwoDuffing','NDuffing'}
+a1 = 1; a3 = -.2989; nu = .0078; F = .0068; w = .92; kc = -.00235;%rhs four parameters
+dim = 8; %deterministic system dimension
+rhsString = 'FourDuffingExp'; %Options {'Duffing','TwoDuffing','NDuffing'}
 
 %Radius
 rIC = 10^-5; %gamma - radius of Lagrangian Manifold Approximation
@@ -27,7 +27,7 @@ rA = .1; %accepted radius around a new attractor
 rS = 1E-5; %accepted radius around a saddle
 
 %Attractors
-iAString = "HH Attractor"; %initial attractor fixed point identifier must match system dimension
+iAString = "LHLL Attractor"; %initial attractor fixed point identifier must match system dimension
 fAString = "Any"; 
 pp = 0; %theta_0 initial phase angle from 0 to 2*pi, only used when includePhase parameter is false 
 
@@ -41,7 +41,7 @@ uniformInX = true; %initial points are selected uniformly in the sphere. when fa
 nRVs = 500; %number random variables in R^d for random IC initialization. Recommend range 100 - 15000 and always >nIC. Actual nIC initial conditions are downsampled uniformly from this initial set.  If the dimension is very large this will create an nRV X d matrix so be careful not to make too large.  
 minICStopRemoval = 5; %optimization will run on nLM candidates for local minima in parallel. To reduce comp. time, it will throw out one candidate with highest cost each iteration but it will always keep at least minICStopRemoval 
 nLM = 1; %maximum number of local minimum to explore (recommended 4 for testing, 30 to 50 for actual running) candidates are selected based on the initial guesses with lowest costs that are not too close to each other
-maxIter = 0; %Stop Condition 1: maximum number of iterations of the optimizer. 
+maxIter = 2; %Stop Condition 1: maximum number of iterations of the optimizer. 
 fdStep = 1E-2; %finite difference step size for approximating gradient. Too small or too large leads to errors in gradient estimate
 minGamma = 1E-5; %Stop Condition 2: optimizer step size decreases below min gamma
 discGamma = .5; %gradient descent switches to stochastic grid vector method after reaching discontinuity and resets the step size to this.

@@ -107,7 +107,7 @@ function [names,stability,fp] = ClassifyFixedPoints(stability,fp,L2)
                     error("misclassified")
                 end
                 
-        elseif size(fp,2) == 10
+        elseif size(fp,2) >= 8
                 c = 1;
                 fpHighNorm = vecnorm(fp(end,1:2),2,2);
                 fpLowNorm = vecnorm(fp(1,1:2),2,2);

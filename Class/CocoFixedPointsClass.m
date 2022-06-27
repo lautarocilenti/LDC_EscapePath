@@ -24,15 +24,29 @@
         function o = CocoFixedPointsClass(coco,iAString,fAString,w)
             % Constructor
             stability = zeros(1,3);
-            for i = 1:3
+            icount = 1;
+            for i = 1:length(coco)
                c = coco(i);
                iw = find(round(c.w,3) == w);
-               L2(i) = c.L2(iw);
-               fp(i,:) = c.xo(iw,:);
-               phi(i) = 0;
-               stability(i) = c.stability(iw);
-               solution{i} = [c.t{iw},c.x{iw}];
+               if isempty(iw)
+                   continue
+               end
+               L2(icount) = c.L2(iw);
+               fp(icount,:) = c.xo(iw,:);
+               phi(icount) = 0;
+               stability(icount) = c.stability(iw);
+               solution{icount} = [c.t{iw},c.x{iw}];
+               name(icount) = c.name;
+               icount = icount +1;
             end
+            [~,iUnique] = unique(name);
+            L2 = L2(iUnique);
+            fp = fp(iUnique,:);
+            phi = phi(iUnique);
+            stability = stability(iUnique);
+            solution = solution(iUnique);
+            name = name(iUnique);
+            
             
             stability(stability == 0) = -1;
             

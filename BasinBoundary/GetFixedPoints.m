@@ -47,6 +47,16 @@ function [M] = GetFixedPoints(M)
         M.attractorNames = M.Mrhs.FixedPoints.names;
         M.Mrhs.iA = M.Mrhs.FixedPoints.iA;
         M.Mrhs.fA = M.Mrhs.FixedPoints.fA;
+    elseif M.dim == 8
+        filename = sprintf("FourCantilever3Coco_kc-0p002350_nu0p007800.mat");
+        data = load(fullfile(folder,filename));
+        m = data.coco.M.Mrhs;
+        coco = data.coco.Branchq;
+        M.Mrhs.FixedPoints = CocoFixedPointsClass(coco,M.iAString,M.fAString,M.Mrhs.w);
+        M.attractors = M.Mrhs.FixedPoints.FP;
+        M.attractorNames = M.Mrhs.FixedPoints.names;
+        M.Mrhs.iA = M.Mrhs.FixedPoints.iA;
+        M.Mrhs.fA = M.Mrhs.FixedPoints.fA;
         return
     end
 

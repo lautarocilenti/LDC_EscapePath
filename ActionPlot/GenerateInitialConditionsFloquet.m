@@ -208,6 +208,9 @@ function [T,qo] = ApproximateLagrangianManifold(theta_0,M)
     elseif strcmp(M.rhsString,'NDuffing')
         Xj = [qo',zeros(size(qo'))];
         J = NDuffingJacobian(Xj,M.Mrhs);
+    elseif strcmp(M.rhsString,'FourDuffingExp')
+        Xj = [qo',zeros(size(qo'))];
+        J = FourDuffingExpJacobian(Xj,M.Mrhs);
     elseif strcmp(M.rhsString,'DuffingFiltered')
          Xj = [qo',zeros(1,M.filterDim),zeros(size(qo')),zeros(1,M.filterDim)];
         [J] = DuffingFilteredJacobian(Xj,M.Mrhs);
