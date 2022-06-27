@@ -1,10 +1,12 @@
 function [phiSet] = IntegrateRHS(xoSet,M)
 %IntegrateRHS - Uses ode45 to integrate Hamiltonian  from initial conditions until
 %maximum time or until TerminateAtBoundaryEvent has a value of zero. 
-
+warning off
 if M.includePhase
    phaseSet = xoSet(end,:);
    xoSet(end,:) = [];
+else
+    phaseSet = M.pp*ones(size(xoSet(end,:)));
 end
 
 
@@ -19,7 +21,7 @@ if M.progressbar
     [isCluster] = ProgressBar(size(xoSet,2),"Rise and Fall");
 end
 
-
+% 
 parfor(ixo = 1:size(xoSet,2))
     m = parConstant.Value;
 %     for ixo = 1:size(xoSet,2)
@@ -52,6 +54,7 @@ parfor(ixo = 1:size(xoSet,2))
             yAll = [yAll;y(2:end,:)];
 
             A = m.Mrhs.FixedPoints.GetFixedPoint(mod(t(end),T),m.Mrhs.iA);
+    
             if m.dim == 2
                 blewUpThreshold = 1E2;
             elseif M.dim <=6
@@ -63,6 +66,10 @@ parfor(ixo = 1:size(xoSet,2))
 
     %         if norm(y(end,1:M.dim)) > blewUpThreshold %solution blew up
             if norm(y(end,:)) > blewUpThreshold 
+               if m.Mrhs.a3 < 0 
+                   status = size(m.Mrhs.FixedPoints.FP,1)+1;%infinity has a basin
+                   break
+               end
                if dT < T/4
                     fprintf("Terminating because dT is too small\n")
                     break 
@@ -92,6 +99,9 @@ parfor(ixo = 1:size(xoSet,2))
             iT = iT+1;
         end
     %     status
+        if isempty(status)
+            dummy = 1;
+        end
         phiSet{ixo} = {tAll,yAll,status};
 
         if (max(t) >= max(m.tspan))

@@ -27,11 +27,11 @@ for i = 1:M.dim/2
         [tq,xq] = InterpolateToPhaseAngle(t,phi,M);
         plot(xq(:,1),xq(:,2),'.-','markersize',msize,'Color',color,'displayname','Escape Path');
         hold on
-%         if M.plotFall
-%             phiFall = PhiFall(:,(i-1)*2+1:(i)*2);
-%             [tqFall,xqFall] = InterpolateToPhaseAngle(tFall,phiFall,M);
-%             plot([xq(end,1);xqFall(:,1)],[xq(end,2);xqFall(:,2)],'.-.','markersize',msize,'Color',color,'displayname','Duffing Trajectory');      
-%         end
+        if M.plotFall
+            phiFall = PhiFall(:,(i-1)*2+1:(i)*2);
+            [tqFall,xqFall] = InterpolateToPhaseAngle(tFall,phiFall,M);
+            plot([xq(end,1);xqFall(:,1)],[xq(end,2);xqFall(:,2)],'.-.','markersize',msize,'Color',color,'displayname','Duffing Trajectory');      
+        end
     if ~isempty(M.attractorNames)%isfield(M.Mrhs,"FixedPoints")
         
         PL_Attractors(data.attractors,M.attractorNames,(i-1)*2);

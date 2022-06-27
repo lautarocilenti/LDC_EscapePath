@@ -2,8 +2,6 @@ function [] = DuffingFrequencySweepQuasipotential()
 %FREQUENCYSWEEPQUASIPOTENTIAL Summary of this function goes here
 cd ..
 AddAllPaths()
-Wlist = [1.28:.01:1.56];
-Wlist = [1.3825];
 for i = 1:length(Wlist)
     w = Wlist(i);
      T = 2*pi/w;  dt = T/32; tf = 500*T; dT = T/2;

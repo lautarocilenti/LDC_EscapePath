@@ -26,6 +26,28 @@ function [M] = GetFixedPoints(M)
         filename = sprintf("FixedPointsFiveDuffingkc%.2f.mat",M.Mrhs.kc);
         data = load(fullfile(folder,filename));
         m = data.Auto.FixedPoints{1}.M;
+    elseif M.dim == 2
+        filename = sprintf("OneCantilever_Coco.mat");
+        data = load(fullfile(folder,filename));
+        m = data.coco.M.Mrhs;
+        coco = data.coco.Branchq;
+        M.Mrhs.FixedPoints = CocoFixedPointsClass(coco,M.iAString,M.fAString,M.Mrhs.w);
+        M.attractors = M.Mrhs.FixedPoints.FP;
+        M.attractorNames = M.Mrhs.FixedPoints.names;
+        M.Mrhs.iA = M.Mrhs.FixedPoints.iA;
+        M.Mrhs.fA = M.Mrhs.FixedPoints.fA;
+        return
+    elseif M.dim == 4
+        filename = sprintf("TwoCantileverCoco_kc0.002000.mat");
+        data = load(fullfile(folder,filename));
+        m = data.coco.M.Mrhs;
+        coco = data.coco.Branchq;
+        M.Mrhs.FixedPoints = CocoFixedPointsClass(coco,M.iAString,M.fAString,M.Mrhs.w);
+        M.attractors = M.Mrhs.FixedPoints.FP;
+        M.attractorNames = M.Mrhs.FixedPoints.names;
+        M.Mrhs.iA = M.Mrhs.FixedPoints.iA;
+        M.Mrhs.fA = M.Mrhs.FixedPoints.fA;
+        return
     end
 
     %validate parameters

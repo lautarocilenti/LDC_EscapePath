@@ -14,37 +14,39 @@ note = "";
 paramNote = "";
 
 %deterministic system
-a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = .01; %rhs parameters
-dim = 10; %deterministic system dimension
-rhsString = 'NDuffing'; %Options {'Duffing','TwoDuffing','NDuffing'}
+a1 = 1; a3 = .3; nu = .1; F = .4; w = 1.4; kc = .01; wc = 2*pi;%rhs parameters
+a1 = 1; a3 = -.48; nu = .009; F = .007; w = .84; kc = .0;%rhs one cantilever parameters
+a1 = 1; a3 = -.2605; nu = .0069; F = .0059; w = .94; kc = .002;%rhs parameters
+dim = 4; %deterministic system dimension
+rhsString = 'TwoDuffing'; %Options {'Duffing','TwoDuffing','NDuffing'}
 
 %Radius
-rIC = 10^-10; %gamma - radius of Lagrangian Manifold Approximation
-rA1 = .1; %radius of sphere around initial attractor (used to save comp. time by avoiding checks for basin of attraction very close to initial attractor)
+rIC = 10^-5; %gamma - radius of Lagrangian Manifold Approximation
+rA1 = .02; %radius of sphere around initial attractor (used to save comp. time by avoiding checks for basin of attraction very close to initial attractor)
 rA = .1; %accepted radius around a new attractor
 rS = 1E-5; %accepted radius around a saddle
 
 %Attractors
-iAString = "HLLLL Attractor"; %initial attractor fixed point identifier must match system dimension
+iAString = "HH Attractor"; %initial attractor fixed point identifier must match system dimension
 fAString = "Any"; 
 pp = 0; %theta_0 initial phase angle from 0 to 2*pi, only used when includePhase parameter is false 
 
 
 %Optimization Parameters
-nIC = 10; %number of initial conditions 
+nIC = 5; %number of initial conditions 
 solver = @ode45; %Numerical integrator
 searchAlgorithm = "Stochastic Grid"; %optimization solver Options ("NelderMead Simplex","Stochastic Grid","Fixed Grid","Gradienct Descent","Fletcher Reevers")
 xcoordinates = false; %when true uses x coordinates for sphere in R^d. when false it uses angle coordinates for sphere in R^d. 'NelderMead Simplex' solver will not work when this is true 
 uniformInX = true; %initial points are selected uniformly in the sphere. when false, initial points are selected uniformly in the angle space of the sphere
 nRVs = 500; %number random variables in R^d for random IC initialization. Recommend range 100 - 15000 and always >nIC. Actual nIC initial conditions are downsampled uniformly from this initial set.  If the dimension is very large this will create an nRV X d matrix so be careful not to make too large.  
 minICStopRemoval = 5; %optimization will run on nLM candidates for local minima in parallel. To reduce comp. time, it will throw out one candidate with highest cost each iteration but it will always keep at least minICStopRemoval 
-nLM = 2; %maximum number of local minimum to explore (recommended 4 for testing, 30 to 50 for actual running) candidates are selected based on the initial guesses with lowest costs that are not too close to each other
-maxIter = 1; %Stop Condition 1: maximum number of iterations of the optimizer. 
+nLM = 1; %maximum number of local minimum to explore (recommended 4 for testing, 30 to 50 for actual running) candidates are selected based on the initial guesses with lowest costs that are not too close to each other
+maxIter = 0; %Stop Condition 1: maximum number of iterations of the optimizer. 
 fdStep = 1E-2; %finite difference step size for approximating gradient. Too small or too large leads to errors in gradient estimate
 minGamma = 1E-5; %Stop Condition 2: optimizer step size decreases below min gamma
 discGamma = .5; %gradient descent switches to stochastic grid vector method after reaching discontinuity and resets the step size to this.
 DiscThresh = 2.0; %cost multiplier to identify small step led to a discontinuous jump
-includePhase = true; %increase the dimension of the optimization problem to include initial phase. true by default
+includePhase = false; %increase the dimension of the optimization problem to include initial phase. true by default
 
 %Plot Paramteters
 plotFall = true; %includes the descent into a new attractor after laeaving initial basin
@@ -59,7 +61,7 @@ progressbar = true; %plots a progress bar in the text if true
 
 %Calculated Parameters (paramters that are partially based on other parameters)
 T = 2*pi/w; %Period
-dT = T/2; %initial time between basin checks 
+dT = T; %initial time between basin checks 
 dt = T/32; %used to create time span but doesnt anything important since ode45 chooses the timestep of integration
 tf = 500*T; %maximum integration (integration will terminate early if another basin is reached)
 tFall = 10*T; %Basin check integration time interval
@@ -72,6 +74,11 @@ if contains(searchAlgorithm,"Gradient") || contains(searchAlgorithm,"Fletcher") 
     stochasticNonGradientSearch = true;
 else
      stochasticNonGradientSearch = false;
+end
+if contains(rhsString,"Filtered")
+   filterDim = 1;
+else
+   filterDim = 0;
 end
 D = 2*dim; %hamiltonian system dimension
 tspan = [0:dt:tf]; % time span for integration
@@ -139,7 +146,7 @@ M.iAString = iAString;
 M.fAString = fAString;
 M.minICStopRemoval = minICStopRemoval;
 M.includePhase = includePhase;
-
+M.filterDim = filterDim;
 
 M.paramNote = paramNote;
 M.Mrhs.a1 = a1; M.Mrhs.a3 = a3; M.Mrhs.nu = nu; M.Mrhs.kc = kc;
@@ -147,6 +154,7 @@ M.Mrhs.F = F; M.Mrhs.w = w; M.Mrhs.psiEps = psiEps;
 M.Mrhs.rA = rA; M.Mrhs.rS = rS; M.Mrhs.tstep = tstep; %M.Mrhs.qo = qo;
 M.Mrhs.rA1 = rA1; M.Mrhs.tFall = tFall; M.Mrhs.T = T;
 M.Mrhs.onceAPeriod = onceAPeriod; M.Mrhs.dim = dim; M.io = io;
+M.Mrhs.wc = wc;
 
 M.MS.nLM = nLM; M.MS.maxIter = maxIter;
 

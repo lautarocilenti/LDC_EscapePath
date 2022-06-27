@@ -16,7 +16,7 @@ end
 
 %Generate Gridded interpolant
 f1 = figure();
-if data.M.Mrhs.w == 1.4 & data.M.dim == 2
+if data.M.Mrhs.w == 1.4 & data.M.dim == 2 & data.M.filterDim == 0
     F = GenerateBasinInterpolant(data.M);
     data.basinInterpolant = F; 
     PL_BasinBoundary(data.basinInterpolant,"");

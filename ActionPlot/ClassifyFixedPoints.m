@@ -19,7 +19,8 @@ function [names,stability,fp] = ClassifyFixedPoints(stability,fp,L2)
                 for i = 2:size(fp,1)-1
                     fp1 = vecnorm(fp(i,1:2),2,2);
                     fp2 = vecnorm(fp(i,3:4),2,2);
-                    if stability(i) == -1 & fp1 == fp2
+                    [fp1 fp2]
+                    if stability(i) == -1 & round(fp1,3) == round(fp2,3)
                         saddleNorm = fp1;
                     end
                 end
